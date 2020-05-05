@@ -25,6 +25,9 @@
           <el-dropdown-item divided @click.native="logout">
             <span style="display:block;">Log Out</span>
           </el-dropdown-item>
+          <el-dropdown-item>
+            <router-link :to="{name:'Me'}">Me</router-link>
+          </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
