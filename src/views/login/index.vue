@@ -3,7 +3,7 @@
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
 
       <div class="title-container">
-        <h3 class="title">Login Form</h3>
+        <h3 class="title">工夹具寿命管理系统</h3>
       </div>
 
       <el-form-item prop="username">
@@ -40,14 +40,15 @@
           <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
         </span>
       </el-form-item>
-
+      <el-form-item prop="workcell_id">
+        <span class="svg-container">
+          <svg-icon icon-class="work-order" />
+        </span>
+        <el-select v-model="loginForm.workcell_id">
+          <el-option v-for="item in workcell_list" :key="item.id" :value="item.id">{{ item.workcell }}</el-option>
+        </el-select>
+      </el-form-item>
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
-
-      <div class="tips">
-        <span style="margin-right:20px;">username: admin</span>
-        <span> password: any</span>
-      </div>
-
     </el-form>
   </div>
 </template>
@@ -75,15 +76,18 @@ export default {
     return {
       loginForm: {
         username: 'admin',
-        password: '111111'
+        password: '111111',
+        workcell_id: ''
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+        password: [{ required: true, trigger: 'blur', validator: validatePassword }],
+        workcell_id: [{ required: true }]
       },
       loading: false,
       passwordType: 'password',
-      redirect: undefined
+      redirect: undefined,
+      workcell_list: []
     }
   },
   watch: {
@@ -93,6 +97,13 @@ export default {
       },
       immediate: true
     }
+  },
+  created() {
+    this.$ajax.get('/get_workcell_list').then(
+      response => {
+        this.workcell_list = response.data
+      }
+    )
   },
   methods: {
     showPwd() {
