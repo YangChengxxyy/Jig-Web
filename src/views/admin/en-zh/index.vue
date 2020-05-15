@@ -1,6 +1,9 @@
 <template>
-  <div>工夹具实体</div>
+  <div>
+    中英字典
+  </div>
 </template>
+
 <script>
 export default {
   name: 'Index'

@@ -177,8 +177,8 @@ export const constantRoutes = [
     children: [
       {
         path: 'information',
-        component: () => import('@/views/person/information/index'),
-        meta: { title: '人员信息管理', icon: 'user' }
+        component: () => import('@/views/admin/person/information/index'),
+        meta: { title: '人员信息管理', icon: 'user', role: ['admin'] }
       }
     ]
   },
@@ -190,18 +190,18 @@ export const constantRoutes = [
     children: [
       {
         path: 'entity',
-        component: () => import('@/views/jig/entity/index'),
-        meta: { title: '工夹具实体' }
+        component: () => import('@/views/admin/jig/entity/index'),
+        meta: { title: '工夹具实体', role: ['admin'] }
       },
       {
         path: 'definition',
-        component: () => import('@/views/jig/definition/index'),
-        meta: { title: '工夹具定义' }
+        component: () => import('@/views/admin/jig/definition/index'),
+        meta: { title: '工夹具定义', role: ['admin'] }
       },
       {
         path: 'model',
-        component: () => import('@/views/jig/model/index'),
-        meta: { title: '模组&料号信息' }
+        component: () => import('@/views/admin/jig/model/index'),
+        meta: { title: '模组&料号信息', role: ['admin'] }
       }
     ]
   },
@@ -212,8 +212,8 @@ export const constantRoutes = [
     children: [
       {
         path: 'index',
-        component: () => import('@/views/en-zh/index'),
-        meta: { title: '中英字典', icon: 'book' }
+        component: () => import('@/views/admin/en-zh/index'),
+        meta: { title: '中英字典', icon: 'book', role: ['admin'] }
       }
     ]
   },
@@ -225,18 +225,18 @@ export const constantRoutes = [
     children: [
       {
         path: 'use',
-        component: () => import('@/views/report/use/index'),
-        meta: { title: '工夹具使用分析' }
+        component: () => import('@/views/admin/report/use/index'),
+        meta: { title: '工夹具使用分析', role: ['admin'] }
       },
       {
         path: 'life',
-        component: () => import('@/views/report/life/index'),
-        meta: { title: '工夹具寿命以及损坏分析' }
+        component: () => import('@/views/admin/report/life/index'),
+        meta: { title: '工夹具寿命以及损坏分析', role: ['admin'] }
       },
       {
         path: 'manufacturer',
-        component: () => import('@/views/report/manufacturer/index'),
-        meta: { title: '厂商统计分析' }
+        component: () => import('@/views/admin/report/manufacturer/index'),
+        meta: { title: '厂商统计分析', role: ['admin'] }
       }
     ]
   },
