@@ -145,6 +145,8 @@
   </el-card>
 </template>
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   name: 'Index',
   data: function() {
@@ -164,9 +166,14 @@ export default {
       all: 0
     }
   },
+  computed: {
+    ...mapGetters([
+      'id'
+    ])
+  },
   created() {
     this.$ajax.get('/get_workcell_list').then(
-      (response) => {
+      response => {
         this.workcell_list = response.data
       }
     )
@@ -175,7 +182,7 @@ export default {
     getData: function() {
       this.$ajax.get('/admin/search_user_information', {
         params: {
-          submit_id: 'admin',
+          submit_id: this.id,
           id: this.form.id,
           name: this.form.name,
           workcell_id: this.form.workcell_id,

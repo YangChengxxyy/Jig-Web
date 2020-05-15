@@ -1,18 +1,19 @@
 import request from '@/utils/request'
-
+import axios from 'axios'
 export function login(data) {
-  return request({
-    url: '/vue-admin-template/user/login',
-    method: 'post',
-    data
+  return axios.get('/login_check', {
+    params: data
   })
 }
 
 export function getInfo(token) {
-  return request({
-    url: '/vue-admin-template/user/info',
-    method: 'get',
-    params: { token }
+  const { id, password, workcell_id } = token
+  return axios.get('/login_check', {
+    params: {
+      id: id,
+      password: password,
+      workcell_id: workcell_id
+    }
   })
 }
 

@@ -5,8 +5,10 @@ import { resetRouter } from '@/router'
 const getDefaultState = () => {
   return {
     token: getToken(),
-    name: '',
-    avatar: ''
+    id: '',
+    password: '',
+    avatar_url: '',
+    role: ''
   }
 }
 
@@ -19,24 +21,32 @@ const mutations = {
   SET_TOKEN: (state, token) => {
     state.token = token
   },
-  SET_NAME: (state, name) => {
-    state.name = name
+  SET_ID: (state, id) => {
+    state.id = id
   },
-  SET_AVATAR: (state, avatar) => {
-    state.avatar = avatar
+  SET_PASSWORD: (state, password) => {
+    state.password = password
+  },
+  SET_AVATAR_URL: (state, avatar_url) => {
+    state.avatar_url = avatar_url
+  },
+  SET_ROLE: (state, role) => {
+    state.role = role
   }
 }
 
 const actions = {
   // user login
   login({ commit }, userInfo) {
-    const { username, password } = userInfo
+    const { username, password, workcell_id } = userInfo
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
+      login({ id: username.trim(), password: password, workcell_id: workcell_id }).then(response => {
         const { data } = response
-        commit('SET_TOKEN', data.token)
-        setToken(data.token)
-        resolve()
+        if (data.stateCode === 0) {
+          commit('SET_TOKEN', { id: data.data.id, password: data.data.password, workcell_id: data.data.workcell_id })
+          setToken({ id: data.data.id, password: data.data.password, workcell_id: data.data.workcell_id })
+          resolve()
+        }
       }).catch(error => {
         reject(error)
       })
@@ -48,15 +58,14 @@ const actions = {
     return new Promise((resolve, reject) => {
       getInfo(state.token).then(response => {
         const { data } = response
-
         if (!data) {
           reject('Verification failed, please Login again.')
         }
-
-        const { name, avatar } = data
-
-        commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
+        const { id, password, avatar_url, type } = data.data
+        commit('SET_ID', id)
+        commit('SET_PASSWORD', password)
+        commit('SET_AVATAR_URL', avatar_url)
+        commit('SET_ROLE', type)
         resolve(data)
       }).catch(error => {
         reject(error)

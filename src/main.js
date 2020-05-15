@@ -34,6 +34,7 @@ Vue.use(ElementUI, { locale })
 // 如果想要中文版 element-ui，按如下方式声明
 // Vue.use(ElementUI)
 Vue.use(VCharts)
+
 Vue.config.productionTip = false
 Vue.prototype.$ajax = axios
 new Vue({
@@ -42,3 +43,4 @@ new Vue({
   store,
   render: h => h(App)
 })
+

@@ -170,10 +170,14 @@ export const constantRoutes = [
   //     }
   //   ]
   // },
+  /*
+  admin
+   */
   {
     path: '/',
     component: Layout,
     redirect: '/information',
+    meta: { role: ['admin'] },
     children: [
       {
         path: 'information',
@@ -186,7 +190,7 @@ export const constantRoutes = [
     path: '/jig',
     component: Layout,
     redirect: '/jig/entity',
-    meta: { title: '工夹具管理', icon: 'jig' },
+    meta: { title: '工夹具管理', icon: 'jig', role: ['admin'] },
     children: [
       {
         path: 'entity',
@@ -209,6 +213,7 @@ export const constantRoutes = [
     path: '/en-zh',
     component: Layout,
     redirect: '/en-zh/index',
+    meta: { role: ['admin'] },
     children: [
       {
         path: 'index',
@@ -221,7 +226,7 @@ export const constantRoutes = [
     path: '/report',
     component: Layout,
     redirect: '/report/use',
-    meta: { title: '详细报表', icon: 'report' },
+    meta: { title: '详细报表', icon: 'report', role: ['admin'] },
     children: [
       {
         path: 'use',
@@ -237,6 +242,209 @@ export const constantRoutes = [
         path: 'manufacturer',
         component: () => import('@/views/admin/report/manufacturer/index'),
         meta: { title: '厂商统计分析', role: ['admin'] }
+      }
+    ]
+  },
+  /*
+  high
+   */
+  {
+    path: '/jig-out-in',
+    component: Layout,
+    redirect: '/jig-out-in/out',
+    meta: { title: '工夹具出入库', icon: 'out-in', role: ['high'] },
+    children: [
+      {
+        path: 'out',
+        component: () => import('@/views/naive/jig-out-in/out/index'),
+        meta: { title: '工夹具出库', role: ['high'] }
+      },
+      {
+        path: 'in',
+        component: () => import('@/views/naive/jig-out-in/in/index'),
+        meta: { title: '归还工夹具', role: ['high'] }
+      }
+    ]
+  },
+  {
+    path: '/warehouse',
+    component: Layout,
+    redirect: '/warehouse/check',
+    meta: { title: '仓库管理', icon: 'warehouse', role: ['naive'] },
+    children: [
+      {
+        path: 'check',
+        component: () => import('@/views/naive/warehouse/check/index'),
+        meta: { title: '检点工夹具', role: ['naive'] }
+      },
+      {
+        path: 'search',
+        component: () => import('@/views/naive/warehouse/search/index'),
+        meta: { title: '归还工夹具', role: ['naive'] }
+      }
+    ]
+  },
+  {
+    path: '/repair',
+    component: Layout,
+    redirect: '/repair/index',
+    meta: { title: '报修管理', icon: 'repair', role: ['naive'] },
+    children: [
+      {
+        path: 'check',
+        component: () => import('@/views/naive/repair/index/index'),
+        meta: { title: '我的报修', role: ['naive'] }
+      },
+      {
+        path: 'search',
+        component: () => import('@/views/naive/repair/history/index'),
+        meta: { title: '历史报修记录', role: ['naive'] }
+      }
+    ]
+  },
+  /*
+  high
+   */
+  {
+    path: '/purchase',
+    component: Layout,
+    redirect: '/purchase/my',
+    meta: { title: '采购管理', icon: 'purchase', role: ['high'] },
+    children: [
+      {
+        path: 'my',
+        component: () => import('@/views/high/purchase/my/index'),
+        meta: { title: '我的采购单', role: ['high'] }
+      },
+      {
+        path: 'history',
+        component: () => import('@/views/high/purchase/history/index'),
+        meta: { title: '历史采购记录', role: ['high'] }
+      }
+    ]
+  },
+  {
+    path: '/repair',
+    component: Layout,
+    redirect: '/repair/my',
+    meta: { title: '报修管理', icon: 'repair', role: ['high'] },
+    children: [
+      {
+        path: 'my',
+        component: () => import('@/views/high/repair/my/index'),
+        meta: { title: '我的报修审核', role: ['high'] }
+      },
+      {
+        path: 'history',
+        component: () => import('@/views/high/repair/history/index'),
+        meta: { title: '历史采购记录', role: ['high'] }
+      },
+      {
+        path: 'statistics',
+        component: () => import('@/views/high/repair/statistics/index'),
+        meta: { title: '报修统计', role: ['high'] }
+      }
+    ]
+  },
+  {
+    path: '/scrap',
+    component: Layout,
+    redirect: '/scrap/my',
+    meta: { title: '报废管理', icon: 'scrap', role: ['high'] },
+    children: [
+      {
+        path: 'my',
+        component: () => import('@/views/high/scrap/my/index'),
+        meta: { title: '我的报废申请', role: ['high'] }
+      },
+      {
+        path: 'history',
+        component: () => import('@/views/high/repair/history/index'),
+        meta: { title: '历史报废记录', role: ['high'] }
+      }
+    ]
+  },
+  {
+    path: '/jig-information',
+    component: Layout,
+    redirect: '/jig-information/index',
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/naive/warehouse/search/index'),
+        meta: { title: '工夹具信息管理', icon: 'jig', role: ['high'] }
+      }
+    ]
+  },
+  /*
+  supervisor
+   */
+  {
+    path: '/jig-information',
+    component: Layout,
+    redirect: '/jig-information/index',
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/supervisor/jig-information/index/index'),
+        meta: { title: '工夹具信息管理', icon: 'jig', role: ['supervisor'] }
+      }
+    ]
+  },
+  {
+    path: '/purchase',
+    component: Layout,
+    redirect: '/purchase/approve',
+    meta: { title: '采购管理', icon: 'purchase', role: ['supervisor'] },
+    children: [
+      {
+        path: 'approve',
+        component: () => import('@/views/supervisor/purchase/approve/index'),
+        meta: { title: '采购审批', role: ['supervisor'] }
+      },
+      {
+        path: 'history',
+        component: () => import('@/views/supervisor/purchase/history/index'),
+        meta: { title: '历史采购记录', role: ['supervisor'] }
+      }
+    ]
+  },
+  {
+    path: '/scrap',
+    component: Layout,
+    redirect: '/scrap/my',
+    meta: { title: '报废管理', icon: 'scrap', role: ['supervisor'] },
+    children: [
+      {
+        path: 'my',
+        component: () => import('@/views/supervisor/scrap/my/index'),
+        meta: { title: '待处理报废申请', role: ['supervisor'] }
+      },
+      {
+        path: 'history',
+        component: () => import('@/views/supervisor/scrap/history/index'),
+        meta: { title: '历史报废记录', role: ['supervisor'] }
+      }
+    ]
+  },
+  /*
+  manager
+   */
+  {
+    path: '/purchase',
+    component: Layout,
+    redirect: '/purchase/my',
+    meta: { title: '采购管理', icon: 'purchase' },
+    children: [
+      {
+        path: '/my',
+        component: () => import('@/views/manager/purchase/my/index'),
+        meta: { title: '采购审批', role: ['manager'] }
+      },
+      {
+        path: '/history',
+        component: () => import('@/views/manager/purchase/history/index'),
+        meta: { title: '历史采购记录', role: ['manager'] }
       }
     ]
   },
