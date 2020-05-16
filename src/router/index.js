@@ -261,15 +261,14 @@ manager
     meta: { title: '报废管理', icon: 'scrap', role: ['manager'] },
     children: [
       {
-        name: 'manager',
         path: 'my',
         component: () => import('@/views/manager/scrap/my/index'),
-        meta: { title: '采购审批', role: ['manager'] }
+        meta: { title: '报废审批', role: ['manager'] }
       },
       {
         path: 'history',
         component: () => import('@/views/manager/scrap/history/index'),
-        meta: { title: '历史采购记录', role: ['manager'] }
+        meta: { title: '历史报废记录', role: ['manager'] }
       }
     ]
   },
@@ -280,7 +279,6 @@ manager
     meta: { role: ['manager'] },
     children: [
       {
-        name: 'manager',
         path: 'index',
         component: () => import('@/views/manager/jig/information/index'),
         meta: { title: '工夹具信息', icon: 'jig', role: ['manager'] }
