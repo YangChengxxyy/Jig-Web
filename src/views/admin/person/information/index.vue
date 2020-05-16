@@ -111,7 +111,7 @@
               <el-col :span="24">
                 <el-form-item label="工作部门">
                   <el-select v-model="showPerson.workcell_id" style="width: 100%">
-                    <el-option v-for="item in workcell_list" :key="item.id" :value="item.id">{{ item.workcell }}</el-option>
+                    <el-option v-for="item in workcell_list" :key="item.id" :value="item.id" :label="item.workcell" />
                   </el-select>
                 </el-form-item>
               </el-col>

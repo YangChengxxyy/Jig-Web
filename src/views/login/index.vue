@@ -45,7 +45,7 @@
           <svg-icon icon-class="work-order" />
         </span>
         <el-select v-model="loginForm.workcell_id">
-          <el-option v-for="item in workcell_list" :key="item.id" :value="item.id">{{ item.workcell }}</el-option>
+          <el-option v-for="item in workcell_list" :key="item.id" :value="item.id" :label="item.workcell" />
         </el-select>
       </el-form-item>
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>

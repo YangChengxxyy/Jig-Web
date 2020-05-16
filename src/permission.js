@@ -1,4 +1,4 @@
-import router from './router'
+import router, { roleMap } from './router'
 import store from './store'
 import { Message } from 'element-ui'
 import NProgress from 'nprogress' // progress bar
@@ -22,6 +22,8 @@ router.beforeEach(async(to, from, next) => {
       // if is logged in, redirect to the home page
       next({ path: '/' })
       NProgress.done()
+    } else if (to.path === '/' && store.getters.token != null) {
+      next({ path: roleMap[store.getters.token.role] })
     } else {
       const hasGetUserInfo = store.getters.token
       if (hasGetUserInfo) {
