@@ -243,14 +243,47 @@ manager
     children: [
       {
         name: 'manager',
-        path: '/my',
+        path: 'my',
         component: () => import('@/views/manager/purchase/my/index'),
         meta: { title: '采购审批', role: ['manager'] }
       },
       {
-        path: '/history',
+        path: 'history',
         component: () => import('@/views/manager/purchase/history/index'),
         meta: { title: '历史采购记录', role: ['manager'] }
+      }
+    ]
+  },
+  {
+    path: '/scrap',
+    component: Layout,
+    redirect: '/scrap/my',
+    meta: { title: '报废管理', icon: 'scrap', role: ['manager'] },
+    children: [
+      {
+        name: 'manager',
+        path: 'my',
+        component: () => import('@/views/manager/scrap/my/index'),
+        meta: { title: '采购审批', role: ['manager'] }
+      },
+      {
+        path: 'history',
+        component: () => import('@/views/manager/scrap/history/index'),
+        meta: { title: '历史采购记录', role: ['manager'] }
+      }
+    ]
+  },
+  {
+    path: '/jig',
+    component: Layout,
+    redirect: '/jig/index',
+    meta: { role: ['manager'] },
+    children: [
+      {
+        name: 'manager',
+        path: 'index',
+        component: () => import('@/views/manager/jig/information/index'),
+        meta: { title: '工夹具信息', icon: 'jig', role: ['manager'] }
       }
     ]
   },
@@ -258,14 +291,14 @@ manager
   admin
   */
   {
-    path: '/',
+    path: '/information',
     component: Layout,
-    redirect: '/information',
+    redirect: '/information/index',
     meta: { title: '人员管理', icon: 'user', role: ['admin'] },
     children: [
       {
         name: 'admin',
-        path: 'information',
+        path: 'index',
         component: () => import('@/views/admin/person/information/index'),
         meta: { title: '人员信息管理', role: ['admin'] }
       }
