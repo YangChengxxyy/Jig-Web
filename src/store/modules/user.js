@@ -1,7 +1,7 @@
 import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
-
+import store from '@/store'
 const getDefaultState = () => {
   return {
     token: getToken(),
@@ -80,6 +80,7 @@ const actions = {
         removeToken() // must remove  token  first
         resetRouter()
         commit('RESET_STATE')
+        store.dispatch('ResetRoutes')
         resolve()
       }).catch(error => {
         reject(error)
