@@ -11,7 +11,7 @@
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
-          <router-link to="/">
+          <router-link :to="{name : token.role}">
             <el-dropdown-item>
               Home
             </el-dropdown-item>
@@ -38,7 +38,8 @@ export default {
   computed: {
     ...mapGetters([
       'sidebar',
-      'avatar_url'
+      'avatar_url',
+      'token'
     ])
   },
   methods: {

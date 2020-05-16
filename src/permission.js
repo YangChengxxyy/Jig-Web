@@ -29,13 +29,7 @@ router.beforeEach(async(to, from, next) => {
           const roles = res.data.type
           store.dispatch('GenerateRoutes', { roles }).then(() => { // 生成可访问的路由表
             router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
-            console.log(to)
-            console.log(from)
-            if (to.meta.role.indexOf(roles) === -1) {
-              next({ name: store.getters.role })
-            } else {
-              next({ ...to, replace: true }) // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
-            }
+            next() // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
           })
         }).catch(err => {
           console.log(err)

@@ -55,6 +55,7 @@
 
 <script>
 import store from '@/store'
+import { roleMap } from '@/router'
 export default {
   name: 'Login',
   data() {
@@ -120,8 +121,7 @@ export default {
         if (valid) {
           this.loading = true
           this.$store.dispatch('user/login', this.loginForm).then(() => {
-            console.log(store.getters.role)
-            this.$router.push({ name: store.getters.role })
+            this.$router.push({ path: roleMap[store.getters.token.role] })
             this.loading = false
           }).catch(() => {
             this.loading = false

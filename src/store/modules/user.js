@@ -43,8 +43,8 @@ const actions = {
       login({ id: username.trim(), password: password, workcell_id: workcell_id }).then(response => {
         const { data } = response
         if (data.stateCode === 0) {
-          commit('SET_TOKEN', { id: data.data.id, password: data.data.password, workcell_id: data.data.workcell_id })
-          setToken({ id: data.data.id, password: data.data.password, workcell_id: data.data.workcell_id })
+          commit('SET_TOKEN', { id: data.data.id, password: data.data.password, workcell_id: data.data.workcell_id, role: data.data.type })
+          setToken({ id: data.data.id, password: data.data.password, workcell_id: data.data.workcell_id, role: data.data.type })
           resolve()
         }
       }).catch(error => {

@@ -289,13 +289,13 @@ manager
   admin
   */
   {
+    name: 'admin',
     path: '/information',
     component: Layout,
     redirect: '/information/index',
     meta: { title: '人员管理', icon: 'user', role: ['admin'] },
     children: [
       {
-        name: 'admin',
         path: 'index',
         component: () => import('@/views/admin/person/information/index'),
         meta: { title: '人员信息管理', role: ['admin'] }
@@ -377,4 +377,15 @@ export function resetRouter() {
   router.matcher = newRouter.matcher // reset router
 }
 
+/**
+ * 各个用户的首页
+ * @type {{high: string, manager: string, admin: string, naive: string, supervisor: string}}
+ */
+export const roleMap = {
+  naive: '/jig-out-in',
+  high: '/purchase',
+  supervisor: '/jig-information',
+  manager: '/purchase',
+  admin: '/information'
+}
 export default router
