@@ -13,7 +13,7 @@
       <span>
         <el-form ref="form" :model="cn_en" label-position="left" label-width="80px">
           <el-form-item label="英文">
-            <el-input v-model="cn_en.english" disabled />
+            <el-input v-model="cn_en.english" readonly />
           </el-form-item>
           <el-form-item label="中文">
             <el-input v-model="cn_en.chinese" />
@@ -41,6 +41,7 @@ export default {
       const a = String.fromCharCode(65 + i)
       filters.push({ text: a, value: a })
     }
+    console.log(filters)
     return {
       cn_en_list: [],
       dialogVisible: false,

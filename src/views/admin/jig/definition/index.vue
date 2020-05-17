@@ -67,98 +67,98 @@
             <el-row>
               <el-col :span="24">
                 <el-form-item label="工夹具代码">
-                  <el-input v-model="jig_entity.code" disabled />
+                  <el-input v-model="jig_entity.code" readonly />
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="24">
                 <el-form-item label="工夹具名字">
-                  <el-input v-model="jig_entity.name" disabled />
+                  <el-input v-model="jig_entity.name" readonly />
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="24">
                 <el-form-item label="所属部门">
-                  <el-input v-model="jig_entity.workcell" disabled />
+                  <el-input v-model="jig_entity.workcell" readonly />
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="24">
                 <el-form-item label="类别">
-                  <el-input v-model="jig_entity.family" disabled />
+                  <el-input v-model="jig_entity.family" readonly />
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="24">
                 <el-form-item label="工夹具模组">
-                  <el-input v-model="jig_entity.model" disabled />
+                  <el-input v-model="jig_entity.model" readonly />
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="24">
                 <el-form-item label="料号">
-                  <el-input v-model="jig_entity.part_no" disabled />
+                  <el-input v-model="jig_entity.part_no" readonly />
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="24">
                 <el-form-item label="用途">
-                  <el-input v-model="jig_entity.user_for" disabled />
+                  <el-input v-model="jig_entity.user_for" readonly />
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="24">
                 <el-form-item label="每条产线所需">
-                  <el-input v-model="jig_entity.upl" disabled />
+                  <el-input v-model="jig_entity.upl" readonly />
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="24">
                 <el-form-item label="责任人">
-                  <el-input v-model="jig_entity.owner_name" disabled />
+                  <el-input v-model="jig_entity.owner_name" readonly />
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="24">
                 <el-form-item label="录入人">
-                  <el-input v-model="jig_entity.rec_by_name" disabled />
+                  <el-input v-model="jig_entity.rec_by_name" readonly />
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="24">
                 <el-form-item label="录入时间">
-                  <el-input v-model="jig_entity.rec_time" disabled />
+                  <el-input v-model="jig_entity.rec_time" readonly />
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="24">
                 <el-form-item label="修改人">
-                  <el-input v-model="jig_entity.edit_by_name" disabled />
+                  <el-input v-model="jig_entity.edit_by_name" readonly />
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="24">
                 <el-form-item label="修改时间">
-                  <el-input v-model="jig_entity.edit_time" disabled />
+                  <el-input v-model="jig_entity.edit_time" readonly />
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="24">
                 <el-form-item label="保养周期">
-                  <el-input v-model="jig_entity.pm_period" disabled />
+                  <el-input v-model="jig_entity.pm_period" readonly />
                 </el-form-item>
               </el-col>
             </el-row>

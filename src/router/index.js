@@ -54,6 +54,7 @@ export const permissionRouter = [
 naive
  */
   {
+    name: 'naive',
     path: '/warehouse',
     component: Layout,
     redirect: '/warehouse/out',
