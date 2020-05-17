@@ -168,7 +168,7 @@
     </el-dialog>
     <el-pagination
       v-if="jig_entity_list.length !== 0"
-      style="width: 30%;margin: 0 35%"
+      style="text-align: center"
       :current-page="page_number"
       :page-sizes="[5, 10, 20, 30]"
       :page-size="page_size"

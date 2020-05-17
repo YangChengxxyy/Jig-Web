@@ -9,5 +9,7 @@ export default {
 </script>
 
 <style scoped>
+.box-card{
 
+}
 </style>

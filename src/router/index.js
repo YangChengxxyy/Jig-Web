@@ -54,38 +54,19 @@ export const permissionRouter = [
 naive
  */
   {
-    path: '/jig-out-in',
+    path: '/warehouse',
     component: Layout,
-    redirect: '/jig-out-in/out',
-    meta: { title: '工夹具出入库', icon: 'out-in', role: ['naive'] },
+    redirect: '/warehouse/out',
+    meta: { title: '仓库管理', icon: 'warehouse', role: ['naive'] },
     children: [
       {
-        name: 'naive',
         path: 'out',
-        component: () => import('@/views/naive/jig-out-in/out/index'),
+        component: () => import('@/views/naive/warehouse/out/index'),
         meta: { title: '工夹具出库', role: ['naive'] }
       },
       {
         path: 'in',
-        component: () => import('@/views/naive/jig-out-in/in/index'),
-        meta: { title: '归还工夹具', role: ['naive'] }
-      }
-    ]
-  },
-  {
-    path: '/warehouse',
-    component: Layout,
-    redirect: '/warehouse/check',
-    meta: { title: '仓库管理', icon: 'warehouse', role: ['naive'] },
-    children: [
-      {
-        path: 'check',
-        component: () => import('@/views/naive/warehouse/check/index'),
-        meta: { title: '检点工夹具', role: ['naive'] }
-      },
-      {
-        path: 'search',
-        component: () => import('@/views/naive/warehouse/search/index'),
+        component: () => import('@/views/naive/warehouse/in/index'),
         meta: { title: '归还工夹具', role: ['naive'] }
       }
     ]
@@ -387,7 +368,7 @@ export function resetRouter() {
  * @type {{high: string, manager: string, admin: string, naive: string, supervisor: string}}
  */
 export const roleMap = {
-  naive: '/jig-out-in',
+  naive: '/warehouse',
   high: '/purchase',
   supervisor: '/jig-information',
   manager: '/purchase',
