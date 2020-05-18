@@ -100,6 +100,103 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     />
+    <el-dialog title="历史报修明细" :visible.sync="dialogVisible" width="35%">
+      <el-form v-if="history != null" label-position="left" label-width="100px">
+        <el-row :gutter="20">
+          <el-col :span="22" :offset="1">
+            <el-form-item label="采购单据号">
+              <el-input v-model="history.bill_no" readonly />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="22" :offset="1">
+            <el-form-item label="采购人">
+              <el-input v-model="history.submit_name" readonly />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="22" :offset="1">
+            <el-form-item label="产线">
+              <el-input v-model="history.production_line_name" readonly />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row v-for="(item,index) in history.code" :key="index" :gutter="20">
+          <el-col :span="11" :offset="1">
+            <el-form-item label="工夹具代码">
+              <el-input v-model="history.code[index]" readonly />
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item label="数量">
+              <el-input v-model="history.count[index]" readonly />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="22" :offset="1">
+            <el-form-item label="申请时间">
+              <el-input v-model="history.submit_id" readonly />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="22" :offset="1">
+            <el-form-item label="审批状态">
+              <el-input v-if="history.status === '0'" value="待初审" readonly />
+              <el-input v-else-if="history.status === '1'" value="初审未通过" readonly />
+              <el-input v-else-if="history.status === '2'" value="初审通过" readonly />
+              <el-input v-else-if="history.status === '3'" value="终审未通过" readonly />
+              <el-input v-else value="终审通过" readonly />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="22" :offset="1">
+            <el-form-item v-if="history.first_acceptor != null" label="初审人">
+              <el-input v-model="history.first_acceptor" readonly />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="22" :offset="1">
+            <el-form-item v-if="history.first_time != null" label="初审时间">
+              <el-input v-model="history.first_time" readonly />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="22" :offset="1">
+            <el-form-item v-if="history.first_acceptor_reason != null" label="初审未通过原因">
+              <el-input v-model="history.first_acceptor_reason" readonly />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="22" :offset="1">
+            <el-form-item v-if="history.final_acceptor != null" label="终审人">
+              <el-input v-model="history.final_acceptor" readonly />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="22" :offset="1">
+            <el-form-item v-if="history.final_time != null" label="终审时间">
+              <el-input v-model="history.final_time" readonly />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="22" :offset="1">
+            <el-form-item v-if="history.final_acceptor_reason != null" label="终审未通过原因">
+              <el-input v-model="history.final_acceptor_reason" readonly />
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+    </el-dialog>
   </el-card>
 </template>
 <script>
@@ -121,7 +218,9 @@ export default {
       },
       page_size: 10,
       page_number: 1,
-      all: 0
+      all: 0,
+      dialogVisible: false,
+      history: null
     }
   },
   computed: {
@@ -185,6 +284,10 @@ export default {
       return a
     },
     showHistory(row) {
+      this.history = JSON.parse(JSON.stringify(row))
+      this.history.code = this.history.code.split('|')
+      this.history.count = this.history.count.split('|')
+      this.dialogVisible = true
     }
   }
 }

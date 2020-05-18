@@ -194,6 +194,11 @@ export default {
           const { data } = response
           this.purchase_income_submit_list = data.data
           this.all = data.all
+          if (data.all === 0) {
+            this.$message.info('查询暂无结果')
+          } else {
+            this.$message.success('查询到' + data.all + '条记录')
+          }
         }
       )
     },

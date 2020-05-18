@@ -224,6 +224,11 @@ export default {
         response => {
           this.jig_entity_list = response.data.data
           this.all = response.data['all']
+          if (response.data.all === 0) {
+            this.$message.info('查询暂无结果')
+          } else {
+            this.$message.success('查询到' + response.data.all + '条记录')
+          }
         }
       )
     },
