@@ -256,6 +256,7 @@ export default {
                   const { data } = response
                   if (data) {
                     this.$message.success('添加成功')
+                    this.getData()
                     this.$refs['add'].resetFields()
                     this.$refs['drawer'].closeDrawer()
                   } else {
@@ -280,6 +281,7 @@ export default {
                 response => {
                   if (response.data) {
                     this.$message.success('修改成功')
+                    this.getData()
                     this.$refs['add'].resetFields()
                     this.$refs['drawer'].closeDrawer()
                   } else {

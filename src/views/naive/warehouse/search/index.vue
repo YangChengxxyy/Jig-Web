@@ -3,7 +3,7 @@
     <el-form ref="form" :model="form" label-width="140px" label-position="right" style="margin-top: 2%">
       <el-row :gutter="20">
         <el-col :span="11" :offset="1">
-          <el-form-item label="工夹具代码名字">
+          <el-form-item label="工夹具名字">
             <el-input v-model="form.code" />
           </el-form-item>
         </el-col>
