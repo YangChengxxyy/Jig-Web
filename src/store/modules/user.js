@@ -46,6 +46,8 @@ const actions = {
           commit('SET_TOKEN', { id: data.data.id, password: data.data.password, workcell_id: data.data.workcell_id, role: data.data.type })
           setToken({ id: data.data.id, password: data.data.password, workcell_id: data.data.workcell_id, role: data.data.type })
           resolve()
+        } else {
+          reject()
         }
       }).catch(error => {
         reject(error)
