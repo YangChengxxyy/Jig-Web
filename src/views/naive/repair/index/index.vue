@@ -35,7 +35,7 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     />
-    <el-dialog title="报修明细" :visible.sync="dialogVisible">
+    <el-dialog title="报修明细" :visible.sync="dialogVisible" width="30%">
       <el-row>
         <el-col :span="22" :offset="1">
           <el-form v-if="repair != null" label-position="left" label-width="100px">
