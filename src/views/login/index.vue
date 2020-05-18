@@ -82,7 +82,7 @@ export default {
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
         password: [{ required: true, trigger: 'blur', validator: validatePassword }],
-        workcell_id: [{ required: true }]
+        workcell_id: [{ required: true, message: 'workcell is required' }]
       },
       loading: false,
       passwordType: 'password',
@@ -124,6 +124,7 @@ export default {
             this.$router.push({ path: roleMap[store.getters.token.role] })
             this.loading = false
           }).catch(() => {
+            this.$message.error('账户或密码错误，请检查！')
             this.loading = false
           })
         } else {
