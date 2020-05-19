@@ -59,8 +59,8 @@
         <el-col :span="11" :offset="12">
           <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
           <el-button icon="el-icon-delete">清空</el-button>
-          <el-button>导出本页</el-button>
-          <el-button>导出全部</el-button>
+          <el-button :disabled="history_list.length === 0" :href="onePageUrl">导出本页</el-button>
+          <el-button :disabled="history_list.length === 0" :href="allPageUrl">导出全部</el-button>
         </el-col>
       </el-row>
     </el-form>
@@ -201,6 +201,7 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
+import { getUrl } from '@/utils'
 
 export default {
   name: 'Index',
@@ -226,7 +227,31 @@ export default {
   computed: {
     ...mapGetters([
       'id'
-    ])
+    ]),
+    onePageUrl() {
+      const a = {
+        bill_no: this.form.bill_no,
+        submit_name: this.form.submit_name,
+        code: this.form.code,
+        production_line_id: this.form.production_line_id,
+        status: this.form.status,
+        page_size: this.page_size,
+        page_number: this.page_number,
+        file_name: `page-${this.page_number}.xls`
+      }
+      return '/high/download_one_purchase_history?' + getUrl(a)
+    },
+    allPageUrl() {
+      const a = {
+        bill_no: this.form.bill_no,
+        submit_name: this.form.submit_name,
+        code: this.form.code,
+        production_line_id: this.form.production_line_id,
+        status: this.form.status,
+        file_name: 'page-all.xls'
+      }
+      return '/high/download_all_purchase_history?' + getUrl(a)
+    }
   },
   created() {
     this.$ajax('/get_production_line_list').then(
@@ -237,7 +262,7 @@ export default {
   },
   methods: {
     getData() {
-      this.$ajax.get('high/search_purchase_income_history', {
+      this.$ajax.get('/high/search_purchase_income_history', {
         params: {
           bill_no: this.form.bill_no,
           submit_name: this.form.submit_name,

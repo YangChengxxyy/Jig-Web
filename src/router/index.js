@@ -126,7 +126,7 @@ high
       {
         path: 'history',
         component: () => import('@/views/high/repair/history/index'),
-        meta: { title: '历史采购记录', role: ['high'] }
+        meta: { title: '历史报修记录', role: ['high'] }
       },
       {
         path: 'statistics',
@@ -148,7 +148,7 @@ high
       },
       {
         path: 'history',
-        component: () => import('@/views/high/repair/history/index'),
+        component: () => import('@/views/high/scrap/history/index'),
         meta: { title: '历史报废记录', role: ['high'] }
       }
     ]

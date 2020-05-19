@@ -49,24 +49,24 @@
       @current-change="handleCurrentChange"
     />
     <el-drawer ref="drawer" :title="drawerTitle" :visible.sync="drawerVisible" direction="rtl" :size="'550px'" @before-close="clean('add')">
-      <el-form ref="add" label-width="100px" label-position="left" :model="form">
+      <el-form ref="adds" label-width="100px" label-position="left" :model="form">
         <el-row>
           <el-col :span="20" :offset="2">
-            <el-form-item label="单据号" :rules="[{required: true,message:'请填写单据号',trigger: 'blur'}]">
+            <el-form-item label="单据号" :rules="[{required: true,message:'请填写单据号',trigger: 'change'}]" prop="bill_no">
               <el-input v-model="form.bill_no" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="20" :offset="2">
-            <el-form-item label="采购人id" :rules="[{required: true,message:'请填写采购人id',trigger: 'blur'}]">
+            <el-form-item label="采购人id" :rules="[{required: true,message:'请填写采购人id',trigger: 'change'}]" prop="submit_id">
               <el-input v-model="form.submit_id" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="20">
           <el-col :span="11" :offset="2">
-            <el-form-item label="产线" :rules="[{required: true,message:'请选择产线',trigger: 'blur'}]">
+            <el-form-item label="产线" :rules="[{required: true,message:'请选择产线',trigger: 'change'}]" prop="production_line_id">
               <el-select v-model="form.production_line_id">
                 <el-option v-for="item in production_line_list" :key="item.id" :value="item.id" :label="item.name" />
               </el-select>
@@ -83,7 +83,7 @@
         </el-row>
         <el-row v-for="(item,index) in form.code" :key="index" :gutter="10">
           <el-col :span="9" :offset="2">
-            <el-form-item :label="'工夹具代码'+(index+1)" label-width="100px" :rules="[{required:true,message:'此项不得为空',trigger:'blur'}]">
+            <el-form-item :label="'工夹具代码'+(index+1)" label-width="100px" :rules="[{required:true,message:'此项不得为空',trigger:'change'}]" :prop="'code['+index+']'">
               <el-select v-model="form.code[index]">
                 <el-option v-for="item2 in code_list" :key="item2" :value="item2" />
               </el-select>
@@ -96,9 +96,10 @@
               style="width: 100%"
               :rules="[
                 {required: true,message :'此项不得为空',trigger: 'blur'},
-                {min: 1,message: '不得小于1',trigger: 'change'}]"
+                {type: 'number',min: 1,message: '不得小于1',trigger: 'change'}]"
+              :prop="'count['+index+']'"
             >
-              <el-input-number v-model="form.count[index]" controls-position="right" size="medium" style="width: 100%" />
+              <el-input-number v-model.number="form.count[index]" controls-position="right" size="medium" style="width: 100%" />
             </el-form-item>
           </el-col>
           <el-col :span="5">
@@ -245,7 +246,7 @@ export default {
     },
     submitPurchase(drawerTitle) {
       if (drawerTitle === '添加采购单') {
-        this.$refs['add'].validate(
+        this.$refs['adds'].validate(
           (valid) => {
             if (valid) {
               this.$ajax('/high/add_shoplist', {
@@ -272,7 +273,7 @@ export default {
             }
           })
       } else {
-        this.$refs['add'].validate(
+        this.$refs['adds'].validate(
           (valid) => {
             if (valid) {
               this.$ajax('/high/update_purchase_income_submit', {

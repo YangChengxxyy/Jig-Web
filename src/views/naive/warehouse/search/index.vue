@@ -1,6 +1,6 @@
 <template>
   <el-card class="box-card">
-    <el-form ref="form" :model="form" label-width="140px" label-position="right" style="margin-top: 2%">
+    <el-form ref="form" :model="form" label-width="140px" label-position="left" style="margin-top: 2%">
       <el-row :gutter="20">
         <el-col :span="11" :offset="1">
           <el-form-item label="工夹具名字">
@@ -31,7 +31,7 @@
             <el-input v-model="form.user_for" />
           </el-form-item>
         </el-col>
-        <el-col :span="10" :offset="2">
+        <el-col :span="11">
           <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
           <el-button icon="el-icon-delete" @click="clearForm()">清空</el-button>
           <el-button>导出本页</el-button>

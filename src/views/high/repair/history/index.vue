@@ -171,7 +171,7 @@ export default {
           this.history_list = data.data
           this.all = data.all
           if (data.all === 0) {
-            this.$message.error('没有搜索到结果')
+            this.$message.info('没有查询到结果')
           } else {
             this.$message.success(`查询到${data.all}条记录`)
           }

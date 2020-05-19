@@ -3,9 +3,16 @@
     <el-table :data="repair_list" border>
       <el-table-column label="工夹具代码" prop="code" :filters="code_list_filter" :filter-method="filterHandler" sortable />
       <el-table-column label="工夹具序列号" prop="seq_id" />
-      <el-table-column label="申请时间" prop="submit_name" />
+      <el-table-column label="申请人" prop="submit_name" />
       <el-table-column label="故障原因" prop="repair_reason" />
       <el-table-column label="申请时间" prop="submit_time" />
+      <el-table-column label="操作">
+        <template slot-scope="scope">
+          <el-button type="text" @click="showRepair(scope.row)">查看</el-button>
+          <el-button type="text" style="color: #67C23A">通过</el-button>
+          <el-button type="text" style="color: #F56C6C">不通过</el-button>
+        </template>
+      </el-table-column>
     </el-table>
     <el-divider />
     <el-pagination
@@ -19,6 +26,52 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     />
+    <el-dialog title="报修明细" :visible.sync="dialogVisible" width="35%">
+      <el-form v-if="repair != null" label-position="left" label-width="100px">
+        <el-row :gutter="20">
+          <el-col :span="22" :offset="1">
+            <el-form-item label="工夹具代码">
+              <el-input v-model="repair.code" readonly />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="22" :offset="1">
+            <el-form-item label="工夹具序列号">
+              <el-input v-model="repair.seq_id" readonly />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="22" :offset="1">
+            <el-form-item label="产线">
+              <el-input v-model="repair.production_line_name" readonly />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="22" :offset="1">
+            <el-form-item label="申请人">
+              <el-input v-model="repair.submit_name" readonly />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="22" :offset="1">
+            <el-form-item label="申请时间">
+              <el-input v-model="repair.submit_time" readonly />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="22" :offset="1">
+            <el-form-item label="故障图片">
+              <el-image :src="repair.repair_photo_url.split('|')[0]" :preview-src-list="repair.repair_photo_url.split('|')" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+    </el-dialog>
   </el-card>
 </template>
 
@@ -32,7 +85,9 @@ export default {
       all: 0,
       page_size: 10,
       page_number: 1,
-      code_list_filter: []
+      code_list_filter: [],
+      dialogVisible: false,
+      repair: null
     }
   },
   computed: {
@@ -66,7 +121,7 @@ export default {
           const { data } = response
           this.repair_list = data.data
           this.all = data.all
-          this.$message.success(`共有${data.all}条报修申请`)
+          this.$message.success(`查询到${data.all}条记录`)
         }
       )
     },
@@ -88,6 +143,10 @@ export default {
     },
     filterHandler(value, row, column) {
       return row.code === value
+    },
+    showRepair(row) {
+      this.repair = JSON.parse(JSON.stringify(row))// 防止指针错误
+      this.dialogVisible = true
     }
   }
 }
