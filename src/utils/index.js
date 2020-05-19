@@ -105,3 +105,20 @@ export function param2Obj(url) {
       '"}'
   )
 }
+export function getUrl(obj) {
+  let str = ''
+  let length = 0
+  Object.keys(obj).forEach(function(key) {
+    length++
+  })
+  let count = 0
+  Object.keys(obj).forEach(function(key) {
+    if (count < length - 1) {
+      str += key + '=' + obj[key] + '&'
+    } else {
+      str += key + '=' + obj[key]
+    }
+    count++
+  })
+  return str
+}

@@ -168,6 +168,11 @@ export default {
           const { data } = response
           this.repair_list = data.data
           this.all = data.all
+          if (this.all !== 0) {
+            this.$message.success(`查询到共${this.all}条记录`)
+          } else {
+            this.$message.info('暂无结果')
+          }
         }
       )
     },
