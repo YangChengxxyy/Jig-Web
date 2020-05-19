@@ -9,7 +9,7 @@
         </el-col>
         <el-col :span="11">
           <el-form-item label="工夹具名字">
-            <el-input v-model="form.name" />
+            <el-input v-model="form.name" />k
           </el-form-item>
         </el-col>
       </el-row>

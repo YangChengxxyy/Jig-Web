@@ -1,14 +1,18 @@
 <template>
   <el-card class="box-card">
-    <el-table :data="cn_en_list">
-      <el-table-column label="英文" prop="english" :filters="filters" :filter-method="filterHandler" sortable />
-      <el-table-column label="中文" prop="chinese" />
-      <el-table-column label="操作">
-        <template slot-scope="scope">
-          <el-button type="text" @click="edit(scope.row)">编辑</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <el-row>
+      <el-col :span="22" :offset="1">
+        <el-table :data="cn_en_list">
+          <el-table-column label="英文" prop="english" :filters="filters" :filter-method="filterHandler" sortable />
+          <el-table-column label="中文" prop="chinese" />
+          <el-table-column label="操作">
+            <template slot-scope="scope">
+              <el-button type="text" @click="edit(scope.row)">编辑</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-col>
+    </el-row>
     <el-dialog title="编辑" :visible.sync="dialogVisible" :before-close="handleClose" width="25%">
       <span>
         <el-form ref="form" :model="cn_en" label-position="left" label-width="80px">

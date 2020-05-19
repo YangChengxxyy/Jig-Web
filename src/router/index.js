@@ -41,11 +41,6 @@ export const constantRoutes = [
     component: () => import('@/views/404'),
     hidden: true,
     meta: { role: ['naive', 'high', 'supervisor', 'manager', 'admin'] }
-  },
-  {
-    path: '/',
-    component: Layout,
-    hidden: true
   }
 ]
 // 404 page must be placed at the end !!!
