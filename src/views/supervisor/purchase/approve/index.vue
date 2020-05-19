@@ -11,7 +11,7 @@
           </el-select>
         </template>
       </el-table-column>
-      <el-table-column prop="submit_time" label="申请时间" width="120"/>
+      <el-table-column prop="submit_time" label="申请时间" width="120" />
       <el-table-column label="审批状态" width="120">
         <template slot-scope="scope">
           <div v-if="scope.row.status === '0'">待审批</div>

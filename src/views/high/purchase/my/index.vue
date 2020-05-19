@@ -1,53 +1,59 @@
 <template>
   <el-card class="box-card">
-    <el-button type="primary" style="margin-left: 3%;margin-top: 2%" @click="showPurchase('添加采购单')">
-      添加采购单
-    </el-button>
-    <el-table :data="purchase_income_submit_list" border style="width: 94%; margin: 1% 3% 2%">
-      <el-table-column label="采购单据号" prop="bill_no" />
-      <el-table-column label="采购人" prop="submit_name" />
-      <el-table-column label="产线" prop="production_line_name" />
-      <el-table-column label="工夹具代码及数量">
-        <template slot-scope="scope">
-          <el-tree :data="getTree(scope.row)" />
-        </template>
-      </el-table-column>
-      <el-table-column label="状态">
-        <template slot-scope="scope">
-          <span v-if="scope.row.status === '0'">待初审</span>
-          <span v-else-if="scope.row.status === '1'">初审未通过</span>
-          <span v-else-if="scope.row.status === '2'">初审通过</span>
-          <span v-else-if="scope.row.status === '3'">终审未通过</span>
-          <span v-else>终审通过</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" width="100%">
-        <template slot-scope="scope">
-          <el-button type="text" :disabled="scope.row.status !== '0'" @click="showPurchase('修改采购单',scope.row)">修改</el-button>
-          <el-popconfirm
-            confirm-button-text="确定"
-            cancel-button-text="不用"
-            icon="el-icon-info"
-            icon-color="red"
-            title="确定删除这条记录？"
-            @onConfirm="del(scope.row)"
-          >
-            <el-button slot="reference" :disabled="scope.row.status !== '0'" type="text">删除</el-button>
-          </el-popconfirm>
-        </template>
-      </el-table-column>
-    </el-table>
-    <el-pagination
-      v-if="purchase_income_submit_list.length !== 0"
-      style="text-align: center"
-      :current-page="page_number"
-      :page-sizes="[5, 10, 20, 30]"
-      :page-size="page_size"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="all"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-    />
+    <el-row :gutter="20">
+      <el-col :span="22" :offset="1">
+        <el-button type="primary" style="margin-top: 1%" @click="showPurchase('添加采购单')">
+          添加采购单
+        </el-button>
+        <el-divider />
+        <el-table :data="purchase_income_submit_list" border>
+          <el-table-column label="采购单据号" prop="bill_no" />
+          <el-table-column label="采购人" prop="submit_name" />
+          <el-table-column label="产线" prop="production_line_name" />
+          <el-table-column label="工夹具代码及数量">
+            <template slot-scope="scope">
+              <el-tree :data="getTree(scope.row)" />
+            </template>
+          </el-table-column>
+          <el-table-column label="状态">
+            <template slot-scope="scope">
+              <span v-if="scope.row.status === '0'">待初审</span>
+              <span v-else-if="scope.row.status === '1'">初审未通过</span>
+              <span v-else-if="scope.row.status === '2'">初审通过</span>
+              <span v-else-if="scope.row.status === '3'">终审未通过</span>
+              <span v-else>终审通过</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" width="100%">
+            <template slot-scope="scope">
+              <el-button type="text" :disabled="scope.row.status !== '0'" @click="showPurchase('修改采购单',scope.row)">修改</el-button>
+              <el-popconfirm
+                confirm-button-text="确定"
+                cancel-button-text="不用"
+                icon="el-icon-info"
+                icon-color="red"
+                title="确定删除这条记录？"
+                @onConfirm="del(scope.row)"
+              >
+                <el-button slot="reference" :disabled="scope.row.status !== '0'" type="text">删除</el-button>
+              </el-popconfirm>
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-divider />
+        <el-pagination
+          v-if="purchase_income_submit_list.length !== 0"
+          style="text-align: center"
+          :current-page="page_number"
+          :page-sizes="[5, 10, 20, 30]"
+          :page-size="page_size"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="all"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+        />
+      </el-col>
+    </el-row>
     <el-drawer ref="drawer" :title="drawerTitle" :visible.sync="drawerVisible" direction="rtl" :size="'550px'" @before-close="clean('add')">
       <el-form ref="adds" label-width="100px" label-position="left" :model="form">
         <el-row>

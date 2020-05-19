@@ -1,6 +1,6 @@
 <template>
   <el-card class="box-card">
-    <el-form ref="form" :model="form" label-width="140px" label-position="right" style="margin-top: 2%">
+    <el-form ref="form" :model="form" label-width="140px" label-position="left" style="margin-top: 2%">
       <el-row :gutter="20">
         <el-col :span="11" :offset="1">
           <el-form-item label="工夹具名字">
@@ -31,7 +31,7 @@
             <el-input v-model="form.user_for" />
           </el-form-item>
         </el-col>
-        <el-col :span="10" :offset="2">
+        <el-col :span="11">
           <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
           <el-button icon="el-icon-delete" @click="clearForm()">清空</el-button>
           <el-button>导出本页</el-button>
@@ -39,27 +39,44 @@
         </el-col>
       </el-row>
     </el-form>
-    <el-divider />
-    <el-table :data="jig_entity_list" style="width: 94%; margin: 2% 3%" border>
-      <el-table-column prop="code" label="工夹具代码" />
-      <el-table-column prop="name" label="工夹具名字" />
-      <el-table-column prop="workcell" label="所属部门" />
-      <el-table-column prop="family" label="类别" />
-      <el-table-column prop="pm_period" label="库存数量" />
-      <el-table-column prop="user_for" label="用途" />
-      <el-table-column
-        label="操作"
-        width="100"
-      >
-        <template slot-scope="scope">
-          <el-button type="text" @click="show(scope.row)">查看明细</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <el-row :gutter="20">
+      <el-col :span="22" :offset="1">
+        <el-divider />
+        <el-table :data="jig_entity_list" style="margin-top: 1%" border>
+          <el-table-column prop="code" label="工夹具代码" />
+          <el-table-column prop="name" label="工夹具名字" />
+          <el-table-column prop="workcell" label="所属部门" />
+          <el-table-column prop="family" label="类别" />
+          <el-table-column prop="pm_period" label="库存数量" />
+          <el-table-column prop="user_for" label="用途" />
+          <el-table-column
+            label="操作"
+            width="100"
+          >
+            <template slot-scope="scope">
+              <el-button type="text" @click="show(scope.row)">查看明细</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-divider />
+        <el-pagination
+          v-if="jig_entity_list.length !== 0"
+          style="text-align: center"
+          :current-page="page_number"
+          :page-sizes="[5, 10, 20, 30]"
+          :page-size="page_size"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="all"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+        />
+      </el-col>
+    </el-row>
     <el-dialog
       title="工夹具明细"
       :visible.sync="showVisible"
       :before-close="handleClose"
+      width="30%"
     >
       <el-row v-if="jig_entity != null" :gutter="20">
         <el-col :span="22" :offset="1">
@@ -166,17 +183,6 @@
         </el-col>
       </el-row>
     </el-dialog>
-    <el-pagination
-      v-if="jig_entity_list.length !== 0"
-      style="text-align: center"
-      :current-page="page_number"
-      :page-sizes="[5, 10, 20, 30]"
-      :page-size="page_size"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="all"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-    />
   </el-card>
 </template>
 <script>
@@ -224,6 +230,11 @@ export default {
         response => {
           this.jig_entity_list = response.data.data
           this.all = response.data['all']
+          if (response.data.all === 0) {
+            this.$message.info('查询暂无结果')
+          } else {
+            this.$message.success('查询到' + response.data.all + '条记录')
+          }
         }
       )
     },

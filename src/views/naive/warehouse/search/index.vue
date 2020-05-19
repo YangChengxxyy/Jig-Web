@@ -39,27 +39,44 @@
         </el-col>
       </el-row>
     </el-form>
-    <el-divider />
-    <el-table :data="jig_entity_list" style="width: 94%; margin: 2% 3%" border>
-      <el-table-column prop="code" label="工夹具代码" />
-      <el-table-column prop="name" label="工夹具名字" />
-      <el-table-column prop="workcell" label="所属部门" />
-      <el-table-column prop="family" label="类别" />
-      <el-table-column prop="pm_period" label="库存数量" />
-      <el-table-column prop="user_for" label="用途" />
-      <el-table-column
-        label="操作"
-        width="100"
-      >
-        <template slot-scope="scope">
-          <el-button type="text" @click="show(scope.row)">查看明细</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <el-row :gutter="20">
+      <el-col :span="22" :offset="1">
+        <el-divider />
+        <el-table :data="jig_entity_list" style="margin-top: 1%" border>
+          <el-table-column prop="code" label="工夹具代码" />
+          <el-table-column prop="name" label="工夹具名字" />
+          <el-table-column prop="workcell" label="所属部门" />
+          <el-table-column prop="family" label="类别" />
+          <el-table-column prop="pm_period" label="库存数量" />
+          <el-table-column prop="user_for" label="用途" />
+          <el-table-column
+            label="操作"
+            width="100"
+          >
+            <template slot-scope="scope">
+              <el-button type="text" @click="show(scope.row)">查看明细</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-divider />
+        <el-pagination
+          v-if="jig_entity_list.length !== 0"
+          style="text-align: center"
+          :current-page="page_number"
+          :page-sizes="[5, 10, 20, 30]"
+          :page-size="page_size"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="all"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+        />
+      </el-col>
+    </el-row>
     <el-dialog
       title="工夹具明细"
       :visible.sync="showVisible"
       :before-close="handleClose"
+      width="30%"
     >
       <el-row v-if="jig_entity != null" :gutter="20">
         <el-col :span="22" :offset="1">
@@ -67,98 +84,98 @@
             <el-row>
               <el-col :span="24">
                 <el-form-item label="工夹具代码">
-                  <el-input v-model="jig_entity.code" disabled />
+                  <el-input v-model="jig_entity.code" readonly />
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="24">
                 <el-form-item label="工夹具名字">
-                  <el-input v-model="jig_entity.name" disabled />
+                  <el-input v-model="jig_entity.name" readonly />
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="24">
                 <el-form-item label="所属部门">
-                  <el-input v-model="jig_entity.workcell" disabled />
+                  <el-input v-model="jig_entity.workcell" readonly />
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="24">
                 <el-form-item label="类别">
-                  <el-input v-model="jig_entity.family" disabled />
+                  <el-input v-model="jig_entity.family" readonly />
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="24">
                 <el-form-item label="工夹具模组">
-                  <el-input v-model="jig_entity.model" disabled />
+                  <el-input v-model="jig_entity.model" readonly />
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="24">
                 <el-form-item label="料号">
-                  <el-input v-model="jig_entity.part_no" disabled />
+                  <el-input v-model="jig_entity.part_no" readonly />
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="24">
                 <el-form-item label="用途">
-                  <el-input v-model="jig_entity.user_for" disabled />
+                  <el-input v-model="jig_entity.user_for" readonly />
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="24">
                 <el-form-item label="每条产线所需">
-                  <el-input v-model="jig_entity.upl" disabled />
+                  <el-input v-model="jig_entity.upl" readonly />
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="24">
                 <el-form-item label="责任人">
-                  <el-input v-model="jig_entity.owner_name" disabled />
+                  <el-input v-model="jig_entity.owner_name" readonly />
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="24">
                 <el-form-item label="录入人">
-                  <el-input v-model="jig_entity.rec_by_name" disabled />
+                  <el-input v-model="jig_entity.rec_by_name" readonly />
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="24">
                 <el-form-item label="录入时间">
-                  <el-input v-model="jig_entity.rec_time" disabled />
+                  <el-input v-model="jig_entity.rec_time" readonly />
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="24">
                 <el-form-item label="修改人">
-                  <el-input v-model="jig_entity.edit_by_name" disabled />
+                  <el-input v-model="jig_entity.edit_by_name" readonly />
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="24">
                 <el-form-item label="修改时间">
-                  <el-input v-model="jig_entity.edit_time" disabled />
+                  <el-input v-model="jig_entity.edit_time" readonly />
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="24">
                 <el-form-item label="保养周期">
-                  <el-input v-model="jig_entity.pm_period" disabled />
+                  <el-input v-model="jig_entity.pm_period" readonly />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -166,17 +183,6 @@
         </el-col>
       </el-row>
     </el-dialog>
-    <el-pagination
-      v-if="jig_entity_list.length !== 0"
-      style="text-align: center"
-      :current-page="page_number"
-      :page-sizes="[5, 10, 20, 30]"
-      :page-size="page_size"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="all"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-    />
   </el-card>
 </template>
 <script>

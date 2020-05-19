@@ -1,49 +1,53 @@
 <template>
   <el-card class="box-card">
-    <el-button type="primary" style="margin-left: 3%;margin-top: 2%" @click="drawerVisible = true">
-      提交报废
-    </el-button>
-    <el-table :data="scrap_list" border style="width: 94%; margin: 1% 3% 2%">
-      <el-table-column label="工夹具代码" prop="code" :filters="code_list_filter" :filter-method="filterHandler" sortable />
-      <el-table-column label="工夹具序列号" prop="seq_id" />
-      <el-table-column label="报废原因" prop="scrap_reason" />
-      <el-table-column label="申请时间" prop="submit_time" />
-      <el-table-column label="状态" width="100%">
-        <template slot-scope="scope">
-          <span v-if="scope.row.status === '0'">待初审</span>
-          <span v-else-if="scope.row.status === '1'">初审未通过</span>
-          <span v-else-if="scope.row.status === '2'">初审通过</span>
-          <span v-else-if="scope.row.status === '3'">终审未通过</span>
-          <span v-else>终审通过</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" width="100%">
-        <template slot-scope="scope">
-          <el-button type="text" @click="showRepair(scope.row)">查看</el-button>
-          <el-popconfirm
-            confirm-button-text="确定"
-            cancel-button-text="不用"
-            icon="el-icon-info"
-            icon-color="red"
-            title="确定删除这条记录？"
-            @onConfirm="del(scope.row)"
-          >
-            <el-button slot="reference" type="text">删除</el-button>
-          </el-popconfirm>
-        </template>
-      </el-table-column>
-    </el-table>
-    <el-pagination
-      v-if="scrap_list.length !== 0"
-      style="text-align: center"
-      :current-page="page_number"
-      :page-sizes="[5, 10, 20, 30]"
-      :page-size="page_size"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="all"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-    />
+    <el-row :gutter="20">
+      <el-col :span="22" :offset="1">
+        <el-button type="primary" style="margin-top: 1%" @click="drawerVisible = true">
+          提交报废
+        </el-button>
+        <el-table :data="scrap_list" style="margin-top: 1%" border>
+          <el-table-column label="工夹具代码" prop="code" :filters="code_list_filter" :filter-method="filterHandler" sortable />
+          <el-table-column label="工夹具序列号" prop="seq_id" />
+          <el-table-column label="报废原因" prop="scrap_reason" />
+          <el-table-column label="申请时间" prop="submit_time" />
+          <el-table-column label="状态" width="100%">
+            <template slot-scope="scope">
+              <span v-if="scope.row.status === '0'">待初审</span>
+              <span v-else-if="scope.row.status === '1'">初审未通过</span>
+              <span v-else-if="scope.row.status === '2'">初审通过</span>
+              <span v-else-if="scope.row.status === '3'">终审未通过</span>
+              <span v-else>终审通过</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" width="100%">
+            <template slot-scope="scope">
+              <el-button type="text" @click="showRepair(scope.row)">查看</el-button>
+              <el-popconfirm
+                confirm-button-text="确定"
+                cancel-button-text="不用"
+                icon="el-icon-info"
+                icon-color="red"
+                title="确定删除这条记录？"
+                @onConfirm="del(scope.row)"
+              >
+                <el-button slot="reference" type="text">删除</el-button>
+              </el-popconfirm>
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-pagination
+          v-if="scrap_list.length !== 0"
+          style="text-align: center"
+          :current-page="page_number"
+          :page-sizes="[5, 10, 20, 30]"
+          :page-size="page_size"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="all"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+        />
+      </el-col>
+    </el-row>
     <el-dialog title="报废明细" :visible.sync="dialogVisible" width="30%">
       <el-row>
         <el-col :span="22" :offset="1">

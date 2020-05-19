@@ -1,31 +1,35 @@
 <template>
   <el-card class="box-card">
-    <el-table :data="repair_list" border>
-      <el-table-column label="工夹具代码" prop="code" :filters="code_list_filter" :filter-method="filterHandler" sortable />
-      <el-table-column label="工夹具序列号" prop="seq_id" />
-      <el-table-column label="申请人" prop="submit_name" />
-      <el-table-column label="故障原因" prop="repair_reason" />
-      <el-table-column label="申请时间" prop="submit_time" />
-      <el-table-column label="操作">
-        <template slot-scope="scope">
-          <el-button type="text" @click="showRepair(scope.row)">查看</el-button>
-          <el-button type="text" style="color: #67C23A">通过</el-button>
-          <el-button type="text" style="color: #F56C6C">不通过</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <el-divider />
-    <el-pagination
-      v-if="repair_list.length !== 0"
-      style="text-align: center"
-      :current-page="page_number"
-      :page-sizes="[5, 10, 20, 30]"
-      :page-size="page_size"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="all"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-    />
+    <el-row :gutter="20">
+      <el-col :span="22" :offset="1">
+        <el-table :data="repair_list" border style="margin-top: 1%">
+          <el-table-column label="工夹具代码" prop="code" :filters="code_list_filter" :filter-method="filterHandler" sortable />
+          <el-table-column label="工夹具序列号" prop="seq_id" />
+          <el-table-column label="申请人" prop="submit_name" />
+          <el-table-column label="故障原因" prop="repair_reason" />
+          <el-table-column label="申请时间" prop="submit_time" />
+          <el-table-column label="操作">
+            <template slot-scope="scope">
+              <el-button type="text" @click="showRepair(scope.row)">查看</el-button>
+              <el-button type="text" style="color: #67C23A">通过</el-button>
+              <el-button type="text" style="color: #F56C6C">不通过</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-divider />
+        <el-pagination
+          v-if="repair_list.length !== 0"
+          style="text-align: center"
+          :current-page="page_number"
+          :page-sizes="[5, 10, 20, 30]"
+          :page-size="page_size"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="all"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+        />
+      </el-col>
+    </el-row>
     <el-dialog title="报修明细" :visible.sync="dialogVisible" width="35%">
       <el-form v-if="repair != null" label-position="left" label-width="100px">
         <el-row :gutter="20">
