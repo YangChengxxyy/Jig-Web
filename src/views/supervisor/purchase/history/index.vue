@@ -1,6 +1,6 @@
 <template>
   <el-card class="box-card">
-    <el-form ref="form" :model="sel_form" label-width="100px" label-position="left" style="margin-top: 2%">
+    <el-form ref="form" :model="sel_form" label-width="80px" label-position="left" style="margin-top: 2%">
       <el-row :gutter="20">
         <el-col :span="11" :offset="1">
           <el-form-item label="单据号">

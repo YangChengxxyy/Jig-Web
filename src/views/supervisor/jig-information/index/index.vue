@@ -86,7 +86,7 @@
         />
       </el-col>
     </el-row>
-    <el-dialog title="编辑工夹具" :visible.sync="show_edit_dialog" width="30%" :before-close="handleClose">
+    <el-dialog title="编辑工夹具" :visible.sync="show_edit_dialog" width="45%" :before-close="handleClose">
       <el-form v-if="jig_definition != null" ref="form" :model="jig_definition" label-width="150px" label-position="left">
         <el-row :gutter="10">
           <el-col :span="20" :offset="2">
