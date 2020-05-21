@@ -208,7 +208,7 @@ export default {
     }
   },
   created() {
-    this.$ajax.get('/get_workcell_list').then(
+    this.$ajax.get('/api/get_workcell_list').then(
       response => {
         this.workcell_list = response.data
       }
@@ -216,7 +216,7 @@ export default {
   },
   methods: {
     getData: function() {
-      this.$ajax.get('/naive/search_jig_definition', {
+      this.$ajax.get('/api/naive/search_jig_definition', {
         params: {
           code: this.form.code,
           name: this.form.name,

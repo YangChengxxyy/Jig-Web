@@ -1,6 +1,6 @@
 <template>
   <el-card class="box-card">
-    <el-form ref="form" :model="sel_form" label-width="100px" label-position="left" style="margin-top: 2%">
+    <el-form ref="form" :model="sel_form" label-width="80px" label-position="left" style="margin-top: 2%">
       <el-row :gutter="20">
         <el-col :span="11" :offset="1">
           <el-form-item label="单据号">
@@ -245,7 +245,7 @@ export default {
       if (this.sel_form.date === null) {
         this.sel_form.date = ['', '']
       }
-      this.$ajax.get('/supervisor/get_purchase_submit_list_history', {
+      this.$ajax.get('/api/supervisor/get_purchase_submit_list_history', {
         params: {
           bill_no: this.sel_form.bill_no,
           submit_name: this.sel_form.submit_name,

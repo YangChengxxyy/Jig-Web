@@ -101,7 +101,7 @@
         </el-row>
       </el-form>
       <el-divider />
-      <span v-if="purchase_submit_detail != null" slot="footer" class="dialog-footer">
+      <span slot="footer" class="dialog-footer" v-if="purchase_submit_detail != null" >
         <el-popconfirm
           title="确认初审通过吗？"
           @onConfirm="pass_purchase_submit"
@@ -166,13 +166,21 @@ export default {
   },
   methods: {
     get_purchase_submit_list: function() {
-      this.$ajax.get('/supervisor/get_purchase_submit_list', {
+      this.$ajax.get('/api/supervisor/get_purchase_submit_list', {
         params: {
           page_size: this.page_size,
           page_number: this.page_number
         }
       }).then(
         response => {
+          if (response.data.all_count <= 0) {
+            this.$message.error('没有结果!')
+          } else {
+            this.$message({
+              message: '查询成功,共有' + response.data.all_count + '条记录!',
+              type: 'success'
+            })
+          }
           this.purchase_submit_list = response.data.list
           this.all = response.data.all_count
         }
@@ -184,7 +192,7 @@ export default {
     },
     pass_purchase_submit: function() {
       this.show_purchase_submit_detail_dialog = false
-      this.$ajax.get('/supervisor/pass_purchase_submit', {
+      this.$ajax.get('/api/supervisor/pass_purchase_submit', {
         params: {
           id: this.purchase_submit_detail.id,
           status: '2'
@@ -199,7 +207,7 @@ export default {
     no_pass_purchase_submit: function() {
       this.show_no_pass_reason_dialog = false
       this.show_purchase_submit_detail_dialog = false
-      this.$ajax.get('/supervisor/no_pass_purchase_submit', {
+      this.$ajax.get('/api/supervisor/no_pass_purchase_submit', {
         params: {
           id: this.purchase_submit_detail.id,
           status: '1',

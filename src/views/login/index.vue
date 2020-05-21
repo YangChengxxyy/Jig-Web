@@ -99,7 +99,7 @@ export default {
     }
   },
   created() {
-    this.$ajax.get('/get_workcell_list').then(
+    this.$ajax.get('/api/get_workcell_list').then(
       response => {
         this.workcell_list = response.data
       }
