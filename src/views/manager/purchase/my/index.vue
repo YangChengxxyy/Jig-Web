@@ -124,7 +124,7 @@
       <el-divider />
       <span v-if="purchase_submit_detail != null" slot="footer" class="dialog-footer">
         <el-popconfirm
-          title="确认初审通过吗？"
+          title="确认终审通过吗？"
           @onConfirm="pass_purchase_submit"
         >
           <el-button slot="reference" type="success" :disabled="purchase_submit_detail.status === '4' ">通过</el-button>
@@ -141,7 +141,7 @@
         <el-button @click="show_no_pass_reason_dialog = false">取 消</el-button>
         <span slot="footer" class="dialog-footer">
           <el-popconfirm
-            title="确认初审不通过吗？"
+            title="确认终审不通过吗？"
             @onConfirm="no_pass_purchase_submit"
           >
             <el-button slot="reference" type="primary">确 定</el-button>
@@ -188,7 +188,7 @@ export default {
   },
   methods: {
     get_purchase_submit_list: function() {
-      this.$ajax.get('/manager/get_purchase_submit_list', {
+      this.$ajax.get('/api/manager/get_purchase_submit_list', {
         params: {
           page_number: this.page_number,
           page_size: this.page_size
@@ -215,7 +215,7 @@ export default {
     },
     pass_purchase_submit: function() {
       this.show_purchase_submit_detail_dialog = false
-      this.$ajax.get('/manager/pass_purchase_submit', {
+      this.$ajax.get('/api/manager/pass_purchase_submit', {
         params: {
           id: this.purchase_submit_detail.id
         }
@@ -229,7 +229,7 @@ export default {
     no_pass_purchase_submit: function() {
       this.show_no_pass_reason_dialog = false
       this.show_purchase_submit_detail_dialog = false
-      this.$ajax.get('/manager/no_pass_purchase_submit', {
+      this.$ajax.get('/api/manager/no_pass_purchase_submit', {
         params: {
           id: this.purchase_submit_detail.id,
           final_reason: this.purchase_submit_detail.final_reason

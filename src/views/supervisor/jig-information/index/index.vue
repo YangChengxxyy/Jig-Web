@@ -86,7 +86,7 @@
         />
       </el-col>
     </el-row>
-    <el-dialog title="编辑工夹具" :visible.sync="show_edit_dialog" width="30%" :before-close="handleClose">
+    <el-dialog title="编辑工夹具" :visible.sync="show_edit_dialog" width="40%">
       <el-form v-if="jig_definition != null" ref="form" :model="jig_definition" label-width="150px" label-position="left">
         <el-row :gutter="10">
           <el-col :span="20" :offset="2">
@@ -105,7 +105,7 @@
         <el-row :gutter="10">
           <el-col :span="20" :offset="2">
             <el-form-item label="所属部门">
-              <el-select v-model="jig_definition.workcell_id">
+              <el-select v-model="jig_definition.workcell_id" style="width: 100%">
                 <el-option v-for="item in workcell_list" :key="item.id" :value="item.id" :label="item.workcell" />
               </el-select>
             </el-form-item>
@@ -114,7 +114,7 @@
         <el-row :gutter="10">
           <el-col :span="20" :offset="2">
             <el-form-item label="工夹具类别">
-              <el-select v-model="jig_definition.family">
+              <el-select v-model="jig_definition.family" style="width: 100%">
                 <el-option v-for="item in jig_family_list" :key="item.id" :value="item.id" :label="item.family" />
               </el-select>
             </el-form-item>
@@ -123,7 +123,7 @@
         <el-row :gutter="10">
           <el-col :span="20" :offset="2">
             <el-form-item label="工夹具模组">
-              <el-select v-model="jig_definition.model">
+              <el-select v-model="jig_definition.model" style="width: 100%">
                 <el-option v-for="item in model_list" :key="item.id" :value="item.id" :label="item.model" />
               </el-select>
             </el-form-item>
@@ -132,7 +132,10 @@
         <el-row :gutter="10">
           <el-col :span="20" :offset="2">
             <el-form-item label="工夹具料号">
-              <el-input v-model.trim="jig_definition.part_no" />
+              <el-select v-model="edit_jig_part_no" multiple placeholder="请选择料号" style="width: 100%">
+                <el-option v-for="item in jig_definition.part_no.split('|')" :key="item" :label="item" :value="item">
+                </el-option>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -216,6 +219,7 @@ export default {
       },
       show_edit_dialog: false, // 是否显示编辑工夹具定义信息的dialog
       jig_definition: null, // 要编辑的工夹具定义信息
+      edit_jig_part_no: [],
       model_list: [],
       part_no_list: []
     }
@@ -225,17 +229,17 @@ export default {
   watch: {
   },
   created() {
-    this.$ajax.get('/get_workcell_list').then(
+    this.$ajax.get('/api/get_workcell_list').then(
       response => {
         this.workcell_list = response.data
       }
     )
-    this.$ajax.get('/get_model_list').then(
+    this.$ajax.get('/api/get_model_list').then(
       response => {
         this.model_list = response.data
       }
     )
-    this.$ajax.get('/get_part_no_list').then(
+    this.$ajax.get('/api/get_part_no_list').then(
       response => {
         this.part_no_list = response.data
       }
@@ -244,7 +248,7 @@ export default {
   },
   methods: {
     get_jig_family_list: function() {
-      this.$ajax.get('/supervisor/get_jig_family', {
+      this.$ajax.get('/api/supervisor/get_jig_family', {
         params: {}
       }).then(
         response => {
@@ -254,7 +258,7 @@ export default {
     },
     get_jig_family: function(family) {
       this.jig_family = family
-      this.$ajax.get('/supervisor/get_jig_definition_list', {
+      this.$ajax.get('/api/supervisor/get_jig_definition_list', {
         params: {
           family_id: this.jig_family.id,
           code: this.sel_form.code,
@@ -276,7 +280,7 @@ export default {
       if (this.jig_family != null) {
         family_id = this.jig_family.id
       }
-      this.$ajax.get('/supervisor/get_jig_definition_list', {
+      this.$ajax.get('/api/supervisor/get_jig_definition_list', {
         params: {
           family_id: family_id,
           code: this.sel_form.code,

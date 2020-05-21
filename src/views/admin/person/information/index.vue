@@ -172,7 +172,7 @@ export default {
     ])
   },
   created() {
-    this.$ajax.get('/get_workcell_list').then(
+    this.$ajax.get('/api/get_workcell_list').then(
       response => {
         this.workcell_list = response.data
       }
@@ -180,7 +180,7 @@ export default {
   },
   methods: {
     getData: function() {
-      this.$ajax.get('/admin/search_user_information', {
+      this.$ajax.get('/api/admin/search_user_information', {
         params: {
           submit_id: this.id,
           id: this.form.id,

@@ -58,7 +58,7 @@ export default {
     }
   },
   created() {
-    this.$ajax.get('/admin/get_cn_en').then(
+    this.$ajax.get('/api/admin/get_cn_en').then(
       (response) => {
         const { data } = response
         this.cn_en_list = data

@@ -96,7 +96,7 @@
               <el-input v-model.trim="scrap_submit_detail.scrap_reason" readonly />
             </el-form-item>
             <el-form-item label="故障图片">
-              <!--<el-image :src="scrap_submit_detail.scrap_photo_url.split('|')[0]" :preview-src-list="scrap_submit_detail.scrap_photo_url.split('|')" />-->
+              <el-image :src="scrap_submit_detail.scrap_photo_url.split('|')[0]" :preview-src-list="scrap_submit_detail.scrap_photo_url.split('|')" />
             </el-form-item>
             <el-form-item label="申请时间">
               <el-input v-model="scrap_submit_detail.submit_time" readonly />
@@ -108,23 +108,23 @@
               <el-input v-else-if="scrap_submit_detail.status === '3'" value="终审未通过" readonly />
               <el-input v-else value="终审通过" readonly />
             </el-form-item>
+            <el-form-item v-if="scrap_submit_detail.status === '1'" label="不通过的原因">
+              <el-input v-model.trim="scrap_submit_detail.first_reason" class="font-error" readonly />
+            </el-form-item>
+            <el-form-item v-if="scrap_submit_detail.status === '3'" label="不通过的原因">
+              <el-input v-model.trim="scrap_submit_detail.final_reason" class="font-error" readonly />
+            </el-form-item>
             <el-form-item v-if="scrap_submit_detail.first_acceptor_name !=null" label="初审人">
               <el-input v-model="scrap_submit_detail.first_acceptor_name" readonly />
             </el-form-item>
             <el-form-item v-if="scrap_submit_detail.first_time !=null" label="初审时间">
               <el-input v-model="scrap_submit_detail.first_time" readonly />
             </el-form-item>
-            <el-form-item v-if="scrap_submit_detail.status === '1'" label="不通过的原因">
-              <el-input v-model.trim="scrap_submit_detail.first_reason" class="font-error" readonly />
-            </el-form-item>
             <el-form-item v-if="scrap_submit_detail.final_acceptor_name !=null" label="终审人">
               <el-input v-model="scrap_submit_detail.final_acceptor_name" readonly />
             </el-form-item>
             <el-form-item v-if="scrap_submit_detail.final_time !=null" label="终审时间">
               <el-input v-model="scrap_submit_detail.final_time" readonly />
-            </el-form-item>
-            <el-form-item v-if="scrap_submit_detail.status === '3'" label="不通过的原因">
-              <el-input v-model.trim="scrap_submit_detail.final_reason" class="font-error" readonly />
             </el-form-item>
           </el-form>
         </el-col>
@@ -175,7 +175,7 @@ export default {
       if (this.sel_form.date === null) {
         this.sel_form.date = ['', '']
       }
-      this.$ajax.get('/supervisor/get_scrap_submit_list_history', {
+      this.$ajax.get('/api/supervisor/get_scrap_submit_list_history', {
         params: {
           code: this.sel_form.code,
           seq_id: this.sel_form.seq_id,

@@ -1,6 +1,6 @@
 <template>
   <el-card class="box-card">
-    <el-form ref="form" :model="sel_form" label-width="100px" label-position="left" style="margin-top: 2%">
+    <el-form ref="form" :model="sel_form" label-width="80px" label-position="left" style="margin-top: 2%">
       <el-row :gutter="20">
         <el-col :span="11" :offset="1">
           <el-form-item label="单据号">
@@ -87,6 +87,7 @@
       <el-table-column label="操作" width="100%">
         <template slot-scope="scope">
           <el-button type="text" @click="get_purchase_submit_detail(scope.row)">查看</el-button>
+          <el-button type="text" @click="get_operate_list(scope.row)">历史操作</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -202,6 +203,17 @@
         <el-button @click="show_purchase_submit_detail_dialog = false">取 消</el-button>
       </span>
     </el-dialog>
+    <el-dialog title="历史操作记录" :visible.sync="show_operate_dialog" width="30%">
+      <div v-if="operate_list.length ===0" class="font-warning">暂无历史操作记录</div>
+      <el-timeline>
+        <el-timeline-item
+          v-for="(operate, index) in operate_list"
+          :key="index"
+          :timestamp="operate.operate_time">
+          {{operate.operate_string}}
+        </el-timeline-item>
+      </el-timeline>
+    </el-dialog>
   </el-card>
 </template>
 
@@ -228,6 +240,9 @@ export default {
         { label: '初审通过', value: '2' },
         { label: '终审未通过', value: '3' },
         { label: '终审通过', value: '4' }],
+      show_operate_dialog: false,
+      operate_list: [], // 历史操作list
+      update_info_list: [],
       page_size: 10,
       page_number: 1,
       all: 0
@@ -245,7 +260,7 @@ export default {
       if (this.sel_form.date === null) {
         this.sel_form.date = ['', '']
       }
-      this.$ajax.get('/manager/get_purchase_submit_list_history', {
+      this.$ajax.get('/api/manager/get_purchase_submit_list_history', {
         params: {
           bill_no: this.sel_form.bill_no,
           submit_name: this.sel_form.submit_name,
@@ -273,6 +288,19 @@ export default {
     get_purchase_submit_detail: function(purchase_submit) {
       this.show_purchase_submit_detail_dialog = true
       this.purchase_submit_detail = purchase_submit
+    },
+    get_operate_list: function(purchase_submit) {
+      this.show_operate_dialog = true
+      this.$ajax.get('/api/manager/get_purchase_submit_history_operate', {
+        params: {
+          submit_id: purchase_submit.id
+        }
+      }).then(
+        response => {
+          this.operate_list = response.data.operate_list
+          this.update_info_list = response.data.update_info_list
+        }
+      )
     },
     get_production_line_list: function() {
       this.$ajax('/get_production_line_list').then(
