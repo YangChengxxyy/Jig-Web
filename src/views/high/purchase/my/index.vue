@@ -176,12 +176,12 @@ export default {
   },
   created() {
     this.getData()
-    this.$ajax('/get_production_line_list').then(
+    this.$ajax('/api/get_production_line_list').then(
       res => {
         this.production_line_list = res.data
       }
     )
-    this.$ajax('/get_code_list').then(
+    this.$ajax('/api/get_code_list').then(
       res => {
         this.all_code_list = res.data
         this.code_list = res.data
@@ -190,7 +190,7 @@ export default {
   },
   methods: {
     getData() {
-      this.$ajax('/high/get_purchase_income_submit_list', {
+      this.$ajax('/api/high/get_purchase_income_submit_list', {
         params: {
           page_number: this.page_number,
           page_size: this.page_size
@@ -239,7 +239,7 @@ export default {
       this.getData()
     },
     get_seq_id_list: function() {
-      this.$ajax('/code_get_in_seq_id', {
+      this.$ajax('/api/code_get_in_seq_id', {
         params: {
           code: this.form.code
         }
@@ -254,7 +254,7 @@ export default {
         this.$refs['adds'].validate(
           (valid) => {
             if (valid) {
-              this.$ajax('/high/add_shoplist', {
+              this.$ajax('/api/high/add_shoplist', {
                 params: {
                   bill_no: this.form.bill_no,
                   submit_id: this.form.submit_id,
@@ -281,7 +281,7 @@ export default {
         this.$refs['adds'].validate(
           (valid) => {
             if (valid) {
-              this.$ajax('/high/update_purchase_income_submit', {
+              this.$ajax('/api/high/update_purchase_income_submit', {
                 params: {
                   id: this.form.id,
                   production_line_id: this.form.production_line_id,

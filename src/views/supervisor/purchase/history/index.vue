@@ -245,7 +245,7 @@ export default {
       if (this.sel_form.date === null) {
         this.sel_form.date = ['', '']
       }
-      this.$ajax.get('/supervisor/get_purchase_submit_list_history', {
+      this.$ajax.get('/api/supervisor/get_purchase_submit_list_history', {
         params: {
           bill_no: this.sel_form.bill_no,
           submit_name: this.sel_form.submit_name,

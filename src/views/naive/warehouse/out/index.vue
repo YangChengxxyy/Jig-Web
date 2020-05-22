@@ -247,7 +247,7 @@ export default {
   },
   methods: {
     get_location_list: function() {
-      this.$ajax.get('/navie/get_location_list', {
+      this.$ajax.get('/api/naive/get_location_list', {
         params: {
         }
       }).then(
@@ -266,7 +266,7 @@ export default {
         this.jig_cabinet_id = jig_cabinet
         this.jig_location_id = location_id
       }
-      this.$ajax.get('/navie/get_jig_list_by_location', {
+      this.$ajax.get('/api/naive/get_jig_list_by_location', {
         params: {
           jig_cabinet_id: this.jig_cabinet_id,
           jig_location_id: this.jig_location_id
@@ -306,7 +306,7 @@ export default {
       }
     },
     get_user_name: function() { // 出库时输入工号后获取用户名
-      this.$ajax.get('/get_user_name', {
+      this.$ajax.get('/api/get_user_name', {
         params: {
           user_id: this.user_id
         }
@@ -324,7 +324,7 @@ export default {
     outgo_jig: function() {
       if (this.check_user_id) {
         this.show_outgo_jig = false
-        this.$ajax.get('/naive/outgo_jig', {
+        this.$ajax.get('//api/naive/outgo_jig', {
           params: {
             code: this.code,
             seq_id: this.seq_id,

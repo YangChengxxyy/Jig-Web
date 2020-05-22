@@ -79,7 +79,7 @@ export default {
   },
   created() {
     this.getData()
-    this.$ajax.get('/get_code_list').then(
+    this.$ajax.get('/api/get_code_list').then(
       response => {
         response.data.forEach(
           i => {
@@ -91,7 +91,7 @@ export default {
   },
   methods: {
     getData() {
-      this.$ajax.get('/naive/get_repair_history', {
+      this.$ajax.get('/api/naive/get_repair_history', {
         params: {
           submit_id: this.id,
           page_number: this.page_number,

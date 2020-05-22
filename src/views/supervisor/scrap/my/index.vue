@@ -57,26 +57,26 @@
               <el-input v-else-if="scrap_submit_detail.status === '3'" value="终审未通过" readonly />
               <el-input v-else value="终审通过" readonly />
             </el-form-item>
+            <el-form-item v-if="scrap_submit_detail.status === '1'" label="不通过的原因">
+              <el-input v-model.trim="scrap_submit_detail.first_reason" class="font-error" readonly />
+            </el-form-item>
             <el-form-item v-if="scrap_submit_detail.first_acceptor_name !=null" label="初审人">
               <el-input v-model="scrap_submit_detail.first_acceptor_name" readonly />
             </el-form-item>
             <el-form-item v-if="scrap_submit_detail.first_time !=null" label="初审时间">
               <el-input v-model="scrap_submit_detail.first_time" readonly />
             </el-form-item>
-            <el-form-item v-if="scrap_submit_detail.status === '1'" label="不通过的原因">
-              <el-input v-model.trim="scrap_submit_detail.first_reason" class="font-error" readonly />
-            </el-form-item>
           </el-form>
         </el-col>
       </el-row>
       <el-divider />
       <span slot="footer" class="dialog-footer">
-        <template>
+        <template v-if="scrap_submit_detail != null">
           <el-popconfirm
             title="确认初审通过吗？"
             @onConfirm="pass_scrap_submit"
           >
-            <el-button v-if="scrap_submit_detail != null" slot="reference" type="success" :disabled="scrap_submit_detail.status === '2' ">通过</el-button>
+            <el-button slot="reference" type="success" :disabled="scrap_submit_detail.status === '2' ">通过</el-button>
           </el-popconfirm>
         </template>
         <el-button v-if="scrap_submit_detail != null" type="danger" :disabled="scrap_submit_detail.status === '1'" @click="show_no_pass_reason_dialog = true">不通过</el-button>
@@ -125,7 +125,7 @@ export default {
   },
   methods: {
     get_scrap_submit_list: function() {
-      this.$ajax.get('/supervisor/get_scrap_submit_list', {
+      this.$ajax.get('/api/supervisor/get_scrap_submit_list', {
         params: {
           page_number: this.page_number,
           page_size: this.page_size
@@ -143,7 +143,7 @@ export default {
     },
     pass_scrap_submit: function() {
       this.show_scrap_submit_datail_dialog = false
-      this.$ajax.get('/supervisor/pass_scrap_submit', {
+      this.$ajax.get('/api/supervisor/pass_scrap_submit', {
         params: {
           id: this.scrap_submit_detail.id
         }
@@ -157,7 +157,7 @@ export default {
     no_pass_scrap_submit: function() {
       this.show_no_pass_reason_dialog = false
       this.show_scrap_submit_datail_dialog = false
-      this.$ajax.get('supervisor/no_pass_scrap_submit', {
+      this.$ajax.get('/api/supervisor/no_pass_scrap_submit', {
         params: {
           id: this.scrap_submit_detail.id,
           no_pass_reason: this.scrap_submit_detail.first_reason

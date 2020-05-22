@@ -235,7 +235,7 @@ export default {
     ])
   },
   created() {
-    this.$ajax('/get_production_line_list').then(
+    this.$ajax('/api/get_production_line_list').then(
       res => {
         this.production_line_list = res.data
       }
@@ -243,7 +243,7 @@ export default {
   },
   methods: {
     getData() {
-      this.$ajax.get('/high/search_purchase_income_history', {
+      this.$ajax.get('/api/high/search_purchase_income_history', {
         params: {
           bill_no: this.form.bill_no,
           submit_name: this.form.submit_name,

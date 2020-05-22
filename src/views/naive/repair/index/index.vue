@@ -144,7 +144,7 @@ export default {
   },
   created() {
     this.getData()
-    this.$ajax.get('/get_code_list').then(
+    this.$ajax.get('/api/get_code_list').then(
       response => {
         this.code_list = response.data
         response.data.forEach(

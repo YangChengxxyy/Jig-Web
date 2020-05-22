@@ -107,7 +107,7 @@ export default {
   },
   methods: {
     getData() {
-      this.$ajax.get('/high/search_scrap_history', {
+      this.$ajax.get('/api/high/search_scrap_history', {
         params: {
           submit_id: this.id,
           code: this.form.code,

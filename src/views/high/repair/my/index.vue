@@ -101,7 +101,7 @@ export default {
   },
   created() {
     this.getData()
-    this.$ajax.get('/get_code_list').then(
+    this.$ajax.get('/api/get_code_list').then(
       response => {
         this.code_list = response.data
         response.data.forEach(
@@ -114,7 +114,7 @@ export default {
   },
   methods: {
     getData() {
-      this.$ajax.get('/high/get_repair_jig', {
+      this.$ajax.get('/api/high/get_repair_jig', {
         params: {
           id: this.id,
           page_size: this.page_size,

@@ -11,10 +11,10 @@ import '@/styles/index.scss' // global css
 import App from './App'
 import store from './store'
 import router from './router'
-import axios from 'axios'
 import VCharts from 'v-charts'
 import '@/icons' // icon
 import '@/permission' // permission control
+import service from '@/utils/request'
 
 /**
  * If you don't want to use mock-server
@@ -36,7 +36,8 @@ Vue.use(ElementUI, { locale })
 Vue.use(VCharts)
 
 Vue.config.productionTip = false
-Vue.prototype.$ajax = axios
+Vue.prototype.$ajax = service
+
 new Vue({
   el: '#app',
   router,

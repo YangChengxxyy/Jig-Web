@@ -120,7 +120,7 @@ export default {
       this.outgoing_jig_info = outgoing_jig
     },
     get_user_name: function() { // 出库时输入工号后获取用户名
-      this.$ajax.get('/get_user_name', {
+      this.$ajax.get('/api/get_user_name', {
         params: {
           user_id: this.user_id
         }

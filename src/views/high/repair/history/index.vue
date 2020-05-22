@@ -154,7 +154,7 @@ export default {
   },
   methods: {
     getData() {
-      this.$ajax.get('/high/search_repair_history', {
+      this.$ajax.get('/api/high/search_repair_history', {
         params: {
           id: this.id,
           code: this.form.code,
