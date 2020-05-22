@@ -20,5 +20,10 @@ module.exports = {
    * @type {string}
    * @description 后台地址，用于解决跨域
    */
-  devServer: 'http://localhost:8080'
+  devServer: 'http://localhost:8080',
+  /**
+   * @type {string}
+   * @description 后台所需的key
+   */
+  key: 'wx6e26d78ff8614da2'
 }

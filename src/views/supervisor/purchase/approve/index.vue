@@ -101,7 +101,7 @@
         </el-row>
       </el-form>
       <el-divider />
-      <span slot="footer" class="dialog-footer" v-if="purchase_submit_detail != null" >
+      <span v-if="purchase_submit_detail != null" slot="footer" class="dialog-footer">
         <el-popconfirm
           title="确认初审通过吗？"
           @onConfirm="pass_purchase_submit"

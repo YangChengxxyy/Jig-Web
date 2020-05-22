@@ -133,8 +133,7 @@
           <el-col :span="20" :offset="2">
             <el-form-item label="工夹具料号">
               <el-select v-model="edit_jig_part_no" multiple placeholder="请选择料号" style="width: 100%">
-                <el-option v-for="item in jig_definition.part_no.split('|')" :key="item" :label="item" :value="item">
-                </el-option>
+                <el-option v-for="item in jig_definition.part_no.split('|')" :key="item" :label="item" :value="item" />
               </el-select>
             </el-form-item>
           </el-col>

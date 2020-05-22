@@ -209,8 +209,9 @@
         <el-timeline-item
           v-for="(operate, index) in operate_list"
           :key="index"
-          :timestamp="operate.operate_time">
-          {{operate.operate_string}}
+          :timestamp="operate.operate_time"
+        >
+          {{ operate.operate_string }}
         </el-timeline-item>
       </el-timeline>
     </el-dialog>

@@ -70,8 +70,8 @@
         </el-col>
       </el-row>
       <el-divider />
-      <span slot="footer" class="dialog-footer" >
-        <template  v-if="scrap_submit_detail != null">
+      <span slot="footer" class="dialog-footer">
+        <template v-if="scrap_submit_detail != null">
           <el-popconfirm
             title="确认初审通过吗？"
             @onConfirm="pass_scrap_submit"

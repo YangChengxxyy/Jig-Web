@@ -45,7 +45,6 @@ export default {
       const a = String.fromCharCode(65 + i)
       filters.push({ text: a, value: a })
     }
-    console.log(filters)
     return {
       cn_en_list: [],
       dialogVisible: false,

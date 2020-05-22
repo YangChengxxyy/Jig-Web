@@ -79,13 +79,13 @@
         </el-col>
       </el-row>
       <el-divider />
-      <span slot="footer" class="dialog-footer" >
+      <span slot="footer" class="dialog-footer">
         <template v-if="scrap_submit_detail != null">
           <el-popconfirm
             title="确认终审通过吗？"
             @onConfirm="pass_scrap_submit"
           >
-            <el-button  slot="reference" type="success" :disabled="scrap_submit_detail.status === '4' ">通过</el-button>
+            <el-button slot="reference" type="success" :disabled="scrap_submit_detail.status === '4' ">通过</el-button>
           </el-popconfirm>
         </template>
         <el-button v-if="scrap_submit_detail != null" type="danger" :disabled="scrap_submit_detail.status === '3'" @click="show_no_pass_reason_dialog = true">不通过</el-button>
