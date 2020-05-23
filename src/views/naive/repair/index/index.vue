@@ -157,7 +157,7 @@ export default {
   },
   methods: {
     getData() {
-      this.$ajax('/naive/get_repair_list', {
+      this.$ajax('/api/naive/get_repair_list', {
         params: {
           submit_id: this.id,
           page_number: this.page_number,
@@ -197,7 +197,7 @@ export default {
       this.getData()
     },
     get_seq_id_list: function() {
-      this.$ajax('/code_get_in_seq_id', {
+      this.$ajax('/api/code_get_in_seq_id', {
         params: {
           code: this.form.code
         }
@@ -217,7 +217,6 @@ export default {
                 this.$refs['drawer'].closeDrawer()
                 this.$refs[upload].clearFiles()
                 this.$refs[formName].resetFields()
-                this.getData()
               }
             ).catch(
               _ => {
@@ -235,7 +234,6 @@ export default {
     submitUpload() {
       const { uploadFiles } = this.$refs['upload']
       const form = new FormData()
-      // 在这里对每一张图片进行大小的校验，如果不符合则提示，所有不符合的都提示，校验完成后只要有不符合条件的就不执行下面的操作
       uploadFiles.forEach(item => {
         form.append('file', item.raw)
       })
@@ -246,9 +244,18 @@ export default {
       form.append('submit_id', this.id)
       this.$ajax({
         method: 'post',
-        url: '/naive/submit_repair',
+        url: '/api/naive/submit_repair',
         data: form
-      })
+      }).then(
+        response => {
+          this.$message.success('提交成功！')
+          setTimeout(
+            () => {
+              this.getData()
+            }, 500
+          )
+        }
+      )
     },
     del: function(row) {
       // TODO:向后台请求删除，后台需要修改
