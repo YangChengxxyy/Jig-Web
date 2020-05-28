@@ -304,7 +304,7 @@ export default {
       )
     },
     get_production_line_list: function() {
-      this.$ajax('/get_production_line_list').then(
+      this.$ajax('/api/get_production_line_list').then(
         res => {
           this.production_line_list = res.data
         }

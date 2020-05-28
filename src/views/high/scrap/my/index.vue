@@ -182,7 +182,7 @@ export default {
   },
   methods: {
     getData() {
-      this.$ajax('/high/get_scrap', {
+      this.$ajax('/api/high/get_scrap', {
         params: {
           submit_id: this.id,
           page_number: this.page_number,
@@ -222,7 +222,7 @@ export default {
       this.getData()
     },
     get_seq_id_list: function() {
-      this.$ajax('/code_get_in_seq_id', {
+      this.$ajax('/api/code_get_in_seq_id', {
         params: {
           code: this.form.code
         }
@@ -271,7 +271,7 @@ export default {
       form.append('submit_id', this.id)
       this.$ajax({
         method: 'post',
-        url: '/naive/submit_repair',
+        url: '/api/naive/submit_repair',
         data: form
       })
     },
