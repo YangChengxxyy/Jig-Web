@@ -1,6 +1,5 @@
 import axios from 'axios'
 import store from '@/store'
-import defaultSettings from '@/settings'
 
 // create an axios instance
 const service = axios.create({
@@ -19,10 +18,11 @@ service.interceptors.request.use(
       // please modify it according to the actual situation
       if (config.params === undefined) {
         config.params = {
-          key: defaultSettings.key
+          token: store.getters.token.token
         }
+      } else {
+        config.params.token = store.getters.token.token
       }
-      config.params.key = defaultSettings.key
     }
     return config
   },

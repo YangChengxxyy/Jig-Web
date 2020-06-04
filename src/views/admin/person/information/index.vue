@@ -220,7 +220,6 @@ export default {
     edit: function(row) {
       this.showPerson = row
       this.showVisible = true
-      console.log(row)
     },
     del: function(row) {
     },

@@ -1,4 +1,4 @@
-<script>
+<script  type="text/babel">
 export default {
   name: 'MenuItem',
   functional: true,

@@ -2,11 +2,13 @@ import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
 import store from '@/store'
+
 const getDefaultState = () => {
   return {
     token: getToken(),
     id: '',
     password: '',
+    workcell_id: '',
     avatar_url: '',
     role: ''
   }
@@ -27,6 +29,9 @@ const mutations = {
   SET_PASSWORD: (state, password) => {
     state.password = password
   },
+  SET_WORKCELLID: (state, workcell_id) => {
+    state.workcell_id = workcell_id
+  },
   SET_AVATAR_URL: (state, avatar_url) => {
     state.avatar_url = avatar_url
   },
@@ -41,10 +46,16 @@ const actions = {
     const { username, password, workcell_id } = userInfo
     return new Promise((resolve, reject) => {
       login({ id: username.trim(), password: password, workcell_id: workcell_id }).then(response => {
+        console.log(response)
         const { data } = response
         if (data.stateCode === 0) {
-          commit('SET_TOKEN', { id: data.data.id, password: data.data.password, workcell_id: data.data.workcell_id, role: data.data.type })
-          setToken({ id: data.data.id, password: data.data.password, workcell_id: data.data.workcell_id, role: data.data.type })
+          commit('SET_TOKEN', { token: data.token, role: data.user.type })
+          commit('SET_ID', data.user.id)
+          commit('SET_PASSWORD', data.user.password)
+          commit('SET_WORKCELLID', data.user.workcell_id)
+          commit('SET_AVATAR_URL', data.user.avatar_url)
+          commit('SET_ROLE', data.user.type)
+          setToken(data.token)
           resolve()
         } else {
           reject()
@@ -58,16 +69,21 @@ const actions = {
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
+      console.log('state')
+      console.log(state)
+      getInfo({ id: state.id, password: state.password, workcell_id: state.workcell_id }).then(response => {
+        console.log('data')
         const { data } = response
+        console.log(data)
         if (!data) {
           reject('Verification failed, please Login again.')
         }
-        const { id, password, avatar_url, type } = data.data
-        commit('SET_ID', id)
-        commit('SET_PASSWORD', password)
-        commit('SET_AVATAR_URL', avatar_url)
-        commit('SET_ROLE', type)
+        commit('SET_TOKEN', { token: data.token, role: data.user.type })
+        commit('SET_ID', data.user.id)
+        commit('SET_PASSWORD', data.user.password)
+        commit('SET_WORKCELLID', data.user.workcell_id)
+        commit('SET_AVATAR_URL', data.user.avatar_url)
+        commit('SET_ROLE', data.user.type)
         resolve(data)
       }).catch(error => {
         reject(error)

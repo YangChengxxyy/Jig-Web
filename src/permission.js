@@ -16,18 +16,19 @@ router.beforeEach(async(to, from, next) => {
   document.title = getPageTitle(to.meta.title)
   // determine whether the user has logged in
   const hasToken = getToken()
+  console.log(to)
   if (hasToken) {
-    if (to.path === '/login') {
+    if (to.path === '/login' || to.path === '/') {
       // if is logged in, redirect to the home page
-      next({ path: '/' })
+      next({ path: roleMap[store.getters.token.role] })
       NProgress.done()
-    } else if (to.path === '/' && store.getters.token != null) {
+    } else if (to.path === '/' && store.getters.token != null && store.getters.id !== '') {
       next({ path: roleMap[store.getters.token.role] })
     } else {
-      const hasGetUserInfo = store.getters.token
+      const hasGetUserInfo = store.getters.token && store.getters.id
       if (hasGetUserInfo) {
         store.dispatch('user/getInfo').then(res => { // 拉取info
-          const roles = res.data.type
+          const roles = res.user.type
           store.dispatch('GenerateRoutes', { roles }).then(() => { // 生成可访问的路由表
             router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
             next() // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
