@@ -1,5 +1,12 @@
 <template>
   <el-card class="box-card">
+    <el-row :gutter="20">
+      <el-col :span="20" :offset="1">
+        <el-button type="primary" style="margin-top: 1%" @click="show_in_jig_drawer = true">
+          采购入库
+        </el-button>
+      </el-col>
+    </el-row>
     <el-form ref="form" :model="sel_form" label-width="80px" label-position="left" style="margin-top: 2%">
       <el-row :gutter="20">
         <el-col :span="11" :offset="1">
@@ -85,7 +92,7 @@
             <template slot-scope="scope">
               <el-button type="info" @click="get_jig_entity_list(scope.row.code)">查看</el-button>
               <el-button type="primary" @click="get_outgo_jig_info(scope.row.code)">出库</el-button>
-              <el-button type="warning">检点</el-button>
+              <el-button type="warning" @click="get_maintenance_jig_list(scope.row.code)">检点</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -102,11 +109,79 @@
         </div>
       </el-col>
     </el-row>
+    <el-drawer ref="input_jig_drawer" title="工夹具入库" :visible.sync="show_in_jig_drawer" direction="rtl" :size="'550px'" @before-close="clean_in_jig_form()">
+      <el-form ref="in_jig_form" label-width="100px" label-position="left" :model="in_jig_form">
+        <el-row>
+          <el-col :span="20" :offset="2">
+            <el-form-item label="单据号" :rules="[{required: true,message:'请填写单据号',trigger: 'change'}]" prop="bill_no">
+              <el-input v-model="in_jig_form.bill_no" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="5" :offset="4">
+            <el-button type="danger" icon="el-icon-delete" @click="clean_in_jig_form">清 空</el-button>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="20" :offset="2">
+            <el-divider />
+          </el-col>
+        </el-row>
+        <el-row v-for="(item,index) in in_jig_form.code" :key="index" :gutter="10">
+          <el-col :span="9" :offset="2">
+            <el-form-item :label="'工夹具代码'+(index+1)" label-width="100px" :rules="[{required:true,message:'此项不得为空',trigger:'change'}]" :prop="'code['+index+']'">
+              <el-select v-model="in_jig_form.code[index]">
+                <el-option v-for="item2 in code_list" :key="item2" :value="item2" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="7">
+            <el-form-item
+              label="数量"
+              label-width="50px"
+              style="width: 100%"
+              :rules="[
+                {required: true,message :'此项不得为空',trigger: 'blur'},
+                {type: 'number',min: 1,message: '不得小于1',trigger: 'change'}]"
+              :prop="'count['+index+']'"
+            >
+              <el-input-number v-model.number="in_jig_form.count[index]" controls-position="right" size="medium" style="width: 100%" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="5">
+            <el-button icon="el-icon-minus" circle @click="reduce(index)" />
+            <el-button v-if="index === in_jig_form.code.length-1" icon="el-icon-plus" circle @click="add" />
+          </el-col>
+          <el-col :span="20" :offset="2">
+            <el-form-item label="存放位置" :rules="[{required:true,message:'此项不得为空',trigger:'change'}]" :prop="'jig_position['+index+']'">
+              <el-cascader
+                v-model="in_jig_form.jig_position[index]"
+                :options="warehouse"
+                @change="handleChange"
+              />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="20" :offset="2">
+            <el-divider />
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="20" :offset="2">
+            <el-form-item>
+              <el-button style="width: 48%" @click="show_in_jig_drawer = false">取 消</el-button>
+              <el-button type="primary" style="width: 48%" @click="input_jig('in_jig_form')">确 定</el-button>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+    </el-drawer>
     <el-dialog
       title="工夹具信息"
       :visible.sync="show_jig_info"
       width="30%"
-      :before-close="handleClose"
     >
       <template v-if="jig_entity_list.length > 0">
         <el-form ref="form" :model="jig_entity" label-width="150px" label-position="left">
@@ -127,46 +202,36 @@
           <el-row :gutter="10">
             <el-col :span="20" :offset="2">
               <el-form-item label="单据号">
-                <el-input v-model="jig_entity.bill_no" disabled />
+                <el-input v-model="jig_entity.bill_no" readonly />
               </el-form-item>
             </el-col>
           </el-row>
           <el-row :gutter="10">
             <el-col :span="20" :offset="2">
               <el-form-item label="入库时间">
-                <el-input v-model="jig_entity.reg_date" disabled />
+                <el-input v-model="jig_entity.reg_date" readonly />
               </el-form-item>
             </el-col>
           </el-row>
           <el-row :gutter="10">
             <el-col :span="20" :offset="2">
               <el-form-item label="存放位置">
-                <el-input v-if="jig_entity.bin === null" :value="jig_entity.jig_cabinet_id+'-'+jig_entity.location_id" disabled />
-                <el-input v-else-if="jig_entity.bin != null" :value="jig_entity.jig_cabinet_id+'-'+jig_entity.location_id+'-'+jig_entity.bin" disabled />
+                <el-input v-if="jig_entity.bin === null" :value="jig_entity.jig_cabinet_id+'-'+jig_entity.location_id" readonly />
+                <el-input v-else-if="jig_entity.bin != null" :value="jig_entity.jig_cabinet_id+'-'+jig_entity.location_id+'-'+jig_entity.bin" readonly />
               </el-form-item>
             </el-col>
           </el-row>
           <el-row :gutter="10">
             <el-col :span="20" :offset="2">
               <el-form-item label="使用次数">
-                <el-input v-model="jig_entity.user_for" disabled />
+                <el-input v-model="jig_entity.user_for" readonly />
               </el-form-item>
             </el-col>
           </el-row>
         </el-form>
       </template>
-      <el-divider />
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="show_jig_info = false">取 消</el-button>
-        <el-button type="primary" @click="show_jig_info = false">确 定</el-button>
-      </span>
     </el-dialog>
-    <el-dialog
-      title="出库"
-      :visible.sync="show_outgo_jig"
-      width="30%"
-      :before-close="handleClose"
-    >
+    <el-dialog title="出库" :visible.sync="show_outgo_jig" width="30%">
       <template v-if="jig_entity_list.length > 0">
         <el-form ref="form" :model="jig_entity" label-width="150px" label-position="left">
           <el-row :gutter="10">
@@ -188,7 +253,8 @@
               <el-form-item label="刷卡或输入工号">
                 <el-input v-model.trim="user_id" @change="get_user_name" />
               </el-form-item>
-              <h6 class="font-success">{{ user_name }} </h6>
+              <h5 v-if="user_name === '员工不存在!'" class="font-error el-col-6 el-col-offset-16">{{ user_name }} </h5>
+              <h5 v-else class="font-success el-col-6 el-col-offset-16">{{ user_name }} </h5>
             </el-col>
           </el-row>
         </el-form>
@@ -196,7 +262,51 @@
       <el-divider />
       <span slot="footer" class="dialog-footer">
         <el-button @click="show_outgo_jig = false">取 消</el-button>
-        <el-button type="primary" @click="outgo_jig">出库</el-button>
+        <el-popconfirm title="确认出库吗？" @onConfirm="outgo_jig">
+          <el-button slot="reference" type="primary">出库</el-button>
+        </el-popconfirm>
+      </span>
+    </el-dialog>
+    <el-dialog title="检点" :visible.sync="show_maintenance_jig_dialog" width="30%">
+      <template v-if="maintenance_jig_list.length > 0">
+        <el-form ref="form" :model="maintenance_jig_detail" label-width="150px" label-position="left">
+          <el-row :gutter="10">
+            <el-col :span="20" :offset="2">
+              <el-form-item label="选择工夹具">
+                <el-select v-model="maintenance_seq_id" placeholder="选择工夹具">
+                  <el-option
+                    v-for="item in maintenance_jig_list"
+                    :key="item.seq_id"
+                    :label="item.code+'-'+item.seq_id"
+                    :value="item.seq_id"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="20" :offset="2">
+              <el-form-item label="上次检点时间">
+                <span v-if="maintenance_jig_detail.last_time != null">{{ maintenance_jig_detail.last_time }}</span>
+                <span v-else class="font-info">还未检点过</span>
+              </el-form-item>
+            </el-col>
+            <el-col :span="20" :offset="2">
+              <h4>以下选项是否无误:</h4>
+              <el-checkbox v-model="check_all" :indeterminate="isIndeterminate" @change="handleCheckAllChange">全选</el-checkbox>
+              <template>
+                <el-checkbox-group v-model="maintenance_check_list">
+                  <el-checkbox v-for="type in maintenance_type_list" :key="type.id" :label="type.id" style="display: block;margin-bottom: 2px">{{ type.description }}</el-checkbox>
+                </el-checkbox-group>
+              </template>
+            </el-col>
+          </el-row>
+        </el-form>
+      </template>
+      <el-divider />
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="show_maintenance_jig_dialog = false">取 消</el-button>
+        <el-popconfirm title="确认已经检查无误了吗？" @onConfirm="maintenance_jig">
+          <el-button slot="reference" type="primary">检点</el-button>
+        </el-popconfirm>
       </span>
     </el-dialog>
   </el-card>
@@ -207,6 +317,36 @@ export default {
   name: 'Index',
   data: function() {
     return {
+      warehouse: [{
+        value: '7',
+        label: '7',
+        children: [{
+          value: 'A1',
+          label: 'A1'
+        }, {
+          value: 'A2',
+          label: 'A2'
+        }]
+      }, {
+        value: '8',
+        label: '8',
+        children: [{
+          value: 'A2',
+          label: 'A2'
+        }, {
+          value: 'B2',
+          label: 'B2'
+        }]
+      }], // 仓库存放位置信息
+      show_in_jig_drawer: false, // 是否显示工夹具采购入库的drawer
+      all_code_list: [], // 所有工夹具代码list
+      code_list: [], // 当前工夹具代码list(除去当前已经选择的)
+      in_jig_form: {
+        bill_no: '',
+        code: [''],
+        count: [1],
+        jig_position: ['']
+      },
       currentPage: 1, // 分页所需
       location_list: [],
       jig_list: [],
@@ -227,25 +367,66 @@ export default {
         workcell_id: ''
       },
       jig_cabinet_id: '',
-      jig_location_id: ''
+      jig_location_id: '',
+      show_maintenance_jig_dialog: false, // 是否显示检点工夹具的dialog
+      maintenance_type_list: [],
+      maintenance_jig_list: [], // 要检点的同一种工夹具实体list
+      maintenance_seq_id: '', // 选择的seq_id
+      maintenance_jig_detail: null, // 要检点的工夹具实体
+      maintenance_check_list: [], // 选择无误的检点类型数组
+      maintenance_id_list: [], // 检点类型id数组
+      isIndeterminate: true, // 是否全选
+      check_all: false // 是否全选
     }
   },
   computed: {
 
   },
   watch: {
+    in_jig_form: {
+      handler(newValue, oldValue) {
+        this.code_list = this.all_code_list
+        newValue.code.forEach(
+          (v, i) => {
+            this.code_list = this.code_list.filter(
+              (item) => {
+                return item !== v
+              })
+          })
+      },
+      deep: true
+    },
     seq_id(val) {
       for (var i = 0; i < this.jig_entity_list.length; i++) {
         if (this.seq_id === this.jig_entity_list[i].seq_id) {
           this.jig_entity = this.jig_entity_list[i]
         }
       }
+    },
+    maintenance_seq_id(val) {
+      for (var i = 0; i < this.maintenance_jig_list.length; i++) {
+        if (this.maintenance_seq_id === this.maintenance_jig_list[i].seq_id) {
+          this.maintenance_jig_detail = this.maintenance_jig_list[i]
+        }
+      }
     }
   },
   created() {
     this.get_location_list()
+    this.get_code_list()
+    this.get_maintenance_type_list()
   },
   methods: {
+    input_jig: function(form_name) {
+      this.$refs[form_name].validate((valid) => {
+        if (valid) {
+          this.$message.success('入库成功!')
+        } else {
+          return false
+        }
+      })
+      this.$ajax.get()
+    },
     get_location_list: function() {
       this.$ajax.get('/api/naive/get_location_list', {
         params: {
@@ -324,7 +505,7 @@ export default {
     outgo_jig: function() {
       if (this.check_user_id) {
         this.show_outgo_jig = false
-        this.$ajax.get('//api/naive/outgo_jig', {
+        this.$ajax.get('/api/naive/outgo_jig', {
           params: {
             code: this.code,
             seq_id: this.seq_id,
@@ -333,20 +514,119 @@ export default {
         }).then(
           response => {
             if (response) {
-              alert('出库成功！')
+              this.$message.success('出库成功!')
               this.user_id = ''
               this.get_jig_list_by_location(this.jig_cabinet_id, this.jig_location_id)
             } else {
-              alert('服务器错误！')
+              this.$message.error('服务器错误!')
             }
           }
         )
       } else {
-        alert('工号输入错误!')
+        this.$message.error('工号输入错误!')
+      }
+    },
+    get_maintenance_type_list: function() {
+      this.$ajax.get('/api/get_maintenance_type_list', {
+      }).then(
+        response => {
+          this.maintenance_type_list = response.data
+          for (var i = 0; i < this.maintenance_type_list.length; i++) {
+            this.maintenance_id_list[i] = this.maintenance_type_list[i].id
+          }
+        }
+      )
+    },
+    get_maintenance_jig_list: function(code) {
+      this.show_maintenance_jig_dialog = true
+      this.$ajax.get('/api/naive/get_maintenance_jig_detail_list', {
+        params: {
+          jig_cabinet_id: this.jig_cabinet_id,
+          jig_location_id: this.jig_location_id,
+          code: code
+        }
+      }).then(
+        response => {
+          this.maintenance_jig_list = response.data
+          if (this.maintenance_jig_list.length > 0) {
+            this.maintenance_seq_id = this.maintenance_jig_list[0].seq_id
+            this.maintenance_jig_detail = this.maintenance_jig_list[0]
+          }
+        }
+      )
+    },
+    maintenance_jig: function() {
+      this.show_maintenance_jig_dialog = false
+      this.maintenance_check_list.sort(function(a, b) { return a.localeCompare(b) })
+
+      var reason_list = []; var reason = ''
+      for (var i = 0; i < this.maintenance_id_list.length; i++) {
+        reason_list[i] = this.maintenance_id_list[i]
+      }
+      for (var j = 0; j < this.maintenance_check_list.length; j++) {
+        for (var k = 0; k < reason_list.length; k++) {
+          if (this.maintenance_check_list[j] === reason_list[k]) {
+            reason_list.splice(k, 1)
+            break
+          }
+        }
+      }
+      if (reason_list.length > 0) {
+        reason += reason_list[0]
+      }
+      for (var m = 1; m < reason_list.length; m++) {
+        reason += '|' + reason_list[m]
+      }
+      this.$ajax.get('/api/naive/maintenance_jig', {
+        params: {
+          code: this.maintenance_jig_detail.code,
+          seq_id: this.maintenance_jig_detail.seq_id,
+          reason: reason
+        }
+      }).then(
+        response => {
+          if (response.data < 0) {
+            this.$message.error('服务器错误!')
+          } else {
+            this.$message.success('检点成功!')
+          }
+        }
+      )
+    },
+    get_code_list: function() {
+      this.$ajax('/api/get_code_list').then(
+        res => {
+          this.all_code_list = res.data
+          this.code_list = res.data
+        }
+      )
+    },
+    reduce(n) { // 在工夹具入库的drawer中减少工夹具的code种类
+      if (this.in_jig_form.code.length > 1) {
+        this.in_jig_form.code.splice(n, 1)
+        this.in_jig_form.count.splice(n, 1)
+        this.in_jig_form.jig_position.splice(n, 1)
+      }
+    },
+    add() { // 在工夹具入库的drawer中增加工夹具的code种类
+      if (this.in_jig_form.code.length !== 4) {
+        this.in_jig_form.code.push('')
+        this.in_jig_form.count.push(1)
+        this.in_jig_form.jig_position.push('')
+      } else if (this.in_jig_form.code.length === 4) {
+        this.$message.warning('至多选择四项工夹具')
+      }
+    },
+    clean_in_jig_form: function() {
+      this.in_jig_form = {
+        bill_no: '',
+        code: [''],
+        count: [1],
+        jig_position: ['']
       }
     },
     clear_form: function() {
-      this.form = {
+      this.sel_form = {
         code: '',
         name: '',
         workcell_id: '',
@@ -365,6 +645,18 @@ export default {
           done()
         })
         .catch(_ => {})
+    },
+    handleCheckAllChange(val) {
+      this.maintenance_check_list = val ? this.maintenance_id_list : []
+      this.isIndeterminate = false
+    },
+    handleCheckedCitiesChange(value) {
+      const checkedCount = value.length
+      this.check_all = checkedCount === this.maintenance_type_list.length
+      this.isIndeterminate = checkedCount > 0 && checkedCount < this.maintenance_type_list.length
+    },
+    handleChange(value) {
+      console.log(value)
     }
   }
 }

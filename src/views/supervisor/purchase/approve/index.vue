@@ -101,14 +101,14 @@
         </el-row>
       </el-form>
       <el-divider />
-      <span slot="footer" class="dialog-footer">
+      <span slot="footer" class="dialog-footer" v-if="purchase_submit_detail != null" >
         <el-popconfirm
           title="确认初审通过吗？"
           @onConfirm="pass_purchase_submit"
         >
-          <el-button v-if="purchase_submit_detail != null" slot="reference" type="success" :disabled="purchase_submit_detail.status === '2' ">通过</el-button>
+          <el-button slot="reference" type="success" :disabled="purchase_submit_detail.status === '2' ">通过</el-button>
         </el-popconfirm>
-        <el-button v-if="purchase_submit_detail != null" type="danger" :disabled="purchase_submit_detail.status === '1'" @click="show_no_pass_reason_dialog = true">不通过</el-button>
+        <el-button type="danger" :disabled="purchase_submit_detail.status === '1'" @click="show_no_pass_reason_dialog = true">不通过</el-button>
         <el-button @click="show_purchase_submit_detail_dialog = false">取 消</el-button>
       </span>
     </el-dialog>
