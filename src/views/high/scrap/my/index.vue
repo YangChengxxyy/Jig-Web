@@ -242,7 +242,6 @@ export default {
                 this.$refs['drawer'].closeDrawer()
                 this.$refs[upload].clearFiles()
                 this.$refs[formName].resetFields()
-                this.getData()
               }
             ).catch(
               _ => {
@@ -264,16 +263,24 @@ export default {
       uploadFiles.forEach(item => {
         form.append('file', item.raw)
       })
-      const { code, seq_id, repair_reason } = this.form
+      const { code, seq_id, scrap_reason } = this.form
       form.append('code', code)
       form.append('seq_id', seq_id)
-      form.append('repair_reason', repair_reason)
+      form.append('scrap_reason', scrap_reason)
       form.append('submit_id', this.id)
       this.$ajax({
         method: 'post',
-        url: '/api/naive/submit_repair',
+        url: '/api/naive/submit_scrap',
         data: form
-      })
+      }).then(
+        response => {
+          this.$message.success('提交成功！')
+          setTimeout(
+            () => {
+              this.getData()
+            }, 500)
+        }
+      )
     },
     del: function(row) {
       // TODO:向后台请求删除，后台需要修改

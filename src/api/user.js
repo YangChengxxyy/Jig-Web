@@ -7,6 +7,8 @@ export function login(data) {
 }
 
 export function getInfo(token) {
+  console.log('token')
+  console.log(token)
   const { id, password, workcell_id } = token
   return axios.get('/api/login_check', {
     params: {
@@ -19,9 +21,6 @@ export function getInfo(token) {
 
 export function logout() {
   return request({
-    url: '/api/log_out',
-    params: {
-
-    }
+    url: '/api/log_out'
   })
 }

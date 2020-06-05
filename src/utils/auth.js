@@ -3,8 +3,7 @@ import Cookies from 'js-cookie'
 const TokenKey = 'jig_web'
 
 export function getToken() {
-  const token = Cookies.get(TokenKey)
-  return JSON.parse((token === undefined || token === null || token === 0) ? null : token)
+  return Cookies.get(TokenKey)
 }
 
 export function setToken(token) {
