@@ -149,6 +149,7 @@
               <el-cascader
                 v-model="in_jig_form.jig_position[index]"
                 :options="warehouse_label"
+                separator="-"
               />
             </el-form-item>
           </el-col>
@@ -456,11 +457,12 @@ export default {
             for (var j = 0; j < this.warehouse_label.length; j++) {
               for (var k = 0; k < this.warehouse_label[j].children.length; k++) {
                 if (v[0] === this.warehouse_label[j].value && v[1] === this.warehouse_label[j].children[k].value) {
-                  this.warehouse_label[j].children = this.warehouse_label[j].children.filter(
+                  /* this.warehouse_label[j].children = this.warehouse_label[j].children.filter(
                     item => {
                       return item !== this.warehouse_label[j].children[k]
                     }
-                  )
+                  ) */
+                  this.warehouse_label[j].children[k].disabled = true
                 }
               }
             }
@@ -565,6 +567,7 @@ export default {
             response => {
               if (response.data > 0) {
                 this.$message.success('入库成功!')
+                this.get_jig_list_by_location()
               } else {
                 this.$message.error('服务器错误!')
               }
@@ -830,10 +833,10 @@ export default {
       const checkedCount = value.length
       this.check_all = checkedCount === this.maintenance_type_list.length
       this.isIndeterminate = checkedCount > 0 && checkedCount < this.maintenance_type_list.length
+    },
+    handleChange(value) {
+      console.log(value)
     }
-  },
-  handleChange(value) {
-    console.log(value)
   }
 }
 </script>
