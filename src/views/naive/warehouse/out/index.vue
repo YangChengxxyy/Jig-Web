@@ -22,20 +22,11 @@
       </el-row>
       <el-row :gutter="20">
         <el-col :span="11" :offset="1">
-          <el-form-item label="工作部门">
-            <el-select v-model="sel_form.workcell_id" style="width: 100%">
-              <el-option v-for="item in workcell_list" :key="item.id" :value="item.id" :label="item.workcell" />
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="11">
           <el-form-item label="用途">
             <el-input v-model="sel_form.user_for" />
           </el-form-item>
         </el-col>
-      </el-row>
-      <el-row :gutter="20">
-        <el-col :span="11" :offset="12">
+        <el-col :span="10" :offset="2">
           <el-button type="primary" icon="el-icon-search">查询</el-button>
           <el-button icon="el-icon-delete" @click="clear_form()">清空</el-button>
           <el-button>导出本页</el-button>
@@ -96,17 +87,17 @@
             </template>
           </el-table-column>
         </el-table>
-        <div class="block">
-          <el-pagination
-            :current-page.sync="currentPage"
-            :page-sizes="[5, 10, 20, 30]"
-            :page-size="10"
-            layout="sizes, prev, pager, next"
-            :total="1000"
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-          />
-        </div>
+        <el-pagination
+          v-if="jig_list.length !== 0"
+          style="text-align: center"
+          :current-page="page_number"
+          :page-sizes="[5, 10, 20, 30]"
+          :page-size="page_size"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="all"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+        />
       </el-col>
     </el-row>
     <el-drawer ref="input_jig_drawer" title="工夹具入库" :visible.sync="show_in_jig_drawer" direction="rtl" :size="'550px'" @before-close="clean_in_jig_form()">
@@ -143,7 +134,7 @@
               style="width: 100%"
               :rules="[
                 {required: true,message :'此项不得为空',trigger: 'blur'},
-                {type: 'number',min: 1,message: '不得小于1',trigger: 'change'}]"
+                {type: 'number',min: 1,max:in_jig_form.real_free_bin_count_list[index],message: '不得小于1',trigger: 'change'}]"
               :prop="'count['+index+']'"
             >
               <el-input-number v-model.number="in_jig_form.count[index]" controls-position="right" size="medium" style="width: 100%" />
@@ -153,14 +144,16 @@
             <el-button icon="el-icon-minus" circle @click="reduce(index)" />
             <el-button v-if="index === in_jig_form.code.length-1" icon="el-icon-plus" circle @click="add" />
           </el-col>
-          <el-col :span="20" :offset="2">
+          <el-col :span="12" :offset="2">
             <el-form-item label="存放位置" :rules="[{required:true,message:'此项不得为空',trigger:'change'}]" :prop="'jig_position['+index+']'">
               <el-cascader
                 v-model="in_jig_form.jig_position[index]"
-                :options="warehouse"
-                @change="handleChange"
+                :options="warehouse_label"
               />
             </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <div v-if="in_jig_form.free_bin_count_list[index] !== 'x'" class="font-warning label-font-style">剩余bin位数量: {{ in_jig_form.free_bin_count_list[index] }}</div>
           </el-col>
         </el-row>
         <el-row>
@@ -172,7 +165,14 @@
           <el-col :span="20" :offset="2">
             <el-form-item>
               <el-button style="width: 48%" @click="show_in_jig_drawer = false">取 消</el-button>
-              <el-button type="primary" style="width: 48%" @click="input_jig('in_jig_form')">确 定</el-button>
+              <template>
+                <el-popconfirm
+                  title="确定要添加采购入库的工夹具吗？"
+                  @onConfirm="input_jig('in_jig_form')"
+                >
+                  <el-button slot="reference" type="primary" style="width: 48%">确 定</el-button>
+                </el-popconfirm>
+              </template>
             </el-form-item>
           </el-col>
         </el-row>
@@ -233,7 +233,7 @@
     </el-dialog>
     <el-dialog title="出库" :visible.sync="show_outgo_jig" width="30%">
       <template v-if="jig_entity_list.length > 0">
-        <el-form ref="form" :model="jig_entity" label-width="150px" label-position="left">
+        <el-form ref="outgo_form" :model="outgo_form" :rules="outgo_form_rules" label-width="150px" label-position="left">
           <el-row :gutter="10">
             <el-col :span="20" :offset="2">
               <el-form-item label="选择工夹具">
@@ -250,11 +250,10 @@
           </el-row>
           <el-row :gutter="10">
             <el-col :span="20" :offset="2">
-              <el-form-item label="刷卡或输入工号">
-                <el-input v-model.trim="user_id" @change="get_user_name" />
+              <el-form-item label="刷卡或输入工号" prop="user_id">
+                <el-input v-model.trim="outgo_form.user_id" @change="get_user_name" />
+                <div v-if="user_name != ''" class="form-font-alert-success">{{ user_name }} </div>
               </el-form-item>
-              <h5 v-if="user_name === '员工不存在!'" class="font-error el-col-6 el-col-offset-16">{{ user_name }} </h5>
-              <h5 v-else class="font-success el-col-6 el-col-offset-16">{{ user_name }} </h5>
             </el-col>
           </el-row>
         </el-form>
@@ -262,7 +261,7 @@
       <el-divider />
       <span slot="footer" class="dialog-footer">
         <el-button @click="show_outgo_jig = false">取 消</el-button>
-        <el-popconfirm title="确认出库吗？" @onConfirm="outgo_jig">
+        <el-popconfirm title="确认出库吗？" @onConfirm="outgo_jig('outgo_form')">
           <el-button slot="reference" type="primary">出库</el-button>
         </el-popconfirm>
       </span>
@@ -313,31 +312,26 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'Index',
   data: function() {
+    const that = this
+    var is_check_user_id = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('请输入工号'))
+      } else if (that.user_name === '') {
+        setTimeout(() => {
+          callback(new Error('请输入正确的工号'))
+        }, 100)
+      } else {
+        callback()
+      }
+    }
     return {
-      warehouse: [{
-        value: '7',
-        label: '7',
-        children: [{
-          value: 'A1',
-          label: 'A1'
-        }, {
-          value: 'A2',
-          label: 'A2'
-        }]
-      }, {
-        value: '8',
-        label: '8',
-        children: [{
-          value: 'A2',
-          label: 'A2'
-        }, {
-          value: 'B2',
-          label: 'B2'
-        }]
-      }], // 仓库存放位置信息
+      warehouse: [],
+      all_warehouse_label: [],
+      warehouse_label: [],
       show_in_jig_drawer: false, // 是否显示工夹具采购入库的drawer
       all_code_list: [], // 所有工夹具代码list
       code_list: [], // 当前工夹具代码list(除去当前已经选择的)
@@ -345,9 +339,14 @@ export default {
         bill_no: '',
         code: [''],
         count: [1],
-        jig_position: ['']
+        jig_position: [''],
+        free_bin_count_list: ['x'], // 前端显示的
+        real_free_bin_count_list: ['x'],
+        free_bin_list: [[]]
       },
-      currentPage: 1, // 分页所需
+      page_size: 10, // 分页所需
+      page_number: 1,
+      all: 0,
       location_list: [],
       jig_list: [],
       jig_entity_list: [], // 同一种code的工夹具实体list
@@ -356,8 +355,14 @@ export default {
       seq_id: '', // 选择的工夹具序列号
       show_jig_info: false, // 是否显示查看工夹具的dialog
       show_outgo_jig: false, // 是否显示工夹具出库的dialog
-      user_id: '', // 出库工夹具时输入user_id
-      check_user_id: false, // 输入user_id是否存在
+      outgo_form: {
+        user_id: '' // 出库工夹具时输入user_id
+      },
+      outgo_form_rules: {
+        user_id: [
+          { required: true, validator: is_check_user_id, trigger: 'blur' }
+        ]
+      },
       user_name: '', // 出库工夹具时输入user_id显示的user_name
       workcell_list: [],
       sel_form: { // 搜索条件
@@ -380,10 +385,44 @@ export default {
     }
   },
   computed: {
-
+    ...mapGetters([
+      'id' // 用户id
+    ]),
+    in_jig_form_count: function() {
+      return this.in_jig_form.count
+    },
+    in_jig_form_jig_position: function() {
+      return this.in_jig_form.jig_position
+    }
+    /* g_free_bin_count_map: function() {
+      var map = new Map()
+      this.warehouse.forEach(
+        (jig_cabinet, i) => {
+          jig_cabinet.location_id_list.forEach(
+            (location, i2) => {
+              map.set(jig_cabinet.jig_cabinet_id + '-' + location.location_id, location.free_bin_count)
+            }
+          )
+        }
+      )
+      return map
+    },
+     free_bin_count_map: function() {
+      var map = new Map()
+      this.warehouse.forEach(
+        (jig_cabinet, i) => {
+          jig_cabinet.location_id_list.forEach(
+            (location, i2) => {
+              map.set(jig_cabinet.jig_cabinet_id + '-' + location.location_id, location.free_bin_count)
+            }
+          )
+        }
+      )
+      return map
+    } */
   },
   watch: {
-    in_jig_form: {
+    /* in_jig_form: {
       handler(newValue, oldValue) {
         this.code_list = this.all_code_list
         newValue.code.forEach(
@@ -395,6 +434,54 @@ export default {
           })
       },
       deep: true
+    },*/
+    in_jig_form_count: {
+      handler(newValue, oldValue) {
+        newValue.forEach(
+          (v, i) => {
+            for (var j = 0; j < this.in_jig_form.free_bin_count_list.length; j++) {
+              if (this.in_jig_form.free_bin_count_list[j] !== 'x' && this.in_jig_form.real_free_bin_count_list[j] !== 'x') {
+                // var key = this.in_jig_form.jig_position[i][0] + '-' + this.in_jig_form.jig_position[i][1]
+                this.in_jig_form.free_bin_count_list[j] = this.in_jig_form.real_free_bin_count_list[j] - newValue[j]
+              }
+            }
+          })
+      }
+    },
+    in_jig_form_jig_position: {
+      handler(newValue) {
+        this.warehouse_label = this.deepCopy(this.all_warehouse_label) // 深拷贝
+        newValue.forEach(
+          (v, i) => {
+            for (var j = 0; j < this.warehouse_label.length; j++) {
+              for (var k = 0; k < this.warehouse_label[j].children.length; k++) {
+                if (v[0] === this.warehouse_label[j].value && v[1] === this.warehouse_label[j].children[k].value) {
+                  this.warehouse_label[j].children = this.warehouse_label[j].children.filter(
+                    item => {
+                      return item !== this.warehouse_label[j].children[k]
+                    }
+                  )
+                }
+              }
+            }
+            this.warehouse.forEach(
+              (jig_cabinet, i1) => {
+                if (jig_cabinet.jig_cabinet_id === v[0]) {
+                  jig_cabinet.location_id_list.forEach(
+                    (location, i2) => {
+                      if (location.location_id === v[1]) {
+                        this.in_jig_form.free_bin_list[i] = location.free_bin_list
+                        this.in_jig_form.free_bin_count_list[i] = location.free_bin_count - this.in_jig_form.count[i]
+                        this.in_jig_form.real_free_bin_count_list[i] = location.free_bin_count
+                      }
+                    }
+                  )
+                }
+              }
+            )
+          }
+        )
+      }
     },
     seq_id(val) {
       for (var i = 0; i < this.jig_entity_list.length; i++) {
@@ -415,12 +502,74 @@ export default {
     this.get_location_list()
     this.get_code_list()
     this.get_maintenance_type_list()
+    this.get_warehouse()
+    // this.get_free_bin_count_map()
   },
   methods: {
+    get_warehouse_label: function() {
+      for (var i = 0; i < this.warehouse.length; i++) {
+        this.warehouse_label.push({ value: this.warehouse[i].jig_cabinet_id, label: this.warehouse[i].jig_cabinet_id, children: [] })
+        this.all_warehouse_label.push({ value: this.warehouse[i].jig_cabinet_id, label: this.warehouse[i].jig_cabinet_id, children: [] })
+        for (var j = 0; j < this.warehouse[i].location_id_list.length; j++) {
+          this.warehouse_label[i].children.push({ value: this.warehouse[i].location_id_list[j].location_id, label: this.warehouse[i].location_id_list[j].location_id })
+          this.all_warehouse_label[i].children.push({ value: this.warehouse[i].location_id_list[j].location_id, label: this.warehouse[i].location_id_list[j].location_id })
+        }
+      }
+    },
+    get_warehouse: function() {
+      this.$ajax.get('/api/get_jig_cabinet_list', {
+      }).then(
+        res => {
+          this.warehouse = res.data
+          this.get_warehouse_label()
+        }
+      )
+    },
+    in_jig_form_count_change: function(index) {
+      var key = this.in_jig_form.jig_position[index][0] + '-' + this.in_jig_form.jig_position[index][1]
+      console.log(key)
+    },
+    get_free_bin_count_map: function() {
+      this.free_bin_count_map = new Map()
+      for (var i = 0; i < this.warehouse.length; i++) {
+        for (var j = 0; j < this.warehouse[i].location_id_list.length; j++) {
+          this.free_bin_count_map.set(this.warehouse[i].jig_cabinet_id + '-' + this.warehouse[i].location_id_list[j].location_id, location.free_bin_count)
+        }
+      }
+      this.warehouse.forEach(
+        (jig_cabinet, i) => {
+          jig_cabinet.location_id_list.forEach(
+            (location, i2) => {
+              console.log(jig_cabinet.jig_cabinet_id + '-' + location.location_id)
+              this.free_bin_count_map.set(jig_cabinet.jig_cabinet_id + '-' + location.location_id, location.free_bin_count)
+            }
+          )
+        }
+      )
+    },
     input_jig: function(form_name) {
       this.$refs[form_name].validate((valid) => {
         if (valid) {
-          this.$message.success('入库成功!')
+          var a = this.in_jig_form.free_bin_list.join('|')
+          console.log(a)
+          this.$ajax.get('/api/naive/input_jig', {
+            contentType: 'application/json;charset=utf-8',
+            params: {
+              bill_no: this.in_jig_form.bill_no,
+              code: this.in_jig_form.code.join('|'),
+              count: this.in_jig_form.count.join('|'),
+              jig_position: this.in_jig_form.jig_position.join('|'), // 格式 7,A2|8,C1
+              free_bin_list: this.in_jig_form.free_bin_list.join('|')
+            }
+          }).then(
+            response => {
+              if (response.data > 0) {
+                this.$message.success('入库成功!')
+              } else {
+                this.$message.error('服务器错误!')
+              }
+            }
+          )
         } else {
           return false
         }
@@ -489,42 +638,58 @@ export default {
     get_user_name: function() { // 出库时输入工号后获取用户名
       this.$ajax.get('/api/get_user_name', {
         params: {
-          user_id: this.user_id
+          user_id: this.outgo_form.user_id
         }
       }).then(
         response => {
           if (response.data === null || response.data === '' || response.data.length === 0) {
-            this.user_name = '员工不存在!'
+            this.user_name = ''
           } else {
             this.user_name = response.data
-            this.check_user_id = true
           }
         }
       )
     },
-    outgo_jig: function() {
-      if (this.check_user_id) {
-        this.show_outgo_jig = false
-        this.$ajax.get('/api/naive/outgo_jig', {
-          params: {
-            code: this.code,
-            seq_id: this.seq_id,
-            submit_id: this.user_id
+    deepCopy: function(obj) { // 多层嵌套数组的深拷贝
+      var result = Array.isArray(obj) ? [] : {}
+      for (var key in obj) {
+        if (obj.hasOwnProperty(key)) {
+          if (typeof obj[key] === 'object') {
+            result[key] = this.deepCopy(obj[key]) // 递归复制
+          } else {
+            result[key] = obj[key]
           }
-        }).then(
-          response => {
-            if (response) {
-              this.$message.success('出库成功!')
-              this.user_id = ''
-              this.get_jig_list_by_location(this.jig_cabinet_id, this.jig_location_id)
-            } else {
-              this.$message.error('服务器错误!')
-            }
-          }
-        )
-      } else {
-        this.$message.error('工号输入错误!')
+        }
       }
+      return result
+    },
+    outgo_jig: function(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.$ajax.get('/api/naive/outgo_jig', {
+            params: {
+              code: this.code,
+              seq_id: this.seq_id,
+              submit_id: this.outgo_form.user_id,
+              user_id: this.id
+            }
+          }).then(
+            response => {
+              if (response) {
+                this.$message.success('出库成功!')
+                this.outgo_form.user_id = ''
+                this.get_jig_list_by_location(this.jig_cabinet_id, this.jig_location_id)
+              } else {
+                this.$message.error('服务器错误!')
+              }
+            }
+          )
+          this.show_outgo_jig = false
+        } else {
+          this.$message.error('工号输入错误!')
+          return false
+        }
+      })
     },
     get_maintenance_type_list: function() {
       this.$ajax.get('/api/get_maintenance_type_list', {
@@ -543,7 +708,8 @@ export default {
         params: {
           jig_cabinet_id: this.jig_cabinet_id,
           jig_location_id: this.jig_location_id,
-          code: code
+          code: code,
+          user_id: this.id
         }
       }).then(
         response => {
@@ -581,7 +747,8 @@ export default {
         params: {
           code: this.maintenance_jig_detail.code,
           seq_id: this.maintenance_jig_detail.seq_id,
-          reason: reason
+          reason: reason,
+          user_id: this.id
         }
       }).then(
         response => {
@@ -606,6 +773,9 @@ export default {
         this.in_jig_form.code.splice(n, 1)
         this.in_jig_form.count.splice(n, 1)
         this.in_jig_form.jig_position.splice(n, 1)
+        this.in_jig_form.free_bin_count_list.splice(n, 1)
+        this.in_jig_form.real_free_bin_count_list.splice(n, 1)
+        this.in_jig_form.free_bin_list.splice(n, 1)
       }
     },
     add() { // 在工夹具入库的drawer中增加工夹具的code种类
@@ -613,6 +783,9 @@ export default {
         this.in_jig_form.code.push('')
         this.in_jig_form.count.push(1)
         this.in_jig_form.jig_position.push('')
+        this.in_jig_form.free_bin_count_list.push('x')
+        this.in_jig_form.real_free_bin_count_list.push('x')
+        this.in_jig_form.free_bin_list.push([])
       } else if (this.in_jig_form.code.length === 4) {
         this.$message.warning('至多选择四项工夹具')
       }
@@ -622,7 +795,10 @@ export default {
         bill_no: '',
         code: [''],
         count: [1],
-        jig_position: ['']
+        jig_position: [''],
+        free_bin_count_list: ['x'],
+        real_free_bin_count_list: ['x'],
+        free_bin_list: [[]]
       }
     },
     clear_form: function() {
@@ -654,10 +830,10 @@ export default {
       const checkedCount = value.length
       this.check_all = checkedCount === this.maintenance_type_list.length
       this.isIndeterminate = checkedCount > 0 && checkedCount < this.maintenance_type_list.length
-    },
-    handleChange(value) {
-      console.log(value)
     }
+  },
+  handleChange(value) {
+    console.log(value)
   }
 }
 </script>
@@ -678,5 +854,31 @@ export default {
   }
   .font-info{
     color: #909399;
+  }
+  .label-font-style{
+    vertical-align: middle;
+    line-height: 40px;
+    font-size: 14px
+  }
+  .form-font-alert-success{
+    color: #67C23A;
+    font-size: 12px;
+    line-height: 1;
+    padding-top: 4px;
+    position: absolute;
+    top: 100%;
+    left: 0;
+  }
+  .form-font-alert-error{
+    color: #F56C6C;
+    font-size: 12px;
+    line-height: 1;
+    padding-top: 4px;
+    position: absolute;
+    top: 100%;
+    left: 0;
+  }
+  .border-color-error{
+    border-color: #F56C6C;
   }
 </style>

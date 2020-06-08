@@ -69,7 +69,7 @@
     />
     <el-dialog title="归还工夹具" :visible.sync="show_return_jig_dialog" width="30%">
       <template v-if="outgoing_jig_info != null">
-        <el-form ref="form" :rules="return_rules" :model="return_form" label-width="150px" label-position="left">
+        <el-form ref="return_form" :rules="return_rules" :model="return_form" label-width="150px" label-position="left">
           <el-row :gutter="10">
             <el-col :span="20" :offset="2">
               <el-form-item label="归还工夹具">
@@ -83,7 +83,6 @@
                 <el-input v-model.trim="return_form.user_id" @change="get_user_name" />
                 <template v-if="return_form.user_id != ''">
                   <div v-if="user_name !== ''" class="form-font-alert-success">{{ user_name }}</div>
-                  <div v-else class="form-font-alert-error">用户名不存在</div>
                 </template>
               </el-form-item>
             </el-col>
@@ -106,7 +105,7 @@
       <el-divider />
       <span slot="footer" class="dialog-footer">
         <el-button @click="show_return_jig_dialog = false">取 消</el-button>
-        <el-popconfirm title="确认已经检查无误了吗？" @onConfirm="return_jig">
+        <el-popconfirm title="确认已经检查无误了吗？" @onConfirm="return_jig('return_form')">
           <el-button slot="reference" type="primary">入库</el-button>
         </el-popconfirm>
       </span>
@@ -120,14 +119,21 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'Index',
   data: function() {
+    var that = this
     var is_check_position = (rule, value, callback) => {
       if (!value) {
         callback(new Error('请确认归还位置'))
+      } else {
+        callback()
       }
     }
     var is_check_user_id = (rule, value, callback) => {
       if (!value) {
         callback(new Error('请输入工号'))
+      } else if (that.user_name === '') {
+        callback(new Error('请输入正确的工号'))
+      } else {
+        callback()
       }
     }
     return {
@@ -162,7 +168,8 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'id' // 用户id
+      'id', // 用户id
+      'workcell_id'
     ])
   },
   watch: {
@@ -187,15 +194,11 @@ export default {
           end_date: this.sel_form.date[1],
           user_for: this.sel_form.user_for,
           page_number: this.page_number,
-          page_size: this.page_size
+          page_size: this.page_size,
+          workcell_id: this.workcell_id
         }
       }).then(
         response => {
-          if (response.data.data.length > 0) {
-            this.$message.success('查询成功!共有' + response.data.all + '条记录')
-          } else {
-            this.$message.error('没有结果!')
-          }
           this.outgoing_jig_list = response.data.data
           this.all = response.data.all
         }
@@ -221,38 +224,49 @@ export default {
         }
       )
     },
-    return_jig: function() {
-      this.show_return_jig_dialog = false
-      if (!this.check_user_id) {
-        this.$message.error('工号输入错误!')
-        return
-      }
-      if (!this.return_form.check_return_position) {
-        this.$message.error('未确认归还位置!')
-        return
-      }
-      this.$ajax.get('/api/naive/return_jig', {
-        params: {
-          id: this.outgoing_jig_info.id,
-          code: this.outgoing_jig_info.code,
-          seq_id: this.outgoing_jig_info.seq_id,
-          submit_id: this.return_form.user_id,
-          rec_id: this.id
-        }
-      }).then(
-        response => {
-          if (response < 0) {
-            this.$message.error('服务器错误!')
-          } else {
-            this.$message.success('入库成功!')
-            this.get_outgoing_jig_list()
+    return_jig: function(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.$ajax.get('/api/naive/return_jig', {
+            params: {
+              id: this.outgoing_jig_info.id,
+              code: this.outgoing_jig_info.code,
+              seq_id: this.outgoing_jig_info.seq_id,
+              submit_id: this.return_form.user_id,
+              rec_id: this.id
+            }
+          }).then(
+            response => {
+              if (response < 0) {
+                this.$message.error('服务器错误!')
+              } else {
+                this.$message.success('入库成功!')
+                this.get_outgoing_jig_list()
+                this.show_return_jig_dialog = false
+              }
+            }
+          )
+        } else {
+          if (!this.check_user_id) {
+            this.$message.error('工号输入错误!')
+            return
           }
+          if (!this.return_form.check_return_position) {
+            this.$message.error('未确认归还位置!')
+            return
+          }
+          return false
         }
-      )
+      })
     },
     search: function() {
       this.page_number = 1
       this.get_outgoing_jig_list()
+      if (this.outgoing_jig_list.length > 0) {
+        this.$message.success('查询成功!共有' + this.all + '条记录')
+      } else {
+        this.$message.error('没有结果!')
+      }
     },
     clear_form: function() {
       this.sel_form = {
