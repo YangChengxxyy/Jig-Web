@@ -134,7 +134,7 @@
               style="width: 100%"
               :rules="[
                 {required: true,message :'此项不得为空',trigger: 'blur'},
-                {type: 'number',min: 1,max:in_jig_form.real_free_bin_count_list[index],message: '不得小于1',trigger: 'change'}]"
+                {type: 'number',min: 1,max:in_jig_form.real_free_bin_count_list[index],message: '请符合剩余bin位数',trigger: 'change'}]"
               :prop="'count['+index+']'"
             >
               <el-input-number v-model.number="in_jig_form.count[index]" controls-position="right" size="medium" style="width: 100%" />
