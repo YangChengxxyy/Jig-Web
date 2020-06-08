@@ -306,6 +306,7 @@ export default {
     },
     del: function(row) {
       // TODO:向后台请求删除，后台需要修改
+      this.$ajax.get('/delete_purchase_submit', { params: { id: this.id }}).then()
     },
     getTree: function(row) {
       const a = []
