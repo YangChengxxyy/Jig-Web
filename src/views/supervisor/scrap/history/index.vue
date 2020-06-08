@@ -138,6 +138,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   name: 'Index',
   data: function() {
@@ -164,6 +166,10 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'id', // 用户id
+      'workcell_id'
+    ])
   },
   watch: {
   },
@@ -184,7 +190,8 @@ export default {
           status: this.sel_form.status,
           scrap_reason: this.sel_form.scrap_reason,
           page_number: this.page_number,
-          page_size: this.page_size
+          page_size: this.page_size,
+          workcell_id: this.workcell_id
         }
       }).then(
         response => {
@@ -196,7 +203,7 @@ export default {
               type: 'success'
             })
           }
-          this.scrap_submit_list = response.data.list
+          this.scrap_submit_list = response.data.data
           this.all = response.data.all_count
         }
       )

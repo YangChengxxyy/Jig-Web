@@ -164,6 +164,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'Index',
   data: function() {
@@ -180,6 +181,10 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'id', // 用户id
+      'workcell_id'
+    ])
   },
   watch: {
   },
@@ -191,7 +196,9 @@ export default {
       this.$ajax.get('/api/manager/get_purchase_submit_list', {
         params: {
           page_number: this.page_number,
-          page_size: this.page_size
+          page_size: this.page_size,
+          user_id: this.id,
+          workcell_id: this.workcell_id
         }
       }).then(
         response => {
@@ -217,7 +224,8 @@ export default {
       this.show_purchase_submit_detail_dialog = false
       this.$ajax.get('/api/manager/pass_purchase_submit', {
         params: {
-          id: this.purchase_submit_detail.id
+          id: this.purchase_submit_detail.id,
+          user_id: this.user_id
         }
       }).then(
         response => {
@@ -232,7 +240,8 @@ export default {
       this.$ajax.get('/api/manager/no_pass_purchase_submit', {
         params: {
           id: this.purchase_submit_detail.id,
-          final_reason: this.purchase_submit_detail.final_reason
+          final_reason: this.purchase_submit_detail.final_reason,
+          user_id: this.id
         }
       }).then(
         response => {

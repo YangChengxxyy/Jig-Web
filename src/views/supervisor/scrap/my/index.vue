@@ -103,6 +103,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'Index',
   data: function() {
@@ -117,6 +118,10 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'id', // 用户id
+      'workcell_id'
+    ])
   },
   watch: {
   },
@@ -128,11 +133,12 @@ export default {
       this.$ajax.get('/api/supervisor/get_scrap_submit_list', {
         params: {
           page_number: this.page_number,
-          page_size: this.page_size
+          page_size: this.page_size,
+          workcell_id: this.workcell_id
         }
       }).then(
         response => {
-          this.scrap_submit_list = response.data.list
+          this.scrap_submit_list = response.data.data
           this.all = response.data.all_count
         }
       )
@@ -145,7 +151,8 @@ export default {
       this.show_scrap_submit_datail_dialog = false
       this.$ajax.get('/api/supervisor/pass_scrap_submit', {
         params: {
-          id: this.scrap_submit_detail.id
+          id: this.scrap_submit_detail.id,
+          user_id: this.id
         }
       }).then(
         response => {
@@ -160,7 +167,8 @@ export default {
       this.$ajax.get('/api/supervisor/no_pass_scrap_submit', {
         params: {
           id: this.scrap_submit_detail.id,
-          no_pass_reason: this.scrap_submit_detail.first_reason
+          no_pass_reason: this.scrap_submit_detail.first_reason,
+          user_id: this.id
         }
       }).then(
         response => {
