@@ -103,7 +103,8 @@
               :rules="[
                 {required: true,message :'此项不得为空',trigger: 'blur'},
                 {type: 'number',min: 1,message: '不得小于1',trigger: 'change'}]"
-              :prop="'count['+index+']'">
+              :prop="'count['+index+']'"
+            >
               <el-input-number v-model.number="form.count[index]" controls-position="right" size="medium" style="width: 100%" />
             </el-form-item>
           </el-col>

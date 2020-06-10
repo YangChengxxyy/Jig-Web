@@ -101,7 +101,7 @@
         </el-row>
       </el-form>
       <el-divider />
-      <span slot="footer" class="dialog-footer" v-if="purchase_submit_detail != null" >
+      <span v-if="purchase_submit_detail != null" slot="footer" class="dialog-footer">
         <el-popconfirm
           title="确认初审通过吗？"
           @onConfirm="pass_purchase_submit"
@@ -254,12 +254,12 @@ export default {
         })
         .catch(_ => {})
     },
-    handleSizeChange: function(val) {
-      this.page_size = val
-      this.get_purchase_submit_list()
-    },
     handleCurrentChange: function(val) {
       this.page_number = val
+      this.get_purchase_submit_list()
+    },
+    handleSizeChange: function(val) {
+      this.page_size = val
       this.get_purchase_submit_list()
     }
   }
