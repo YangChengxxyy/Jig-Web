@@ -14,18 +14,16 @@ router.beforeEach(async(to, from, next) => {
   NProgress.start()
   // set page title
   document.title = getPageTitle(to.meta.title)
+  document.title = getPageTitle(to.meta.title)
   // determine whether the user has logged in
   const hasToken = getToken()
-  console.log(to)
   if (hasToken) {
     if (to.path === '/login' || to.path === '/') {
       // if is logged in, redirect to the home page
       next({ path: roleMap[store.getters.token.role] })
       NProgress.done()
-    } else if (to.path === '/' && store.getters.token != null && store.getters.id !== '') {
-      next({ path: roleMap[store.getters.token.role] })
     } else {
-      const hasGetUserInfo = store.getters.token && store.getters.id
+      const hasGetUserInfo = store.getters.token != null
       if (hasGetUserInfo) {
         store.dispatch('user/getInfo').then(res => { // 拉取info
           const roles = res.user.type
@@ -45,7 +43,7 @@ router.beforeEach(async(to, from, next) => {
         } catch (error) {
           // remove token and go to login page to re-login
           await store.dispatch('user/resetToken')
-          Message.error(error || 'Has Error')
+          Message.error(error.message || 'Has Error')
           next(`/login?redirect=${to.path}`)
           NProgress.done()
         }
