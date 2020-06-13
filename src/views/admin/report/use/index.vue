@@ -9,11 +9,11 @@
           <el-card class="box-card">
             <div slot="header" class="clearfix">
               <span>历年此类工夹具的使用次数</span>
-              <el-select value="EF0789">
-                <el-option value="EF0789">EF2078</el-option>
+              <el-select v-model="code" @change="getEveryYearByCode()">
+                <el-option v-for="item in codeList" :key="item" :value="item">{{ item }}</el-option>
               </el-select>
             </div>
-            <ve-line :data="cljj.data" />
+            <ve-line ref="cljj" :data="cljj.data" />
           </el-card>
         </el-col>
         <el-col :span="12">
@@ -65,6 +65,8 @@ export default {
   name: 'Index',
   data() {
     return {
+      codeList: [],
+      code: '',
       toolbox: {
         feature: {
           saveAsImage: {}
@@ -139,16 +141,11 @@ export default {
       },
       cljj: {
         data: {
-          columns: ['time', '次数'],
+          columns: ['year', 'count'],
           rows: [
-            { 'time': '2012', '次数': 25 },
-            { 'time': '2013', '次数': 30 },
-            { 'time': '2014', '次数': 45 },
-            { 'time': '2015', '次数': 25 },
-            { 'time': '2016', '次数': 37 },
-            { 'time': '2017', '次数': 5 },
-            { 'time': '2018', '次数': 20 },
-            { 'time': '2019', '次数': 12 }
+            { count: '2', year: '2018' },
+            { count: '1', year: '2019' },
+            { count: '3', year: '2020' }
           ]
         }
       },
@@ -164,20 +161,46 @@ export default {
         }
       }
     }
+  },
+  created() {
+    this.$ajax.get('/api/get_code_list').then(
+      response => {
+        this.codeList = response.data
+        this.code = this.codeList[0]
+      }
+    )
+    setTimeout(() => {
+      // this.getEveryYearByCode()
+    }, 300)
+  }, methods: {
+    getEveryYearByCode() {
+      this.$ajax.get('/api/report/get_every_year_by_code', {
+        params: {
+          code: this.code
+        }
+      }).then(
+        response => {
+          this.cljj.data.rows = response.data
+          this.$refs['cljj'].echarts.resize()
+        }
+      )
+    }
   }
 }
 </script>
 
 <style scoped>
-  .box-card{
+  .box-card {
     width: 96%;
     margin: 2% 2%
   }
+
   .clearfix:before,
   .clearfix:after {
     display: table;
     content: "";
   }
+
   .clearfix:after {
     clear: both
   }
