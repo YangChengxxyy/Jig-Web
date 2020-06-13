@@ -230,6 +230,34 @@
             </el-col>
           </el-row>
         </el-form>
+        <el-divider />
+        <el-collapse style="height: 400px">
+          <el-scrollbar style="height:100%">
+            <el-collapse-item title="追溯出入库历史" name="1">
+              <el-timeline v-if="jig_entity.out_and_in_history_list.length > 0">
+                <el-timeline-item
+                  v-for="(item, index) in jig_entity.out_and_in_history_list"
+                  :key="index"
+                  :icon="item.icon"
+                  :type="item.type"
+                  :timestamp="item.outgo_time"
+                >
+                  <template v-if="item.status === '0'">
+                    申请人:{{ item.submit_name }} <br>
+                    产线: {{ item.production_line_name }} <br>
+                    出库人: {{ item.rec_name }}
+                  </template>
+                  <template v-if="item.status === '1'">
+                    归还人: {{ item.submit_name }} <br>
+                    产线: {{ item.production_line_name }} <br>
+                    入库人: {{ item.rec_name }}
+                  </template>
+                </el-timeline-item>
+              </el-timeline>
+              <div v-else class="font-info">暂无该工夹具出入库历史记录</div>
+            </el-collapse-item>
+          </el-scrollbar>
+        </el-collapse>
       </template>
     </el-dialog>
     <el-dialog title="出库" :visible.sync="show_outgo_jig" width="30%">
@@ -254,6 +282,20 @@
               <el-form-item label="刷卡或输入工号" prop="user_id">
                 <el-input v-model.trim="outgo_form.user_id" @change="get_user_name" />
                 <div v-if="user_name != ''" class="form-font-alert-success">{{ user_name }} </div>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row :gutter="10">
+            <el-col :span="20" :offset="2">
+              <el-form-item label="选择产线" prop="production_line_id">
+                <el-select v-model="outgo_form.production_line_id" placeholder="选择产线">
+                  <el-option
+                    v-for="item in production_line_list"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id"
+                  />
+                </el-select>
               </el-form-item>
             </el-col>
           </el-row>
@@ -356,12 +398,17 @@ export default {
       seq_id: '', // 选择的工夹具序列号
       show_jig_info: false, // 是否显示查看工夹具的dialog
       show_outgo_jig: false, // 是否显示工夹具出库的dialog
+      production_line_list: [],
       outgo_form: {
-        user_id: '' // 出库工夹具时输入user_id
+        user_id: '', // 出库工夹具时输入user_id
+        production_line_id: ''
       },
       outgo_form_rules: {
         user_id: [
           { required: true, validator: is_check_user_id, trigger: 'blur' }
+        ],
+        production_line_id: [
+          { required: true, message: '请选择产线', trigger: 'change' }
         ]
       },
       user_name: '', // 出库工夹具时输入user_id显示的user_name
@@ -498,9 +545,22 @@ export default {
           this.maintenance_jig_detail = this.maintenance_jig_list[i]
         }
       }
+    },
+    jig_entity() { // 设置出入库历史记录 时间线显示的图标
+      for (var i = 0; i < this.jig_entity.out_and_in_history_list.length; i++) {
+        var list = this.jig_entity.out_and_in_history_list
+        if (list[i].status === '0') {
+          list[i].icon = 'el-icon-s-unfold'
+          list[i].type = 'primary'
+        } else if (list[i].status === '1') {
+          list[i].icon = 'el-icon-s-fold'
+          list[i].type = 'primary'
+        }
+      }
     }
   },
   created() {
+    this.get_production_line_list()
     this.get_location_list()
     this.get_code_list()
     this.get_maintenance_type_list()
@@ -508,6 +568,14 @@ export default {
     // this.get_free_bin_count_map()
   },
   methods: {
+    get_production_line_list: function() {
+      this.$ajax.get('/api/get_production_line_list', {
+      }).then(
+        response => {
+          this.production_line_list = response.data
+        }
+      )
+    },
     get_warehouse_label: function() {
       for (var i = 0; i < this.warehouse.length; i++) {
         this.warehouse_label.push({ value: this.warehouse[i].jig_cabinet_id, label: this.warehouse[i].jig_cabinet_id, children: [] })
@@ -568,6 +636,8 @@ export default {
               if (response.data > 0) {
                 this.$message.success('入库成功!')
                 this.get_jig_list_by_location()
+                this.show_in_jig_drawer = false
+                this.clean_in_jig_form()
               } else {
                 this.$message.error('服务器错误!')
               }
@@ -624,6 +694,20 @@ export default {
         this.jig_entity = this.jig_entity_list[0]
       }
     },
+    get_out_and_in_history_list: function() {
+      if (this.code !== '' && this.seq_id !== null) {
+        this.$ajax.get('/api/naive/get_out_and_in_history_list', {
+          params: {
+            code: this.code,
+            seq_id: this.seq_id
+          }
+        }).then(
+          response => {
+            this.out_and_in_history_list = response.data
+          }
+        )
+      }
+    },
     get_outgo_jig_info: function(code) {
       this.show_outgo_jig = true
       this.code = code
@@ -674,13 +758,15 @@ export default {
               code: this.code,
               seq_id: this.seq_id,
               submit_id: this.outgo_form.user_id,
+              production_line_id: this.outgo_form.production_line_id,
               user_id: this.id
             }
           }).then(
             response => {
               if (response) {
                 this.$message.success('出库成功!')
-                this.outgo_form.user_id = ''
+                this.$refs['outgo_form'].resetFields()
+                this.user_name = ''
                 this.get_jig_list_by_location(this.jig_cabinet_id, this.jig_location_id)
               } else {
                 this.$message.error('服务器错误!')
@@ -689,7 +775,11 @@ export default {
           )
           this.show_outgo_jig = false
         } else {
-          this.$message.error('工号输入错误!')
+          if (this.outgo_form.production_line_id === '') {
+            this.$message.error('请输入产线号!')
+          } else {
+            this.$message.error('工号输入错误!')
+          }
           return false
         }
       })
