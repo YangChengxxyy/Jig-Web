@@ -122,3 +122,10 @@ export function getUrl(obj) {
   })
   return str
 }
+
+export function contain(arr, item) {
+  if (arr instanceof Array) {
+    return arr.indexOf(item)
+  }
+  return false
+}
