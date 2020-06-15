@@ -147,7 +147,7 @@ export default {
       this.getYearByCodeYear()
       this.getEveryProductionCount()
       this.getEveryYearProductionLine()
-    }, 300)
+    }, 500)
   }, methods: {
     getYearByCode() {
       this.$ajax.get('/api/report/get_year_by_code', {

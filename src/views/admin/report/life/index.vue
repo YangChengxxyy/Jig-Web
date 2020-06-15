@@ -6,7 +6,13 @@
           <div slot="header" class="clearfix">
             <span>总体寿命分布图</span>
           </div>
-          <ve-histogram :data="allLeft" :toolbox="toolbox" :extend="allLeftExtend" :data-zoom="dataZoom" />
+          <ve-histogram
+            :data="allLife"
+            :toolbox="toolbox"
+            :extend="allLeftExtend"
+            :data-zoom="dataZoom"
+            :settings="allLife.settings"
+          />
         </el-card>
       </el-col>
       <el-col :span="12">
@@ -32,7 +38,7 @@
           <div slot="header" class="clearfix">
             <span>各厂商的损坏统计</span>
           </div>
-          <ve-histogram :data="repairCSTJ" :toolbox="toolbox" :data-zoom="dataZoom" :extend="allLeftExtend" />
+          <ve-histogram :data="repairCSTJ" :toolbox="toolbox" :extend="allLeftExtend" />
         </el-card>
       </el-col>
     </el-row>
@@ -48,21 +54,22 @@ export default {
           saveAsImage: {}
         }
       },
-      allLeft: {
-        columns: ['range', '工夹具数量'],
+      allLife: {
+        columns: ['range', 'count'],
         rows: [
-          { 'range': '<1000', '工夹具数量': '9' },
-          { 'range': '1000~3000', '工夹具数量': '15' },
-          { 'range': '3000~5000', '工夹具数量': '23' },
-          { 'range': '5000~7000', '工夹具数量': '43' },
-          { 'range': '>7000', '工夹具数量': '7' }
-        ]
+          { 'range': '<1000', 'count': 0 },
+          { 'range': '1000~3000', 'count': 0 },
+          { 'range': '3000~5000', 'count': 0 },
+          { 'range': '5000~7000', 'count': 0 },
+          { 'range': '>7000', 'count': 0 }
+        ],
+        settings: {
+          labelMap: {
+            'count': '工夹具数量'
+          }
+        }
       },
       allLeftExtend: {
-        series: {
-          label: { show: true, position: 'top' },
-          barWidth: '30%'
-        },
         yAxis: {
           axisLabel: {
             formatter: '{value}件'
@@ -85,7 +92,7 @@ export default {
         end: 100
       },
       repairZb: {
-        columns: ['分类', '数量'],
+        columns: ['name', 'count'],
         rows: [
           { '分类': '外观磨损', '数量': 22 },
           { '分类': '夹具磨损', '数量': 21 },
@@ -94,33 +101,140 @@ export default {
         ]
       },
       repairCSTJ: {
-        columns: ['分类', 'A公司', 'B公司'],
-        rows: [
-          { '分类': '外观磨损', 'A公司': '15', 'B公司': '30' },
-          { '分类': '夹具磨损', 'A公司': '20', 'B公司': '22' },
-          { '分类': '零件掉落', 'A公司': '45', 'B公司': '24' },
-          { '分类': '失去精准度', 'A公司': '37', 'B公司': '14' }
-        ]
+        // columns: ['分类', 'A公司', 'B公司'],
+        columns: ['name'],
+        // rows: [
+        //   { '分类': '外观磨损', 'A公司': '15', 'B公司': '30' },
+        //   { '分类': '夹具磨损', 'A公司': '20', 'B公司': '22' },
+        //   { '分类': '零件掉落', 'A公司': '45', 'B公司': '24' },
+        //   { '分类': '失去精准度', 'A公司': '37', 'B公司': '14' }
+        // ]
+        rows: []
       }
+    }
+  },
+  created() {
+    this.getLifeTotal()
+    this.getRepairReason()
+    this.getRepairManufacturer()
+  },
+  methods: {
+    getLifeTotal() {
+      this.$ajax.get('/api/report/get_life_total').then(
+        response => {
+          const { data } = response
+          data.forEach(
+            (v, i) => {
+              if (v['count'] < 1000) {
+                this.allLife.rows.forEach(
+                  (v2, i2) => {
+                    if (v2.range === '<1000') {
+                      v2.count++
+                    }
+                  }
+                )
+              } else if (v['count'] < 3000) {
+                this.allLife.rows.forEach(
+                  (v2, i2) => {
+                    if (v2.range === '1000~3000') {
+                      v2.count++
+                    }
+                  }
+                )
+              } else if (v['count'] < 5000) {
+                this.allLife.rows.forEach(
+                  (v2, i2) => {
+                    if (v2.range === '3000~5000') {
+                      v2.count++
+                    }
+                  }
+                )
+              } else if (v['count'] < 7000) {
+                this.allLife.rows.forEach(
+                  (v2, i2) => {
+                    if (v2.range === '5000~7000') {
+                      v2.count++
+                    }
+                  }
+                )
+              } else {
+                this.allLife.rows.forEach(
+                  (v2, i2) => {
+                    if (v2.range === '>7000') {
+                      v2.count++
+                    }
+                  }
+                )
+              }
+            }
+          )
+        }
+      )
+    },
+    getRepairReason() {
+      this.$ajax.get('/api/report/get_repair_reason').then(
+        response => {
+          this.repairZb.rows = response.data
+        }
+      )
+    },
+    getRepairManufacturer() {
+      this.$ajax.get('/api/report/get_repair_manufacturer').then(
+        response => {
+          const { data } = response
+          console.log(data)
+          const names = []
+          data.forEach(
+            (v, i) => {
+              const { company, name } = v
+              if (this.repairCSTJ.columns.indexOf(company) === -1) {
+                this.repairCSTJ.columns.push(company)
+              }
+              if (names.indexOf(name) === -1) {
+                names.push(name)
+              }
+            }
+          )
+          console.log(names)
+          names.forEach(
+            (v1, i1) => {
+              const item = {}
+              item['name'] = v1
+              data.forEach(
+                (v2, i2) => {
+                  if (v2['name'] === v1) {
+                    item[v2['company']] = v2.count
+                  }
+                }
+              )
+              this.repairCSTJ.rows.push(item)
+            }
+          )
+          console.log(this.repairCSTJ.rows)
+        }
+      )
     }
   }
 }
 </script>
 
 <style scoped>
-  .box-card-left{
+  .box-card-left {
     width: 96%;
-    margin:2% 0 2% 4%
+    margin: 2% 0 2% 4%
   }
-  .box-card-right{
+
+  .box-card-right {
     width: 96%;
-    margin:2% 2% 2% 0
+    margin: 2% 2% 2% 0
   }
+
   .clearfix:before,
   .clearfix:after {
     display: table;
     content: "";
   }
+
   .clearfix:after {
     clear: both
   }
