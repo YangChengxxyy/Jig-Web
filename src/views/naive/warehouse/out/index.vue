@@ -221,6 +221,11 @@
                 <el-input v-else-if="jig_entity.bin != null" :value="jig_entity.jig_cabinet_id+'-'+jig_entity.location_id+'-'+jig_entity.bin" readonly />
               </el-form-item>
             </el-col>
+            <el-col :span="2">
+              <el-tooltip class="item" effect="dark" content="修改存放位置" placement="right">
+                <el-button type="info" icon="el-icon-setting" circle @click="show_change_jig_position_dialog = true" />
+              </el-tooltip>
+            </el-col>
           </el-row>
           <el-row :gutter="10">
             <el-col :span="20" :offset="2">
@@ -231,7 +236,7 @@
           </el-row>
         </el-form>
         <el-divider />
-        <el-collapse style="height: 400px">
+        <el-collapse style="height: 350px">
           <el-scrollbar style="height:100%">
             <el-collapse-item title="追溯出入库历史" name="1">
               <el-timeline v-if="jig_entity.out_and_in_history_list.length > 0">
@@ -252,6 +257,10 @@
                     产线: {{ item.production_line_name }} <br>
                     入库人: {{ item.rec_name }}
                   </template>
+                  <template v-if="item.status === '2'">
+                    调换位置: {{ item.description }}<br>
+                    操作人: {{ item.rec_name }}
+                  </template>
                 </el-timeline-item>
               </el-timeline>
               <div v-else class="font-info">暂无该工夹具出入库历史记录</div>
@@ -259,6 +268,27 @@
           </el-scrollbar>
         </el-collapse>
       </template>
+    </el-dialog>
+    <el-dialog title="修改存放位置" :visible.sync="show_change_jig_position_dialog" width="25%">
+      <template>
+        <el-form ref="change_jig_position_form" :model="change_jig_position_form" label-width="100px" label-position="left">
+          <el-form-item label="存放位置" :rules="[{required:true,message:'此项不得为空',trigger:'change'}]" prop="jig_position">
+            <el-cascader
+              v-model="change_jig_position_form.jig_position"
+              :options="change_position_warehouse_label"
+              separator="-"
+            />
+          </el-form-item>
+        </el-form>
+      </template>
+      <span slot="footer" class="dialog-footer">
+        <el-popconfirm
+          title="确定修改存放位置吗？"
+          @onConfirm="change_jig_position('change_jig_position_form')"
+        >
+          <el-button slot="reference" type="primary">确 定</el-button>
+        </el-popconfirm>
+      </span>
     </el-dialog>
     <el-dialog title="出库" :visible.sync="show_outgo_jig" width="30%">
       <template v-if="jig_entity_list.length > 0">
@@ -398,6 +428,11 @@ export default {
       seq_id: '', // 选择的工夹具序列号
       show_jig_info: false, // 是否显示查看工夹具的dialog
       show_outgo_jig: false, // 是否显示工夹具出库的dialog
+      show_change_jig_position_dialog: false, // 是否显示查看工夹具里的=》修改存放位置的dialog
+      change_position_warehouse_label: [],
+      change_jig_position_form: {
+        jig_position: ['', '', '']
+      },
       production_line_list: [],
       outgo_form: {
         user_id: '', // 出库工夹具时输入user_id
@@ -549,12 +584,15 @@ export default {
     jig_entity() { // 设置出入库历史记录 时间线显示的图标
       for (var i = 0; i < this.jig_entity.out_and_in_history_list.length; i++) {
         var list = this.jig_entity.out_and_in_history_list
-        if (list[i].status === '0') {
+        if (list[i].status === '0') { // 出
           list[i].icon = 'el-icon-s-unfold'
           list[i].type = 'primary'
-        } else if (list[i].status === '1') {
+        } else if (list[i].status === '1') { // 入
           list[i].icon = 'el-icon-s-fold'
           list[i].type = 'primary'
+        } else if (list[i].status === '2') { // 调换位置
+          list[i].icon = 'el-icon-rank'
+          list[i].type = 'warning'
         }
       }
     }
@@ -577,12 +615,20 @@ export default {
       )
     },
     get_warehouse_label: function() {
+      this.warehouse_label = []
+      this.all_warehouse_label = []
+      this.change_position_warehouse_label = []
       for (var i = 0; i < this.warehouse.length; i++) {
-        this.warehouse_label.push({ value: this.warehouse[i].jig_cabinet_id, label: this.warehouse[i].jig_cabinet_id, children: [] })
+        this.warehouse_label.push({ value: this.warehouse[i].jig_cabinet_id, label: this.warehouse[i].jig_cabinet_id, children: [] }) // 将warehouse数据结构转换成适用于级联选择器的数据结构
         this.all_warehouse_label.push({ value: this.warehouse[i].jig_cabinet_id, label: this.warehouse[i].jig_cabinet_id, children: [] })
+        this.change_position_warehouse_label.push({ value: this.warehouse[i].jig_cabinet_id, label: this.warehouse[i].jig_cabinet_id, children: [] }) // 将warehouse数据结构转换成适用于级联选择器的数据结构 =》 改变存储位置，需要选择Bin位
         for (var j = 0; j < this.warehouse[i].location_id_list.length; j++) {
           this.warehouse_label[i].children.push({ value: this.warehouse[i].location_id_list[j].location_id, label: this.warehouse[i].location_id_list[j].location_id })
           this.all_warehouse_label[i].children.push({ value: this.warehouse[i].location_id_list[j].location_id, label: this.warehouse[i].location_id_list[j].location_id })
+          this.change_position_warehouse_label[i].children.push({ value: this.warehouse[i].location_id_list[j].location_id, label: this.warehouse[i].location_id_list[j].location_id, children: [] })
+          for (var k = 0; k < this.warehouse[i].location_id_list[j].free_bin_list.length; k++) {
+            this.change_position_warehouse_label[i].children[j].children.push({ value: this.warehouse[i].location_id_list[j].free_bin_list[k], label: this.warehouse[i].location_id_list[j].free_bin_list[k] })
+          }
         }
       }
     },
@@ -694,20 +740,6 @@ export default {
         this.jig_entity = this.jig_entity_list[0]
       }
     },
-    get_out_and_in_history_list: function() {
-      if (this.code !== '' && this.seq_id !== null) {
-        this.$ajax.get('/api/naive/get_out_and_in_history_list', {
-          params: {
-            code: this.code,
-            seq_id: this.seq_id
-          }
-        }).then(
-          response => {
-            this.out_and_in_history_list = response.data
-          }
-        )
-      }
-    },
     get_outgo_jig_info: function(code) {
       this.show_outgo_jig = true
       this.code = code
@@ -736,6 +768,45 @@ export default {
           }
         }
       )
+    },
+    change_jig_position: function(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          var position = ''
+          position += this.jig_entity.jig_cabinet_id + '-' + this.jig_entity.location_id
+          if (this.jig_entity.bin != null && this.jig_entity.bin !== '') {
+            position += '-' + this.jig_entity.bin
+          }
+          this.$ajax.get('/api/naive/change_jig_position', {
+            params: {
+              code: this.jig_entity.code,
+              seq_id: this.jig_entity.seq_id,
+              old_position: position,
+              jig_cabinet_id: this.change_jig_position_form.jig_position[0],
+              location_id: this.change_jig_position_form.jig_position[1],
+              bin: this.change_jig_position_form.jig_position[2],
+              user_id: this.id
+            }
+          }).then(
+            response => {
+              if (response.data > 0) {
+                this.$message.success('修改成功!')
+                this.get_warehouse()
+                this.get_jig_list_by_location()
+                this.jig_entity.jig_cabinet_id = this.change_jig_position_form.jig_position[0]
+                this.jig_entity.location_id = this.change_jig_position_form.jig_position[1]
+                this.jig_entity.bin = this.change_jig_position_form.jig_position[2]
+                this.show_change_jig_position_dialog = false
+                this.$refs[formName].resetFields()
+              } else {
+                this.$message.error('服务器错误!')
+              }
+            }
+          )
+        } else {
+          return false
+        }
+      })
     },
     deepCopy: function(obj) { // 多层嵌套数组的深拷贝
       var result = Array.isArray(obj) ? [] : {}
