@@ -49,7 +49,10 @@
               <el-input v-model="repair.repair_reason" readonly />
             </el-form-item>
             <el-form-item label="故障图片">
-              <el-image :src="repair.repair_photo_url.split('|')[0]" :preview-src-list="repair.repair_photo_url.split('|')" />
+              <el-image
+                :src="repair.repair_photo_url.split('|')[0]"
+                :preview-src-list="repair.repair_photo_url.split('|')"
+              />
             </el-form-item>
             <el-form-item label="申请人id">
               <el-input v-model="repair.submit_id" readonly />
@@ -81,6 +84,12 @@
             <el-divider />
             <el-form-item label="报修原因" prop="repair_reason">
               <el-input v-model="form.repair_reason" type="textarea" :rows="3" />
+            </el-form-item>
+            <el-form-item label="报修类型" prop="repair_type">
+              <el-radio v-model="form.repair_type" label="1">外观磨损</el-radio>
+              <el-radio v-model="form.repair_type" label="2">夹具磨损</el-radio>
+              <el-radio v-model="form.repair_type" label="3">零件掉落</el-radio>
+              <el-radio v-model="form.repair_type" label="4">失去精准度</el-radio>
             </el-form-item>
             <el-form-item label="故障图片" prop="fileList">
               <el-upload
@@ -126,12 +135,14 @@ export default {
         code: '',
         seq_id: '',
         repair_reason: '',
+        repair_type: '',
         fileList: []
       },
       rules: {
         code: [{ required: true, message: '请选择工夹具代码', trigger: 'change' }],
         seq_id: [{ required: true, message: '请选择工夹具序列号', trigger: 'change' }],
         repair_reason: [{ required: true, message: '请填写报废原因', trigger: 'change' }],
+        repair_type: [{ required: true, message: '请选择报修类型', trigger: 'change' }],
         fileList: [{ required: true, message: '请选择故障图片', trigger: 'blur' }]
       },
       code_list_filter: []
@@ -181,17 +192,17 @@ export default {
       this.dialogVisible = true
     },
     /**
-     * 页面大小改变事件
-     * @param val
-     */
+       * 页面大小改变事件
+       * @param val
+       */
     handleSizeChange: function(val) {
       this.page_size = val
       this.getData()
     },
     /**
-     * 页码改变事件
-     * @param val
-     */
+       * 页码改变事件
+       * @param val
+       */
     handleCurrentChange: function(val) {
       this.page_number = val
       this.getData()
@@ -237,10 +248,11 @@ export default {
       uploadFiles.forEach(item => {
         form.append('file', item.raw)
       })
-      const { code, seq_id, repair_reason } = this.form
+      const { code, seq_id, repair_reason, repair_type } = this.form
       form.append('code', code)
       form.append('seq_id', seq_id)
       form.append('repair_reason', repair_reason)
+      form.append('repair_type', repair_type)
       form.append('submit_id', this.id)
       this.$ajax({
         method: 'post',
