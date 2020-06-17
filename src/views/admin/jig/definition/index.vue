@@ -34,8 +34,12 @@
         <el-col :span="11">
           <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
           <el-button icon="el-icon-delete" @click="clearForm()">清空</el-button>
-          <el-button>导出本页</el-button>
-          <el-button>导出全部</el-button>
+          <el-link :href="onePage" target="_blank" :disabled="jig_entity_list.length === 0">
+            <el-button>导出本页</el-button>
+          </el-link>
+          <el-link :href="allPage" :disabled="jig_entity_list.length === 0 ">
+            <el-button>导出全部</el-button>
+          </el-link>
         </el-col>
       </el-row>
     </el-form>
@@ -186,6 +190,8 @@
   </el-card>
 </template>
 <script>
+import { getUrl } from '@/utils'
+
 export default {
   name: 'Index',
   data: function() {
@@ -205,6 +211,38 @@ export default {
       page_number: 1,
       all: 0,
       showVisible: false
+    }
+  },
+  computed: {
+    onePage() {
+      let url = 'http://localhost:8080/api/naive/download_one_jig_definition'
+      const params = {
+        code: this.form.code,
+        name: this.form.name,
+        workcell: this.form.workcell,
+        family: this.form.family,
+        user_for: this.form.user_for,
+        page_number: this.page_number,
+        page_size: this.page_size,
+        file_name: 'page-' + this.page_number + '.xls'
+      }
+      url += '?' + getUrl(params)
+      return url
+    },
+    allPage() {
+      let url = 'http://localhost:8080/api/naive/download_one_jig_definition'
+      const params = {
+        code: this.form.code,
+        name: this.form.name,
+        workcell: this.form.workcell,
+        family: this.form.family,
+        user_for: this.form.user_for,
+        page_number: this.page_number,
+        page_size: this.page_size,
+        file_name: 'page-all.xls'
+      }
+      url += '?' + getUrl(params)
+      return url
     }
   },
   created() {
@@ -263,7 +301,8 @@ export default {
         .then(_ => {
           done()
         })
-        .catch(_ => {})
+        .catch(_ => {
+        })
     },
     handleSizeChange: function(val) {
       this.page_size = val
@@ -278,7 +317,7 @@ export default {
 </script>
 
 <style scoped>
-  .box-card{
+  .box-card {
     width: 96%;
     margin: 2% 2%
   }

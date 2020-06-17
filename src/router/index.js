@@ -291,19 +291,9 @@ manager
     meta: { title: '工夹具管理', icon: 'jig', role: ['admin'] },
     children: [
       {
-        path: 'entity',
-        component: () => import('@/views/admin/jig/entity/index'),
-        meta: { title: '工夹具实体', role: ['admin'] }
-      },
-      {
         path: 'definition',
         component: () => import('@/views/admin/jig/definition/index'),
         meta: { title: '工夹具定义', role: ['admin'] }
-      },
-      {
-        path: 'model',
-        component: () => import('@/views/admin/jig/model/index'),
-        meta: { title: '模组&料号信息', role: ['admin'] }
       }
     ]
   },
