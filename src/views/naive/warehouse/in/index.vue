@@ -265,7 +265,8 @@ export default {
               code: this.outgoing_jig_info.code,
               seq_id: this.outgoing_jig_info.seq_id,
               submit_id: this.return_form.user_id,
-              rec_id: this.id
+              rec_id: this.id,
+              production_line_id: this.outgoing_jig_info.production_line_id
             }
           }).then(
             response => {
