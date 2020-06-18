@@ -38,8 +38,8 @@
         <el-col :span="11" :offset="12">
           <el-button type="primary" icon="el-icon-search" @click="search()">查询</el-button>
           <el-button icon="el-icon-delete" @click="clear_form()">清空</el-button>
-          <el-button>导出本页</el-button>
-          <el-button>导出全部</el-button>
+          <el-link :href="onePage" target="_blank" :disabled="outgoing_jig_list.length === 0"><el-button>导出本页</el-button></el-link>
+          <el-link :href="allPage" target="_blank" :disabled="outgoing_jig_list.length === 0"><el-button>导出全部</el-button></el-link>
         </el-col>
       </el-row>
     </el-form>
@@ -116,6 +116,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import { getUrl } from '@/utils'
 
 export default {
   name: 'Index',
@@ -171,7 +172,37 @@ export default {
     ...mapGetters([
       'id', // 用户id
       'workcell_id'
-    ])
+    ]),
+    onePage() {
+      let url = 'http://localhost:8080/api/naive/download_one_outgoing_list'
+      const params = {
+        code: this.sel_form.code,
+        name: this.sel_form.name,
+        start_date: this.sel_form.date[0],
+        end_date: this.sel_form.date[1],
+        user_for: this.sel_form.user_for,
+        page_number: this.page_number,
+        page_size: this.page_size,
+        workcell_id: this.workcell_id,
+        file_name: 'page-' + this.page_number + '.xls'
+      }
+      url += '?' + getUrl(params)
+      return url
+    },
+    allPage() {
+      let url = 'http://localhost:8080/api/naive/download_all_outgoing_list'
+      const params = {
+        code: this.sel_form.code,
+        name: this.sel_form.name,
+        start_date: this.sel_form.date[0],
+        end_date: this.sel_form.date[1],
+        user_for: this.sel_form.user_for,
+        workcell_id: this.workcell_id,
+        file_name: 'page-all.xls'
+      }
+      url += '?' + getUrl(params)
+      return url
+    }
   },
   watch: {
     show_return_jig_dialog(val) {

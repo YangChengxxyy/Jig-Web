@@ -83,6 +83,13 @@ export default {
     },
     confirmEdit: function(cn_en) {
       this.dialogVisible = false
+      this.$ajax.get('/api/admin/edit_cn_en', { params: { id: this.cn_en.id, chinese: this.cn_en.chinese }}).then(
+        response => {
+          if (response.data) {
+            this.$message.success('修改成功!')
+          }
+        }
+      )
     }
   }
 }

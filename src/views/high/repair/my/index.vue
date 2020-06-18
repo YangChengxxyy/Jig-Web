@@ -11,8 +11,8 @@
           <el-table-column label="操作">
             <template slot-scope="scope">
               <el-button type="text" @click="showRepair(scope.row)">查看</el-button>
-              <el-button type="text" style="color: #67C23A">通过</el-button>
-              <el-button type="text" style="color: #F56C6C">不通过</el-button>
+              <el-button type="text" style="color: #67C23A" @click="agree(scope.row)">通过</el-button>
+              <el-button type="text" style="color: #F56C6C" @click="disagree2(scope.row)">不通过</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -30,6 +30,17 @@
         />
       </el-col>
     </el-row>
+    <el-dialog title="不同意原因" :visible.sync="disagreeVisible" width="35%">
+      <el-form ref="reason" :model="disagreeForm">
+        <el-form-item required prop="reason">
+          <el-input v-model="disagreeForm.reason" type="textarea" :rows="3" />
+        </el-form-item>
+        <el-form-item>
+          <el-button @click="disagreeVisible = false">取消</el-button>
+          <el-button @click="disagree">确定</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
     <el-dialog title="报修明细" :visible.sync="dialogVisible" width="35%">
       <el-form v-if="repair != null" label-position="left" label-width="100px">
         <el-row :gutter="20">
@@ -48,8 +59,8 @@
         </el-row>
         <el-row :gutter="20">
           <el-col :span="22" :offset="1">
-            <el-form-item label="产线">
-              <el-input v-model="repair.production_line_name" readonly />
+            <el-form-item label="健康程度">
+              <el-input v-model="repair.life_percent" readonly />
             </el-form-item>
           </el-col>
         </el-row>
@@ -91,7 +102,12 @@ export default {
       page_number: 1,
       code_list_filter: [],
       dialogVisible: false,
-      repair: null
+      repair: null,
+      disagreeVisible: false,
+      disagreeId: '',
+      disagreeForm: {
+        reason: ''
+      }
     }
   },
   computed: {
@@ -123,9 +139,49 @@ export default {
       }).then(
         response => {
           const { data } = response
+          console.log(data)
           this.repair_list = data.data
           this.all = data.all
           this.$message.success(`查询到${data.all}条记录`)
+        }
+      )
+    },
+    agree(row) {
+      this.$ajax.get('/api/high/handle_repair_submit', {
+        params: {
+          id: row.id,
+          submit_id: this.id,
+          state: true
+        }
+      }).then(
+        response => {
+          this.$message.success('处理成功！')
+          this.getData()
+        }
+      )
+    },
+    disagree2(row) {
+      this.disagreeVisible = true
+      this.disagreeId = row.id
+    },
+    disagree() {
+      this.$refs['reason'].validate(
+        (valid) => {
+          if (valid) {
+            this.$ajax.get('/api/high/handle_repair_submit', {
+              params: {
+                id: this.disagreeId,
+                submit_id: this.id,
+                state: false,
+                reason: this.disagreeForm.reason
+              }
+            }).then(
+              response => {
+                this.$message.success('处理成功！')
+                this.getData()
+              }
+            )
+          }
         }
       )
     },

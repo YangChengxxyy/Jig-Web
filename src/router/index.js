@@ -122,11 +122,6 @@ high
         path: 'history',
         component: () => import('@/views/high/repair/history/index'),
         meta: { title: '历史报修记录', role: ['high'] }
-      },
-      {
-        path: 'statistics',
-        component: () => import('@/views/high/repair/statistics/index'),
-        meta: { title: '报修统计', role: ['high'] }
       }
     ]
   },
@@ -291,19 +286,9 @@ manager
     meta: { title: '工夹具管理', icon: 'jig', role: ['admin'] },
     children: [
       {
-        path: 'entity',
-        component: () => import('@/views/admin/jig/entity/index'),
-        meta: { title: '工夹具实体', role: ['admin'] }
-      },
-      {
         path: 'definition',
         component: () => import('@/views/admin/jig/definition/index'),
         meta: { title: '工夹具定义', role: ['admin'] }
-      },
-      {
-        path: 'model',
-        component: () => import('@/views/admin/jig/model/index'),
-        meta: { title: '模组&料号信息', role: ['admin'] }
       }
     ]
   },
