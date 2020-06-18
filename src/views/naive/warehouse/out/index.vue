@@ -49,7 +49,13 @@
             </template>
             <el-menu-item-group>
               <template slot="title">存放区域</template>
-              <el-menu-item v-for="(location,l_index) in item.location_id" :key="item.jig_cabinet_id+location" :class="{'is-active':item.jig_cabinet_id === jig_cabinet_id && location === jig_location_id}" :index="index+1+''+'-'+l_index+1+''" @click="get_jig_list_by_location(item.jig_cabinet_id,location)">
+              <el-menu-item
+                v-for="(location,l_index) in item.location_id"
+                :key="item.jig_cabinet_id+location"
+                :class="{'is-active':item.jig_cabinet_id === jig_cabinet_id && location === jig_location_id}"
+                :index="index+1+''+'-'+l_index+1+''"
+                @click="get_jig_list_by_location(item.jig_cabinet_id,location)"
+              >
                 <span>{{ location }}</span>
               </el-menu-item>
             </el-menu-item-group>
@@ -100,7 +106,14 @@
         />
       </el-col>
     </el-row>
-    <el-drawer ref="input_jig_drawer" title="工夹具入库" :visible.sync="show_in_jig_drawer" direction="rtl" :size="'550px'" @before-close="clean_in_jig_form()">
+    <el-drawer
+      ref="input_jig_drawer"
+      title="工夹具入库"
+      :visible.sync="show_in_jig_drawer"
+      direction="rtl"
+      :size="'550px'"
+      @before-close="clean_in_jig_form()"
+    >
       <el-form ref="in_jig_form" label-width="100px" label-position="left" :model="in_jig_form">
         <el-row>
           <el-col :span="20" :offset="2">
@@ -121,7 +134,12 @@
         </el-row>
         <el-row v-for="(item,index) in in_jig_form.code" :key="index" :gutter="10">
           <el-col :span="9" :offset="2">
-            <el-form-item :label="'工夹具代码'+(index+1)" label-width="100px" :rules="[{required:true,message:'此项不得为空',trigger:'change'}]" :prop="'code['+index+']'">
+            <el-form-item
+              :label="'工夹具代码'+(index+1)"
+              label-width="100px"
+              :rules="[{required:true,message:'此项不得为空',trigger:'change'}]"
+              :prop="'code['+index+']'"
+            >
               <el-select v-model="in_jig_form.code[index]">
                 <el-option v-for="item2 in code_list" :key="item2" :value="item2" />
               </el-select>
@@ -137,7 +155,12 @@
                 {type: 'number',min: 1,max:in_jig_form.real_free_bin_count_list[index],message: '请符合剩余bin位数',trigger: 'change'}]"
               :prop="'count['+index+']'"
             >
-              <el-input-number v-model.number="in_jig_form.count[index]" controls-position="right" size="medium" style="width: 100%" />
+              <el-input-number
+                v-model.number="in_jig_form.count[index]"
+                controls-position="right"
+                size="medium"
+                style="width: 100%"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="5">
@@ -145,7 +168,11 @@
             <el-button v-if="index === in_jig_form.code.length-1" icon="el-icon-plus" circle @click="add" />
           </el-col>
           <el-col :span="12" :offset="2">
-            <el-form-item label="存放位置" :rules="[{required:true,message:'此项不得为空',trigger:'change'}]" :prop="'jig_position['+index+']'">
+            <el-form-item
+              label="存放位置"
+              :rules="[{required:true,message:'此项不得为空',trigger:'change'}]"
+              :prop="'jig_position['+index+']'"
+            >
               <el-cascader
                 v-model="in_jig_form.jig_position[index]"
                 :options="warehouse_label"
@@ -154,7 +181,9 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <div v-if="in_jig_form.free_bin_count_list[index] !== 'x'" class="font-warning label-font-style">剩余bin位数量: {{ in_jig_form.free_bin_count_list[index] }}</div>
+            <div v-if="in_jig_form.free_bin_count_list[index] !== 'x'" class="font-warning label-font-style">剩余bin位数量:
+              {{ in_jig_form.free_bin_count_list[index] }}
+            </div>
           </el-col>
         </el-row>
         <el-row>
@@ -179,11 +208,7 @@
         </el-row>
       </el-form>
     </el-drawer>
-    <el-dialog
-      title="工夹具信息"
-      :visible.sync="show_jig_info"
-      width="30%"
-    >
+    <el-dialog title="工夹具信息" :visible.sync="show_jig_info" width="30%">
       <template v-if="jig_entity_list.length > 0">
         <el-form ref="form" :model="jig_entity" label-width="150px" label-position="left">
           <el-row :gutter="10">
@@ -217,8 +242,16 @@
           <el-row :gutter="10">
             <el-col :span="20" :offset="2">
               <el-form-item label="存放位置">
-                <el-input v-if="jig_entity.bin === null" :value="jig_entity.jig_cabinet_id+'-'+jig_entity.location_id" readonly />
-                <el-input v-else-if="jig_entity.bin != null" :value="jig_entity.jig_cabinet_id+'-'+jig_entity.location_id+'-'+jig_entity.bin" readonly />
+                <el-input
+                  v-if="jig_entity.bin === null"
+                  :value="jig_entity.jig_cabinet_id+'-'+jig_entity.location_id"
+                  readonly
+                />
+                <el-input
+                  v-else-if="jig_entity.bin != null"
+                  :value="jig_entity.jig_cabinet_id+'-'+jig_entity.location_id+'-'+jig_entity.bin"
+                  readonly
+                />
               </el-form-item>
             </el-col>
             <el-col :span="2">
@@ -239,7 +272,7 @@
         <el-collapse style="height: 350px">
           <el-scrollbar style="height:100%">
             <el-collapse-item title="追溯出入库历史" name="1">
-              <el-timeline v-if="jig_entity.out_and_in_history_list.length > 0">
+              <el-timeline v-if="jig_entity.out_and_in_history_list != null">
                 <el-timeline-item
                   v-for="(item, index) in jig_entity.out_and_in_history_list"
                   :key="index"
@@ -271,7 +304,12 @@
     </el-dialog>
     <el-dialog title="修改存放位置" :visible.sync="show_change_jig_position_dialog" width="25%">
       <template>
-        <el-form ref="change_jig_position_form" :model="change_jig_position_form" label-width="100px" label-position="left">
+        <el-form
+          ref="change_jig_position_form"
+          :model="change_jig_position_form"
+          label-width="100px"
+          label-position="left"
+        >
           <el-form-item label="存放位置" :rules="[{required:true,message:'此项不得为空',trigger:'change'}]" prop="jig_position">
             <el-cascader
               v-model="change_jig_position_form.jig_position"
@@ -292,7 +330,13 @@
     </el-dialog>
     <el-dialog title="出库" :visible.sync="show_outgo_jig" width="30%">
       <template v-if="jig_entity_list.length > 0">
-        <el-form ref="outgo_form" :model="outgo_form" :rules="outgo_form_rules" label-width="150px" label-position="left">
+        <el-form
+          ref="outgo_form"
+          :model="outgo_form"
+          :rules="outgo_form_rules"
+          label-width="150px"
+          label-position="left"
+        >
           <el-row :gutter="10">
             <el-col :span="20" :offset="2">
               <el-form-item label="选择工夹具">
@@ -311,7 +355,7 @@
             <el-col :span="20" :offset="2">
               <el-form-item label="刷卡或输入工号" prop="user_id">
                 <el-input v-model.trim="outgo_form.user_id" @change="get_user_name" />
-                <div v-if="user_name != ''" class="form-font-alert-success">{{ user_name }} </div>
+                <div v-if="user_name != ''" class="form-font-alert-success">{{ user_name }}</div>
               </el-form-item>
             </el-col>
           </el-row>
@@ -341,7 +385,7 @@
     </el-dialog>
     <el-dialog title="检点" :visible.sync="show_maintenance_jig_dialog" width="30%">
       <template v-if="maintenance_jig_list.length > 0">
-        <el-form ref="form" :model="maintenance_jig_detail" label-width="150px" label-position="left">
+        <el-form ref="maintenance_form" :model="maintenance_form" label-width="150px" label-position="left">
           <el-row :gutter="10">
             <el-col :span="20" :offset="2">
               <el-form-item label="选择工夹具">
@@ -363,21 +407,87 @@
             </el-col>
             <el-col :span="20" :offset="2">
               <h4>以下选项是否无误:</h4>
-              <el-checkbox v-model="check_all" :indeterminate="isIndeterminate" @change="handleCheckAllChange">全选</el-checkbox>
+              <el-checkbox v-model="check_all" :indeterminate="isIndeterminate" @change="handleCheckAllChange">全选
+              </el-checkbox>
               <template>
-                <el-checkbox-group v-model="maintenance_check_list">
-                  <el-checkbox v-for="type in maintenance_type_list" :key="type.id" :label="type.id" style="display: block;margin-bottom: 2px">{{ type.description }}</el-checkbox>
+                <el-checkbox-group v-model="maintenance_form.maintenance_check_list">
+                  <el-checkbox
+                    v-for="type in maintenance_type_list"
+                    :key="type.id"
+                    :label="type.id"
+                    style="display: block;margin-bottom: 2px"
+                  >{{ type.description }}
+                  </el-checkbox>
                 </el-checkbox-group>
               </template>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="4" :offset="2">
+              <el-button type="danger" plain @click="get_jig_trouble_percent">故障概率</el-button>
+            </el-col>
+            <el-col :span="16">
+              <el-form-item>
+                <div class="font-info">{{ maintenance_form.trouble_percent }}</div>
+              </el-form-item>
             </el-col>
           </el-row>
         </el-form>
       </template>
       <el-divider />
+      <el-collapse style="height: 300px">
+        <el-scrollbar style="height:100%">
+          <el-collapse-item title="追溯检点历史" name="1">
+            <el-timeline
+              v-if="maintenance_jig_detail != null && maintenance_jig_detail.maintenance_history_list.length > 0"
+            >
+              <el-timeline-item
+                v-for="(item, index) in maintenance_jig_detail.maintenance_history_list"
+                :key="index"
+                :icon="item.icon"
+                :type="item.type"
+                :timestamp="item.check_time"
+              >
+                <template v-if="item.is_repair === 0">
+                  检点人:{{ item.check_name }} <br>
+                  检修问题:
+                  <template v-if="item.reason_description.length > 0">
+                    <template v-for="(reason, i1) in item.reason_description">
+                      <div :key="reason" class="font-warning">{{ i1+1 }}.{{ reason }}</div>
+                    </template>
+                  </template>
+                  <template v-else>
+                    正常<br>
+                  </template>
+                  报修情况: 无需报修
+                </template>
+                <template v-if="item.is_repair === 1">
+                  检点人:{{ item.check_name }} <br>
+                  检修问题:
+                  <template v-if="item.reason_description.length > 0">
+                    <template v-for="(reason, i2) in item.reason_description">
+                      <div :key="reason" class="font-warning">{{ i2+1 }}.{{ reason }}</div>
+                    </template>
+                  </template>
+                  <template v-else>
+                    <div class="font-success">正常<br></div>
+                  </template>
+                  报修情况: 已报修
+                </template>
+              </el-timeline-item>
+            </el-timeline>
+            <div v-else class="font-info">暂无该工夹具检点历史记录</div>
+          </el-collapse-item>
+        </el-scrollbar>
+      </el-collapse>
+      <el-divider />
       <span slot="footer" class="dialog-footer">
         <el-button @click="show_maintenance_jig_dialog = false">取 消</el-button>
-        <el-popconfirm title="确认已经检查无误了吗？" @onConfirm="maintenance_jig">
+        <el-popconfirm title="确认已经检查无误了吗？" @onConfirm="maintenance_jig(0)">
           <el-button slot="reference" type="primary">检点</el-button>
+        </el-popconfirm>
+        <el-popconfirm title="确认已经检查无误并且需要报修吗？" @onConfirm="maintenance_jig(1)">
+          <el-button slot="reference" type="warning">检点并报修</el-button>
         </el-popconfirm>
       </span>
     </el-dialog>
@@ -386,6 +496,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
+
 export default {
   name: 'Index',
   data: function() {
@@ -461,7 +572,11 @@ export default {
       maintenance_jig_list: [], // 要检点的同一种工夹具实体list
       maintenance_seq_id: '', // 选择的seq_id
       maintenance_jig_detail: null, // 要检点的工夹具实体
-      maintenance_check_list: [], // 选择无误的检点类型数组
+      maintenance_form: {
+        trouble_percent: '',
+        maintenance_check_list: [] // 选择 无误的检点类型数组,绑定的model
+      },
+      maintenance_reason_list: [], // 检点时的有问题的原因list
       maintenance_id_list: [], // 检点类型id数组
       isIndeterminate: true, // 是否全选
       check_all: false // 是否全选
@@ -476,48 +591,51 @@ export default {
     },
     in_jig_form_jig_position: function() {
       return this.in_jig_form.jig_position
+    },
+    get_maintenance_check_list: function() {
+      return this.maintenance_form.maintenance_check_list
     }
     /* g_free_bin_count_map: function() {
-      var map = new Map()
-      this.warehouse.forEach(
-        (jig_cabinet, i) => {
-          jig_cabinet.location_id_list.forEach(
-            (location, i2) => {
-              map.set(jig_cabinet.jig_cabinet_id + '-' + location.location_id, location.free_bin_count)
-            }
-          )
-        }
-      )
-      return map
-    },
-     free_bin_count_map: function() {
-      var map = new Map()
-      this.warehouse.forEach(
-        (jig_cabinet, i) => {
-          jig_cabinet.location_id_list.forEach(
-            (location, i2) => {
-              map.set(jig_cabinet.jig_cabinet_id + '-' + location.location_id, location.free_bin_count)
-            }
-          )
-        }
-      )
-      return map
-    } */
+        var map = new Map()
+        this.warehouse.forEach(
+          (jig_cabinet, i) => {
+            jig_cabinet.location_id_list.forEach(
+              (location, i2) => {
+                map.set(jig_cabinet.jig_cabinet_id + '-' + location.location_id, location.free_bin_count)
+              }
+            )
+          }
+        )
+        return map
+      },
+       free_bin_count_map: function() {
+        var map = new Map()
+        this.warehouse.forEach(
+          (jig_cabinet, i) => {
+            jig_cabinet.location_id_list.forEach(
+              (location, i2) => {
+                map.set(jig_cabinet.jig_cabinet_id + '-' + location.location_id, location.free_bin_count)
+              }
+            )
+          }
+        )
+        return map
+      } */
   },
   watch: {
     /* in_jig_form: {
-      handler(newValue, oldValue) {
-        this.code_list = this.all_code_list
-        newValue.code.forEach(
-          (v, i) => {
-            this.code_list = this.code_list.filter(
-              (item) => {
-                return item !== v
-              })
-          })
-      },
-      deep: true
-    },*/
+        handler(newValue, oldValue) {
+          this.code_list = this.all_code_list
+          newValue.code.forEach(
+            (v, i) => {
+              this.code_list = this.code_list.filter(
+                (item) => {
+                  return item !== v
+                })
+            })
+        },
+        deep: true
+      },*/
     in_jig_form_count: {
       handler(newValue, oldValue) {
         newValue.forEach(
@@ -540,10 +658,10 @@ export default {
               for (var k = 0; k < this.warehouse_label[j].children.length; k++) {
                 if (v[0] === this.warehouse_label[j].value && v[1] === this.warehouse_label[j].children[k].value) {
                   /* this.warehouse_label[j].children = this.warehouse_label[j].children.filter(
-                    item => {
-                      return item !== this.warehouse_label[j].children[k]
-                    }
-                  ) */
+                      item => {
+                        return item !== this.warehouse_label[j].children[k]
+                      }
+                    ) */
                   this.warehouse_label[j].children[k].disabled = true
                 }
               }
@@ -595,6 +713,32 @@ export default {
           list[i].type = 'warning'
         }
       }
+    },
+    maintenance_jig_detail() {
+      for (var i = 0; i < this.maintenance_jig_detail.maintenance_history_list.length; i++) {
+        var m_list = this.maintenance_jig_detail.maintenance_history_list
+        if (m_list[i].is_repair === 0) { // 无需报修
+          m_list[i].icon = 'el-icon-check'
+          m_list[i].type = 'success'
+        } else if (m_list[i].is_repair === 1) { // 需要报修
+          m_list[i].icon = 'el-icon-warning-outline'
+          m_list[i].type = 'warning'
+        }
+      }
+    },
+    get_maintenance_check_list() {
+      this.maintenance_reason_list = []
+      for (var i = 0; i < this.maintenance_id_list.length; i++) {
+        this.maintenance_reason_list[i] = this.maintenance_id_list[i]
+      }
+      for (var j = 0; j < this.maintenance_form.maintenance_check_list.length; j++) {
+        for (var k = 0; k < this.maintenance_reason_list.length; k++) {
+          if (this.maintenance_form.maintenance_check_list[j] === this.maintenance_reason_list[k]) {
+            this.maintenance_reason_list.splice(k, 1)
+            break
+          }
+        }
+      }
     }
   },
   created() {
@@ -607,8 +751,7 @@ export default {
   },
   methods: {
     get_production_line_list: function() {
-      this.$ajax.get('/api/get_production_line_list', {
-      }).then(
+      this.$ajax.get('/api/get_production_line_list', {}).then(
         response => {
           this.production_line_list = response.data
         }
@@ -619,22 +762,46 @@ export default {
       this.all_warehouse_label = []
       this.change_position_warehouse_label = []
       for (var i = 0; i < this.warehouse.length; i++) {
-        this.warehouse_label.push({ value: this.warehouse[i].jig_cabinet_id, label: this.warehouse[i].jig_cabinet_id, children: [] }) // 将warehouse数据结构转换成适用于级联选择器的数据结构
-        this.all_warehouse_label.push({ value: this.warehouse[i].jig_cabinet_id, label: this.warehouse[i].jig_cabinet_id, children: [] })
-        this.change_position_warehouse_label.push({ value: this.warehouse[i].jig_cabinet_id, label: this.warehouse[i].jig_cabinet_id, children: [] }) // 将warehouse数据结构转换成适用于级联选择器的数据结构 =》 改变存储位置，需要选择Bin位
+        this.warehouse_label.push({
+          value: this.warehouse[i].jig_cabinet_id,
+          label: this.warehouse[i].jig_cabinet_id,
+          children: []
+        }) // 将warehouse数据结构转换成适用于级联选择器的数据结构
+        this.all_warehouse_label.push({
+          value: this.warehouse[i].jig_cabinet_id,
+          label: this.warehouse[i].jig_cabinet_id,
+          children: []
+        })
+        this.change_position_warehouse_label.push({
+          value: this.warehouse[i].jig_cabinet_id,
+          label: this.warehouse[i].jig_cabinet_id,
+          children: []
+        }) // 将warehouse数据结构转换成适用于级联选择器的数据结构 =》 改变存储位置，需要选择Bin位
         for (var j = 0; j < this.warehouse[i].location_id_list.length; j++) {
-          this.warehouse_label[i].children.push({ value: this.warehouse[i].location_id_list[j].location_id, label: this.warehouse[i].location_id_list[j].location_id })
-          this.all_warehouse_label[i].children.push({ value: this.warehouse[i].location_id_list[j].location_id, label: this.warehouse[i].location_id_list[j].location_id })
-          this.change_position_warehouse_label[i].children.push({ value: this.warehouse[i].location_id_list[j].location_id, label: this.warehouse[i].location_id_list[j].location_id, children: [] })
+          this.warehouse_label[i].children.push({
+            value: this.warehouse[i].location_id_list[j].location_id,
+            label: this.warehouse[i].location_id_list[j].location_id
+          })
+          this.all_warehouse_label[i].children.push({
+            value: this.warehouse[i].location_id_list[j].location_id,
+            label: this.warehouse[i].location_id_list[j].location_id
+          })
+          this.change_position_warehouse_label[i].children.push({
+            value: this.warehouse[i].location_id_list[j].location_id,
+            label: this.warehouse[i].location_id_list[j].location_id,
+            children: []
+          })
           for (var k = 0; k < this.warehouse[i].location_id_list[j].free_bin_list.length; k++) {
-            this.change_position_warehouse_label[i].children[j].children.push({ value: this.warehouse[i].location_id_list[j].free_bin_list[k], label: this.warehouse[i].location_id_list[j].free_bin_list[k] })
+            this.change_position_warehouse_label[i].children[j].children.push({
+              value: this.warehouse[i].location_id_list[j].free_bin_list[k],
+              label: this.warehouse[i].location_id_list[j].free_bin_list[k]
+            })
           }
         }
       }
     },
     get_warehouse: function() {
-      this.$ajax.get('/api/get_jig_cabinet_list', {
-      }).then(
+      this.$ajax.get('/api/get_jig_cabinet_list', {}).then(
         res => {
           this.warehouse = res.data
           this.get_warehouse_label()
@@ -697,8 +864,7 @@ export default {
     },
     get_location_list: function() {
       this.$ajax.get('/api/naive/get_location_list', {
-        params: {
-        }
+        params: {}
       }).then(
         response => {
           this.location_list = response.data
@@ -856,8 +1022,7 @@ export default {
       })
     },
     get_maintenance_type_list: function() {
-      this.$ajax.get('/api/get_maintenance_type_list', {
-      }).then(
+      this.$ajax.get('/api/get_maintenance_type_list', {}).then(
         response => {
           this.maintenance_type_list = response.data
           for (var i = 0; i < this.maintenance_type_list.length; i++) {
@@ -885,33 +1050,37 @@ export default {
         }
       )
     },
-    maintenance_jig: function() {
-      this.show_maintenance_jig_dialog = false
-      this.maintenance_check_list.sort(function(a, b) { return a.localeCompare(b) })
-
-      var reason_list = []; var reason = ''
-      for (var i = 0; i < this.maintenance_id_list.length; i++) {
-        reason_list[i] = this.maintenance_id_list[i]
-      }
-      for (var j = 0; j < this.maintenance_check_list.length; j++) {
-        for (var k = 0; k < reason_list.length; k++) {
-          if (this.maintenance_check_list[j] === reason_list[k]) {
-            reason_list.splice(k, 1)
-            break
-          }
+    get_jig_trouble_percent: function() { // 获取工夹具故障概率
+      this.$ajax.get('/api/naive/get_jig_trouble_percent', {
+        params: {
+          reason: this.maintenance_reason_list.join('|'),
+          code: this.maintenance_jig_detail.code,
+          seq_id: this.maintenance_jig_detail.seq_id
         }
+      }).then(
+        response => {
+          this.maintenance_form.trouble_percent = response.data
+        }
+      )
+    },
+    maintenance_jig: function(is_repair) {
+      this.show_maintenance_jig_dialog = false
+      this.maintenance_form.maintenance_check_list.sort(function(a, b) {
+        return a.localeCompare(b)
+      })
+      var reason = ''
+      if (this.maintenance_reason_list.length > 0) {
+        reason += this.maintenance_reason_list[0]
       }
-      if (reason_list.length > 0) {
-        reason += reason_list[0]
-      }
-      for (var m = 1; m < reason_list.length; m++) {
-        reason += '|' + reason_list[m]
+      for (var m = 1; m < this.maintenance_reason_list.length; m++) {
+        reason += '|' + this.maintenance_reason_list[m]
       }
       this.$ajax.get('/api/naive/maintenance_jig', {
         params: {
           code: this.maintenance_jig_detail.code,
           seq_id: this.maintenance_jig_detail.seq_id,
           reason: reason,
+          is_repair: is_repair,
           user_id: this.id
         }
       }).then(
@@ -920,9 +1089,16 @@ export default {
             this.$message.error('服务器错误!')
           } else {
             this.$message.success('检点成功!')
+            this.clear_maintenance_form()
           }
         }
       )
+    },
+    clear_maintenance_form: function() {
+      this.maintenance_form = {
+        maintenance_check_list: [],
+        trouble_percent: ''
+      }
     },
     get_code_list: function() {
       this.$ajax('/api/get_code_list').then(
@@ -984,10 +1160,11 @@ export default {
         .then(_ => {
           done()
         })
-        .catch(_ => {})
+        .catch(_ => {
+        })
     },
     handleCheckAllChange(val) {
-      this.maintenance_check_list = val ? this.maintenance_id_list : []
+      this.maintenance_form.maintenance_check_list = val ? this.maintenance_id_list : []
       this.isIndeterminate = false
     },
     handleCheckedCitiesChange(value) {
@@ -1003,28 +1180,34 @@ export default {
 </script>
 
 <style scoped>
-  .box-card{
+  .box-card {
     width: 96%;
     margin: 2% 2%
   }
-  .font-success{
+
+  .font-success {
     color: #67C23A;
   }
-  .font-error{
+
+  .font-error {
     color: #F56C6C;
   }
-  .font-warning{
+
+  .font-warning {
     color: #E6A23C;
   }
-  .font-info{
+
+  .font-info {
     color: #909399;
   }
-  .label-font-style{
+
+  .label-font-style {
     vertical-align: middle;
     line-height: 40px;
     font-size: 14px
   }
-  .form-font-alert-success{
+
+  .form-font-alert-success {
     color: #67C23A;
     font-size: 12px;
     line-height: 1;
@@ -1033,7 +1216,8 @@ export default {
     top: 100%;
     left: 0;
   }
-  .form-font-alert-error{
+
+  .form-font-alert-error {
     color: #F56C6C;
     font-size: 12px;
     line-height: 1;
@@ -1042,7 +1226,8 @@ export default {
     top: 100%;
     left: 0;
   }
-  .border-color-error{
+
+  .border-color-error {
     border-color: #F56C6C;
   }
 </style>
