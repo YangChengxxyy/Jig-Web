@@ -739,6 +739,9 @@ export default {
           }
         }
       }
+    },
+    show_maintenance_jig_dialog() { // 监管是否显示检点工夹具的页面,关闭或者打开时清空
+      this.clear_maintenance_form()
     }
   },
   created() {
