@@ -50,7 +50,7 @@
       <el-table-column prop="id" label="id" />
       <el-table-column prop="name" label="姓名" />
       <el-table-column prop="workcell" label="工作部门" />
-      <el-table-column prop="type" label="职位" />
+      <el-table-column prop="position" label="职位" />
       <el-table-column
         label="操作"
         width="100"
@@ -146,7 +146,6 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-
 export default {
   name: 'Index',
   data: function() {
