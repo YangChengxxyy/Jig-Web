@@ -191,7 +191,7 @@ export default {
       return url
     },
     allPage() {
-      let url = 'http://localhost:8080/api/naive/download_all_outgoing_list'
+      let url = devServer + '/api/naive/download_all_outgoing_list'
       const params = {
         code: this.sel_form.code,
         name: this.sel_form.name,

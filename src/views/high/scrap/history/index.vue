@@ -45,8 +45,8 @@
         <el-col :span="11">
           <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
           <el-button icon="el-icon-delete" @click="clearForm()">清空</el-button>
-          <el-button :disabled="history_list.length === 0">导出本页</el-button>
-          <el-button :disabled="history_list.length === 0">导出全部</el-button>
+          <el-link :href="onePage" :disabled="history_list.length === 0"><el-button>导出本页</el-button></el-link>
+          <el-link :href="allPage" :disabled="history_list.length === 0"><el-button>导出全部</el-button></el-link>
         </el-col>
       </el-row>
       <el-row :gutter="20">
@@ -82,7 +82,9 @@
 
 <script>
 import { mapGetters } from 'vuex'
-
+import defaultSettings from '@/settings'
+const { devServer } = defaultSettings
+import { getUrl } from '@/utils'
 export default {
   name: 'Index',
   data() {
@@ -102,8 +104,41 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'id'
-    ])
+      'id',
+      'token'
+    ]),
+    onePage() {
+      const url = devServer + '/api/high/download_one_scrap_history'
+      const a = {
+        submit_id: this.id,
+        code: this.form.code,
+        seq_id: this.form.seq_id,
+        scrap_reason: this.form.scrap_reason,
+        status: this.form.status,
+        start_date: this.form.date[0],
+        end_date: this.form.date[1],
+        page_number: this.page_number,
+        page_size: this.page_size,
+        file_name: `page-${this.page_number}.xls`,
+        token: this.token.token
+      }
+      return url + '?' + getUrl(a)
+    },
+    allPage() {
+      const url = devServer + '/api/high/download_all_scrap_history'
+      const a = {
+        submit_id: this.id,
+        code: this.form.code,
+        seq_id: this.form.seq_id,
+        scrap_reason: this.form.scrap_reason,
+        status: this.form.status,
+        start_date: this.form.date[0],
+        end_date: this.form.date[1],
+        file_name: `page-${this.page_number}.xls`,
+        token: this.token.token
+      }
+      return url + '?' + getUrl(a)
+    }
   },
   methods: {
     getData() {

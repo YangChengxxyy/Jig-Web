@@ -52,8 +52,8 @@
         <el-col :span="11" :offset="12">
           <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
           <el-button icon="el-icon-delete" @click="clearForm()">清空</el-button>
-          <el-link><el-button>导出本页</el-button></el-link>
-          <el-link><el-button>导出全部</el-button></el-link>
+          <el-link :href="onePage" :disabled="history_list.length === 0"><el-button>导出本页</el-button></el-link>
+          <el-link :href="allPage" :disabled="history_list.length === 0"><el-button>导出全部</el-button></el-link>
         </el-col>
       </el-row>
     </el-form>
@@ -151,7 +151,8 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'id'
+      'id',
+      'token'
     ]),
     onePage() {
       const url = devServer + '/api/high/download_one_repair_history'
@@ -165,7 +166,8 @@ export default {
         end_date: this.form.date[1],
         page_number: this.page_number,
         page_size: this.page_size,
-        file_name: `page-${this.page_number}.xls`
+        file_name: `page-${this.page_number}.xls`,
+        token: this.token.token
       }
       return url + '?' + getUrl(a)
     },
@@ -179,7 +181,8 @@ export default {
         status: this.form.status,
         start_date: this.form.date[0],
         end_date: this.form.date[1],
-        file_name: `page-${this.page_number}.xls`
+        file_name: 'page-all.xls',
+        token: this.token.token
       }
       return url + '?' + getUrl(a)
     }
