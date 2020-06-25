@@ -191,7 +191,9 @@
 </template>
 <script>
 import { getUrl } from '@/utils'
+import defaultSettings from '@/settings'
 
+const { devServer } = defaultSettings
 export default {
   name: 'Index',
   data: function() {
@@ -215,7 +217,7 @@ export default {
   },
   computed: {
     onePage() {
-      let url = 'http://localhost:8080/api/naive/download_one_jig_definition'
+      let url = devServer + '/api/naive/download_one_jig_definition'
       const params = {
         code: this.form.code,
         name: this.form.name,
@@ -230,7 +232,7 @@ export default {
       return url
     },
     allPage() {
-      let url = 'http://localhost:8080/api/naive/download_one_jig_definition'
+      let url = devServer + '/api/naive/download_one_jig_definition'
       const params = {
         code: this.form.code,
         name: this.form.name,

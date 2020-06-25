@@ -52,8 +52,8 @@
         <el-col :span="11" :offset="12">
           <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
           <el-button icon="el-icon-delete" @click="clearForm()">清空</el-button>
-          <el-button>导出本页</el-button>
-          <el-button>导出全部</el-button>
+          <el-link><el-button>导出本页</el-button></el-link>
+          <el-link><el-button>导出全部</el-button></el-link>
         </el-col>
       </el-row>
     </el-form>
@@ -126,7 +126,9 @@
 
 <script>
 import { mapGetters } from 'vuex'
-
+import defaultSettings from '@/settings'
+const { devServer } = defaultSettings
+import { getUrl } from '@/utils'
 export default {
   name: 'Index',
   data() {
@@ -150,7 +152,37 @@ export default {
   computed: {
     ...mapGetters([
       'id'
-    ])
+    ]),
+    onePage() {
+      const url = devServer + '/api/high/download_one_repair_history'
+      const a = {
+        id: this.id,
+        code: this.form.code,
+        seq_id: this.form.seq_id,
+        submit_name: this.form.submit_name,
+        status: this.form.status,
+        start_date: this.form.date[0],
+        end_date: this.form.date[1],
+        page_number: this.page_number,
+        page_size: this.page_size,
+        file_name: `page-${this.page_number}.xls`
+      }
+      return url + '?' + getUrl(a)
+    },
+    allPage() {
+      const url = devServer + '/api/high/download_all_repair_history'
+      const a = {
+        id: this.id,
+        code: this.form.code,
+        seq_id: this.form.seq_id,
+        submit_name: this.form.submit_name,
+        status: this.form.status,
+        start_date: this.form.date[0],
+        end_date: this.form.date[1],
+        file_name: `page-${this.page_number}.xls`
+      }
+      return url + '?' + getUrl(a)
+    }
   },
   methods: {
     getData() {
