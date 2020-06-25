@@ -273,7 +273,7 @@
         <el-collapse style="height: 350px">
           <el-scrollbar style="height:100%">
             <el-collapse-item title="追溯出入库历史" name="1">
-              <el-timeline v-if="jig_entity.out_and_in_history_list != null">
+              <el-timeline v-if="jig_entity.out_and_in_history_list.length > 0">
                 <el-timeline-item
                   v-for="(item, index) in jig_entity.out_and_in_history_list"
                   :key="index"
@@ -297,7 +297,7 @@
                   </template>
                 </el-timeline-item>
               </el-timeline>
-              <div v-else class="font-info">暂无该工夹具出入库历史记录</div>
+              <div v-else="" class="font-info">暂无该工夹具出入库历史记录</div>
             </el-collapse-item>
           </el-scrollbar>
         </el-collapse>
