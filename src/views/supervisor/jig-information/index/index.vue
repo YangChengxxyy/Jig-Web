@@ -64,12 +64,12 @@
           <el-table-column label="操作">
             <template slot-scope="scope">
               <el-button type="primary" @click="get_jig_definition(scope.row)">编辑</el-button>
-              <el-popconfirm
+              <!-- <el-popconfirm
                 title="确定删除该工夹具信息吗？"
                 icon-color="red"
               >
                 <el-button slot="reference" type="danger">删除</el-button>
-              </el-popconfirm>
+              </el-popconfirm> -->
             </template>
           </el-table-column>
         </el-table>
@@ -106,7 +106,7 @@
           <el-col :span="20" :offset="2">
             <el-form-item label="所属部门">
               <el-select v-model="jig_definition.workcell_id" style="width: 100%">
-                <el-option v-for="item in workcell_list" :key="item.id" :value="item.id" :label="item.workcell" />
+                <el-option v-for="item in workcell_list" :key="'jd-workcell-'+item.id" :value="item.id" :label="item.workcell" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -115,7 +115,7 @@
           <el-col :span="20" :offset="2">
             <el-form-item label="工夹具类别">
               <el-select v-model="jig_definition.family" style="width: 100%">
-                <el-option v-for="item in jig_family_list" :key="item.id" :value="item.id" :label="item.family" />
+                <el-option v-for="item in jig_family_list" :key="'jd-family-'+item.id" :value="item.id" :label="item.family" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -124,7 +124,7 @@
           <el-col :span="20" :offset="2">
             <el-form-item label="工夹具模组">
               <el-select v-model="jig_definition.model" style="width: 100%">
-                <el-option v-for="item in model_list" :key="item.id" :value="item.id" :label="item.model" />
+                <el-option v-for="item in model_list" :key="'jd-model-'+item.model" :value="item.model" :label="item.model" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -133,7 +133,7 @@
           <el-col :span="20" :offset="2">
             <el-form-item label="工夹具料号">
               <el-select v-model="edit_jig_part_no" multiple placeholder="请选择料号" style="width: 100%">
-                <el-option v-for="item in jig_definition.part_no.split('|')" :key="item" :label="item" :value="item" />
+                <el-option v-for="item in part_no_list" :key="'part_no-'+item.id" :label="item.part_no" :value="item.part_no" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -148,42 +148,49 @@
         <el-row :gutter="10">
           <el-col :span="20" :offset="2">
             <el-form-item label="每条产线所需">
-              <el-input v-model.trim="jig_definition.upl" />
+              <el-input type="number" v-model.trim="jig_definition.upl" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="10">
+          <el-col :span="20" :offset="2">
+            <el-form-item label="检点周期">
+              <el-input type="number" v-model.trim="jig_definition.pm_period" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="10">
           <el-col :span="20" :offset="2">
             <el-form-item label="责任人">
-              <el-input v-model.trim="jig_definition.owner_name" />
+              <el-input v-model.trim="jig_definition.owner_name" disabled />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="10">
           <el-col :span="20" :offset="2">
             <el-form-item label="录入人">
-              <el-input v-model.trim="jig_definition.rec_by_name" />
+              <el-input v-model.trim="jig_definition.rec_by_name" disabled />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="10">
           <el-col :span="20" :offset="2">
             <el-form-item label="录入时间">
-              <el-input v-model.trim="jig_definition.rec_time" />
+              <el-input v-model.trim="jig_definition.rec_time" disabled />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="10">
           <el-col :span="20" :offset="2">
             <el-form-item label="编辑人">
-              <el-input v-model.trim="jig_definition.edit_by_name" />
+              <el-input v-model.trim="jig_definition.edit_by_name" disabled />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="10">
           <el-col :span="20" :offset="2">
             <el-form-item label="编辑时间">
-              <el-input v-model.trim="jig_definition.edit_time" />
+              <el-input v-model.trim="jig_definition.edit_time" disabled />
             </el-form-item>
           </el-col>
         </el-row>
@@ -191,13 +198,16 @@
       <el-divider />
       <span slot="footer" class="dialog-footer">
         <el-button @click="show_edit_dialog = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        <el-popconfirm title="确认进行编辑吗？" @onConfirm="edit_jig_definition">
+          <el-button slot="reference" type="primary">确定</el-button>
+        </el-popconfirm>
       </span>
     </el-dialog>
   </el-card>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'Index',
   data: function() {
@@ -224,6 +234,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'id' // 用户id
+    ])
   },
   watch: {
   },
@@ -269,7 +282,7 @@ export default {
         }
       }).then(
         response => {
-          this.jig_definition_list = response.data.list
+          this.jig_definition_list = response.data.data
           this.all = response.data.all
         }
       )
@@ -299,6 +312,34 @@ export default {
     get_jig_definition: function(jig_definition) {
       this.show_edit_dialog = true
       this.jig_definition = jig_definition
+      this.edit_jig_part_no = jig_definition.part_no.split('|')
+    },
+    edit_jig_definition: function() {
+      this.jig_definition.part_no = this.edit_jig_part_no.sort().join('|')
+      this.$ajax.get('/api/supervisor/edit_jig_info', {
+        params: {
+          id: this.jig_definition.id,
+          code: this.jig_definition.code,
+          name: this.jig_definition.name,
+          family_id: this.jig_definition.family_id,
+          model: this.jig_definition.model,
+          part_no: this.jig_definition.part_no,
+          pm_period: this.jig_definition.pm_period,
+          user_for: this.jig_definition.user_for,
+          upl: this.jig_definition.upl,
+          jig_workcell_id: this.jig_definition.workcell_id,
+          user_id: this.id
+        }
+      }).then(
+        response => {
+          if (response.data > 0) {
+            this.$message.success('编辑成功!')
+            this.show_edit_dialog = false
+          } else {
+            this.$message.error('服务器错误!')
+          }
+        }
+      )
     },
     clear_form: function() {
       this.sel_form = {

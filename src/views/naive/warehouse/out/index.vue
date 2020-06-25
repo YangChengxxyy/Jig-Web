@@ -961,7 +961,6 @@ export default {
               if (response.data > 0) {
                 this.$message.success('修改成功!')
                 this.get_warehouse()
-                this.get_jig_list_by_location()
                 this.jig_entity.jig_cabinet_id = this.change_jig_position_form.jig_position[0]
                 this.jig_entity.location_id = this.change_jig_position_form.jig_position[1]
                 this.jig_entity.bin = this.change_jig_position_form.jig_position[2]
