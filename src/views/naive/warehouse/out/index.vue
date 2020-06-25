@@ -27,7 +27,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="10" :offset="2">
-          <el-button type="primary" icon="el-icon-search">查询</el-button>
+          <el-button type="primary" icon="el-icon-search" @click="search()">查询</el-button>
           <el-button icon="el-icon-delete" @click="clear_form()">清空</el-button>
           <el-button>导出本页</el-button>
           <el-button>导出全部</el-button>
@@ -39,9 +39,9 @@
       <el-col :span="6">
         <h5 align="center">存放库位选择</h5>
         <el-menu
-          default-active="2"
           class="el-menu-vertical-demo"
           :collapse="menu_is_collapse"
+          :active-text-color="menu_active_color"
         >
           <el-submenu v-for="(item,index) in location_list" :key="item.jig_cabinet_id" :index="index+1+''">
             <template slot="title">
@@ -515,6 +515,8 @@ export default {
     }
     return {
       menu_is_collapse: false, // 存放库位菜单是否折叠
+      menu_active_color: '#409EFF',
+      is_select: false, // 在页数跳转时判断是调用那个方法获取
       warehouse: [],
       all_warehouse_label: [],
       warehouse_label: [],
@@ -586,7 +588,8 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'id' // 用户id
+      'id', // 用户id
+      'workcell_id'
     ]),
     in_jig_form_count: function() {
       return this.in_jig_form.count
@@ -877,23 +880,55 @@ export default {
       )
     },
     get_jig_list_by_location: function(jig_cabinet, location_id) {
+      this.is_select = false
       if (this.jig_cabinet_id === jig_cabinet && this.jig_location_id === location_id) {
         this.jig_cabinet_id = ''
         this.jig_location_id = ''
         this.jig_list = []
+        this.menu_active_color = '#303133'
         return false
       } else {
-        this.jig_cabinet_id = jig_cabinet
-        this.jig_location_id = location_id
+        if (jig_cabinet !== '' && location_id !== '') {
+          this.jig_cabinet_id = jig_cabinet
+          this.jig_location_id = location_id
+          this.menu_active_color = '#409EFF'
+        }
       }
       this.$ajax.get('/api/naive/get_jig_list_by_location', {
         params: {
           jig_cabinet_id: this.jig_cabinet_id,
-          jig_location_id: this.jig_location_id
+          jig_location_id: this.jig_location_id,
+          page_number: this.page_number,
+          page_size: this.page_size,
+          workcell_id: this.workcell_id
         }
       }).then(
         responese => {
-          this.jig_list = responese.data
+          this.jig_list = responese.data.data
+          this.all = responese.data.all
+        }
+      )
+    },
+    get_jig_list_by_select: function() {
+      this.is_select = true
+      this.$ajax.get('/api/naive/get_jig_list_by_select', {
+        params: {
+          jig_cabinet_id: this.jig_cabinet_id,
+          jig_location_id: this.jig_location_id,
+          code: this.sel_form.code,
+          name: this.sel_form.name,
+          user_for: this.sel_form.user_for,
+          page_number: this.page_number,
+          page_size: this.page_size,
+          workcell_id: this.workcell_id
+        }
+      }).then(
+        response => {
+          this.jig_list = response.data.data
+          this.all = response.data.all
+          if (response.data.all <= 0) {
+            this.$message.error('没有结果！')
+          }
         }
       )
     },
@@ -1153,11 +1188,26 @@ export default {
         user_for: ''
       }
     },
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`)
+    search: function() {
+      this.page_number = 1
+      this.all = 0
+      this.get_jig_list_by_select()
     },
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`)
+    handleSizeChange: function(val) {
+      this.page_size = val
+      if (this.is_select) {
+        this.get_jig_list_by_select()
+      } else {
+        this.get_jig_list_by_location('', '')
+      }
+    },
+    handleCurrentChange: function(val) {
+      this.page_number = val
+      if (this.is_select) {
+        this.get_jig_list_by_select()
+      } else {
+        this.get_jig_list_by_location('', '')
+      }
     },
     handleClose(done) {
       this.$confirm('确认关闭？')
