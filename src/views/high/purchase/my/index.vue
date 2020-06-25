@@ -176,7 +176,6 @@ export default {
     }
   },
   created() {
-    this.getData()
     this.$ajax('/api/get_production_line_list').then(
       res => {
         this.production_line_list = res.data
@@ -188,10 +187,11 @@ export default {
         this.code_list = res.data
       }
     )
+    this.getData()
   },
   methods: {
     getData() {
-      this.$ajax('/api/high/get_purchase_income_submit_list', {
+      this.$ajax.get('/api/high/get_purchase_income_submit_list', {
         params: {
           page_number: this.page_number,
           page_size: this.page_size

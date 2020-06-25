@@ -18,7 +18,7 @@ module.exports = {
   sidebarLogo: false,
   /**
    * @type {string}
-   * @description 后台地址，用于解决跨域
+   * @description 后台地址，用于解决跨域，仅限开发环境使用
    */
   devServer: 'http://localhost:8080'
 }

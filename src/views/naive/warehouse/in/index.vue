@@ -117,7 +117,8 @@
 <script>
 import { mapGetters } from 'vuex'
 import { getUrl } from '@/utils'
-
+import defaultSettings from '@/settings'
+const { devServer } = defaultSettings
 export default {
   name: 'Index',
   data: function() {
@@ -174,7 +175,7 @@ export default {
       'workcell_id'
     ]),
     onePage() {
-      let url = 'http://localhost:8080/api/naive/download_one_outgoing_list'
+      let url = devServer + '/api/naive/download_one_outgoing_list'
       const params = {
         code: this.sel_form.code,
         name: this.sel_form.name,
