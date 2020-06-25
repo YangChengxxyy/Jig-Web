@@ -40,8 +40,8 @@
         <el-col :span="11" :offset="12">
           <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
           <el-button icon="el-icon-delete" @click="clearForm()">清空</el-button>
-          <el-button>导出本页</el-button>
-          <el-button>导出全部</el-button>
+          <el-link><el-button>导出本页</el-button></el-link>
+          <el-link><el-button>导出全部</el-button></el-link>
         </el-col>
       </el-row>
     </el-form>
@@ -146,6 +146,9 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
+import { getUrl } from '@/utils'
+import defaultSettings from '@/settings'
+const { devServer } = defaultSettings
 export default {
   name: 'Index',
   data: function() {
@@ -167,8 +170,41 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'id'
-    ])
+      'id',
+      'token'
+    ]),
+    onePage() {
+      const url = devServer + '/api/admin/download_one_user_info'
+      const a = {
+        submit_id: this.id,
+        id: this.form.id,
+        name: this.form.name,
+        workcell_id: this.form.workcell_id,
+        page_size: this.page_size,
+        page_number: this.page_number,
+        start_date: this.form.date[0],
+        end_date: this.form.date[1],
+        file_name: `page-${this.page_number}.xls`,
+        token: this.token.token
+      }
+      return url + '?' + getUrl(a)
+    },
+    allPage() {
+      const url = devServer + '/api/admin/download_all_user_info'
+      const a = {
+        submit_id: this.id,
+        id: this.form.id,
+        name: this.form.name,
+        workcell_id: this.form.workcell_id,
+        page_size: this.page_size,
+        page_number: this.page_number,
+        start_date: this.form.date[0],
+        end_date: this.form.date[1],
+        file_name: 'page-all.xls',
+        token: this.token.token
+      }
+      return url + '?' + getUrl(a)
+    }
   },
   created() {
     this.$ajax.get('/api/get_workcell_list').then(

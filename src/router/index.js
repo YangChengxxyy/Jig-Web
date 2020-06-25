@@ -287,7 +287,7 @@ manager
     children: [
       {
         path: 'definition',
-        component: () => import('@/views/admin/jig/definition/index'),
+        component: () => import('@/views/naive/warehouse/search/index'),
         meta: { title: '工夹具定义', role: ['admin'] }
       }
     ]
