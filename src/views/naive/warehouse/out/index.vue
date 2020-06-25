@@ -41,6 +41,7 @@
         <el-menu
           default-active="2"
           class="el-menu-vertical-demo"
+          :collapse="menu_is_collapse"
         >
           <el-submenu v-for="(item,index) in location_list" :key="item.jig_cabinet_id" :index="index+1+''">
             <template slot="title">
@@ -513,6 +514,7 @@ export default {
       }
     }
     return {
+      menu_is_collapse: false, // 存放库位菜单是否折叠
       warehouse: [],
       all_warehouse_label: [],
       warehouse_label: [],

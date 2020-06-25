@@ -148,14 +148,14 @@
         <el-row :gutter="10">
           <el-col :span="20" :offset="2">
             <el-form-item label="每条产线所需">
-              <el-input type="number" v-model.trim="jig_definition.upl" />
+              <el-input v-model.trim="jig_definition.upl" type="number" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="10">
           <el-col :span="20" :offset="2">
             <el-form-item label="检点周期">
-              <el-input type="number" v-model.trim="jig_definition.pm_period" />
+              <el-input v-model.trim="jig_definition.pm_period" type="number" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -304,7 +304,7 @@ export default {
         }
       }).then(
         response => {
-          this.jig_definition_list = response.data.list
+          this.jig_definition_list = response.data.data
           this.all = response.data.all
         }
       )
