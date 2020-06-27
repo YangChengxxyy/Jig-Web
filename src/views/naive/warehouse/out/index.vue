@@ -297,11 +297,11 @@
                   </template>
                   <template v-if="item.status === '3'">
                     采购入库: <br>
-                    <template v-for="(des, index) in item.description.split('~')">
-                      <template v-if="index == 0">单据号: {{ des }} <br :key="'bill_no_'+des"></template>
-                      <template v-if="index == 1">
-                        工夹具代码及件数: <br :key="'code_count_des_'+des">
-                        <template v-for="(code, i) in des.split('|')">&nbsp;&nbsp;&nbsp;&nbsp;{{ code }} - {{ item.description.split('~')[2].split('|')[i] }} 件 <br :key="'code_count_'+code"></template>
+                    <template v-for="(des, des_index) in item.description.split('~')">
+                      <template v-if="des_index === 0">单据号: {{ des }} <br :key="'bill_no_'+des"></template>
+                      <template v-if="des_index === 1">
+                        工夹具代码及件数: <br :key="'code_count_des_' + des_index">
+                        <template v-for="(input_code, i) in des.split('|')">&nbsp;&nbsp;&nbsp;&nbsp;{{ input_code }} - {{ item.description.split('~')[2].split('|')[i] }} 件 <br :key="'code_count_'+input_code"></template>
                       </template>
                     </template>
                     入库人: {{ item.rec_name }}
