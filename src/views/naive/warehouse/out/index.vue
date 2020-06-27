@@ -270,7 +270,7 @@
           </el-row>
         </el-form>
         <el-divider />
-        <el-collapse style="height: 350px">
+        <el-collapse style="height: 350px" value="1">
           <el-scrollbar style="height:100%">
             <el-collapse-item title="追溯出入库历史" name="1">
               <el-timeline v-if="jig_entity.out_and_in_history_list.length > 0">
@@ -447,7 +447,7 @@
         </el-form>
       </template>
       <el-divider />
-      <el-collapse style="height: 300px">
+      <el-collapse style="height: 300px" value="1">
         <el-scrollbar style="height:100%">
           <el-collapse-item title="追溯检点历史" name="1">
             <el-timeline
@@ -1018,6 +1018,8 @@ export default {
                 this.jig_entity.bin = this.change_jig_position_form.jig_position[2]
                 this.show_change_jig_position_dialog = false
                 this.$refs[formName].resetFields()
+                this.get_jig_list_by_location('', '')
+                this.get_jig_entity_list(this.jig_entity.code)
               } else {
                 this.$message.error('服务器错误!')
               }
@@ -1144,6 +1146,8 @@ export default {
           } else {
             this.$message.success('检点成功!')
             this.clear_maintenance_form()
+            this.get_jig_list_by_location('', '')
+            this.show_maintenance_jig_dialog = false
           }
         }
       )
