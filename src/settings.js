@@ -20,5 +20,6 @@ module.exports = {
    * @type {string}
    * @description 后台地址，用于解决跨域，仅限开发环境使用
    */
-  devServer: 'http://jig.yycccloud.cn:8081'
+  // devServer: 'http://jig.yycccloud.cn:8081'
+  devServer: 'http://localhost:8080'
 }

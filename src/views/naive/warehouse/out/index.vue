@@ -295,6 +295,17 @@
                     调换位置: {{ item.description }}<br>
                     操作人: {{ item.rec_name }}
                   </template>
+                  <template v-if="item.status === '3'">
+                    采购入库: <br>
+                    <template v-for="(des, index) in item.description.split('~')">
+                      <template v-if="index == 0">单据号: {{ des }} <br :key="'bill_no_'+des"></template>
+                      <template v-if="index == 1">
+                        工夹具代码及件数: <br :key="'code_count_des_'+des">
+                        <template v-for="(code, i) in des.split('|')">&nbsp;&nbsp;&nbsp;&nbsp;{{ code }} - {{ item.description.split('~')[2].split('|')[i] }} 件 <br :key="'code_count_'+code"></template>
+                      </template>
+                    </template>
+                    入库人: {{ item.rec_name }}
+                  </template>
                 </el-timeline-item>
               </el-timeline>
               <div v-else="" class="font-info">暂无该工夹具出入库历史记录</div>
@@ -707,15 +718,18 @@ export default {
     jig_entity() { // 设置出入库历史记录 时间线显示的图标
       for (var i = 0; i < this.jig_entity.out_and_in_history_list.length; i++) {
         var list = this.jig_entity.out_and_in_history_list
-        if (list[i].status === '0') { // 出
+        if (list[i].status === '0') { // 出库
           list[i].icon = 'el-icon-s-unfold'
           list[i].type = 'primary'
-        } else if (list[i].status === '1') { // 入
+        } else if (list[i].status === '1') { // 入库
           list[i].icon = 'el-icon-s-fold'
           list[i].type = 'primary'
         } else if (list[i].status === '2') { // 调换位置
           list[i].icon = 'el-icon-rank'
           list[i].type = 'warning'
+        } else if (list[i].status === '3') { // 采购入库
+          list[i].icon = 'el-icon-s-order'
+          list[i].type = 'success'
         }
       }
     },
@@ -850,13 +864,14 @@ export default {
               code: this.in_jig_form.code.join('|'),
               count: this.in_jig_form.count.join('|'),
               jig_position: this.in_jig_form.jig_position.join('|'), // 格式 7,A2|8,C1
-              free_bin_list: this.in_jig_form.free_bin_list.join('|')
+              free_bin_list: this.in_jig_form.free_bin_list.join('|'),
+              user_id: this.id
             }
           }).then(
             response => {
               if (response.data > 0) {
                 this.$message.success('入库成功!')
-                this.get_jig_list_by_location()
+                this.get_jig_list_by_location('', '')
                 this.show_in_jig_drawer = false
                 this.clean_in_jig_form()
               } else {
