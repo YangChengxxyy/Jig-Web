@@ -45,8 +45,8 @@
         <el-col :span="11">
           <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
           <el-button icon="el-icon-delete" @click="clear_form">清空</el-button>
-          <el-button :disabled="scrap_submit_list.length === 0">导出本页</el-button>
-          <el-button :disabled="scrap_submit_list.length === 0">导出全部</el-button>
+          <el-link :href="onePage" target="_blank" :disabled="scrap_submit_list.length === 0"><el-button :disabled="scrap_submit_list.length === 0">导出本页</el-button></el-link>
+          <el-link :href="allPage" target="_blank" :disabled="scrap_submit_list.length === 0"><el-button :disabled="scrap_submit_list.length === 0">导出全部</el-button></el-link>
         </el-col>
       </el-row>
     </el-form>
@@ -139,7 +139,9 @@
 
 <script>
 import { mapGetters } from 'vuex'
-
+import { getUrl } from '@/utils'
+import defaultSettings from '@/settings'
+const { devServer } = defaultSettings
 export default {
   name: 'Index',
   data: function() {
@@ -168,8 +170,39 @@ export default {
   computed: {
     ...mapGetters([
       'id', // 用户id
-      'workcell_id'
-    ])
+      'workcell_id',
+      'token'
+    ]),
+    onePage() {
+      const params = {
+        code: this.sel_form.code,
+        seq_id: this.sel_form.seq_id,
+        start_date: this.sel_form.date[0],
+        end_date: this.sel_form.date[1],
+        status: this.sel_form.status,
+        scrap_reason: this.sel_form.scrap_reason,
+        page_number: this.page_number,
+        page_size: this.page_size,
+        workcell_id: this.workcell_id,
+        file_name: `page-${this.page_number}.xls`,
+        token: this.token.token
+      }
+      return devServer + '/api/supervisor/download_one_scrap_history' + '?' + getUrl(params)
+    },
+    allPage() {
+      const params = {
+        code: this.sel_form.code,
+        seq_id: this.sel_form.seq_id,
+        start_date: this.sel_form.date[0],
+        end_date: this.sel_form.date[1],
+        status: this.sel_form.status,
+        scrap_reason: this.sel_form.scrap_reason,
+        workcell_id: this.workcell_id,
+        file_name: `page-all.xls`,
+        token: this.token.token
+      }
+      return devServer + '/api/supervisor/download_all_scrap_history' + '?' + getUrl(params)
+    }
   },
   watch: {
   },

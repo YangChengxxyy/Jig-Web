@@ -59,8 +59,8 @@
         <el-col :span="11" :offset="12">
           <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
           <el-button icon="el-icon-delete" @click="clear_form">清空</el-button>
-          <el-link :href="onePage" :disabled="purchase_submit_list.length === 0"><el-button>导出本页</el-button></el-link>
-          <el-link :href="allPage" :disabled="purchase_submit_list.length === 0"><el-button>导出全部</el-button></el-link>
+          <el-link :href="onePage" :disabled="purchase_submit_list.length === 0"><el-button :disabled="purchase_submit_list.length === 0">导出本页</el-button></el-link>
+          <el-link :href="allPage" :disabled="purchase_submit_list.length === 0"><el-button :disabled="purchase_submit_list.length === 0">导出全部</el-button></el-link>
         </el-col>
       </el-row>
     </el-form>
@@ -239,13 +239,14 @@ export default {
   computed: {
     ...mapGetters([
       'id', // 用户id
-      'workcell_id'
+      'workcell_id',
+      'token'
     ]),
     onePage() {
-      return '/api/supervisor/download_one_purchase_submit_history' + getUrl(this.sel_form) + '&file_name=page-' + this.page_number + '.xls' + '&user_id=' + this.id
+      return '/api/supervisor/download_one_purchase_submit_history' + getUrl(this.sel_form) + '&file_name=page-' + this.page_number + '.xls' + '&user_id=' + this.id + '&token=' + this.token.token
     },
     allPage() {
-      return '/api/supervisor/download_all_purchase_submit_history' + getUrl(this.sel_form) + '&file_name=page-all.xls' + '&user_id=' + this.id
+      return '/api/supervisor/download_all_purchase_submit_history' + getUrl(this.sel_form) + '&file_name=page-all.xls' + '&user_id=' + this.id + '&token=' + this.token.token
     }
   },
   watch: {

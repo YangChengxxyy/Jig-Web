@@ -192,7 +192,6 @@
 <script>
 import { getUrl } from '@/utils'
 import defaultSettings from '@/settings'
-
 const { devServer } = defaultSettings
 export default {
   name: 'Index',

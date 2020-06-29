@@ -1,6 +1,6 @@
 <template>
   <el-card class="box-card">
-    <el-form ref="form" :model="sel_form" label-width="80px" label-position="left" style="margin-top: 2%">
+    <el-form ref="form" :model="sel_form" label-width="120px" label-position="left" style="margin-top: 2%">
       <el-row :gutter="20">
         <el-col :span="11" :offset="1">
           <el-form-item label="单据号">
@@ -59,8 +59,8 @@
         <el-col :span="11" :offset="12">
           <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
           <el-button icon="el-icon-delete" @click="clear_form">清空</el-button>
-          <el-button>导出本页</el-button>
-          <el-button>导出全部</el-button>
+          <el-link :href="onePage" :disabled="purchase_submit_list.length === 0"><el-button :disabled="purchase_submit_list.length === 0">导出本页</el-button></el-link>
+          <el-link :href="allPage" :disabled="purchase_submit_list.length === 0"><el-button :disabled="purchase_submit_list.length === 0">导出全部</el-button></el-link>
         </el-col>
       </el-row>
     </el-form>
@@ -220,7 +220,9 @@
 
 <script>
 import { mapGetters } from 'vuex'
-
+import { getUrl } from '@/utils'
+import defaultSettings from '@/settings'
+const { devServer } = defaultSettings
 export default {
   name: 'Index',
   data: function() {
@@ -254,8 +256,39 @@ export default {
   computed: {
     ...mapGetters([
       'id', // 用户id
-      'workcell_id'
-    ])
+      'workcell_id',
+      'token'
+    ]),
+    onePage() {
+      const params = {
+        bill_no: this.sel_form.bill_no,
+        submit_name: this.sel_form.submit_name,
+        start_date: this.sel_form.date[0],
+        end_date: this.sel_form.date[1],
+        status: this.sel_form.status,
+        page_number: this.page_number,
+        page_size: this.page_size,
+        workcell_id: this.workcell_id,
+        file_name: `page-${this.page_number}.xls`,
+        token: this.token.token
+      }
+      return devServer + '/api/manager/download_one_purchase_submit_history' + '?' + getUrl(params)
+    },
+    allPage() {
+      const params = {
+        bill_no: this.sel_form.bill_no,
+        submit_name: this.sel_form.submit_name,
+        start_date: this.sel_form.date[0],
+        end_date: this.sel_form.date[1],
+        status: this.sel_form.status,
+        page_number: this.page_number,
+        page_size: this.page_size,
+        workcell_id: this.workcell_id,
+        file_name: `page-all.xls`,
+        token: this.token.token
+      }
+      return devServer + '/api/manager/download_all_purchase_submit_history' + '?' + getUrl(params)
+    }
   },
   watch: {
   },

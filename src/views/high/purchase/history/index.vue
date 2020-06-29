@@ -59,8 +59,8 @@
         <el-col :span="11" :offset="12">
           <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
           <el-button icon="el-icon-delete">清空</el-button>
-          <el-button :disabled="history_list.length === 0" @click="onePageUrl">导出本页</el-button>
-          <el-button :disabled="history_list.length === 0" @click="allPageUrl">导出全部</el-button>
+          <el-link :href="onePageUrl" target="_blank" :disabled="history_list.length === 0"><el-button :disabled="history_list.length === 0">导出本页</el-button></el-link>
+          <el-link :href="onePageUrl" target="_blank" :disabled="history_list.length === 0"><el-button :disabled="history_list.length === 0">导出全部</el-button></el-link>
         </el-col>
       </el-row>
     </el-form>
@@ -231,8 +231,39 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'id'
-    ])
+      'id',
+      'token'
+    ]),
+    onePageUrl() {
+      const a = {
+        bill_no: this.form.bill_no,
+        submit_name: this.form.submit_name,
+        code: this.form.code,
+        production_line_id: this.form.production_line_id,
+        status: this.form.status,
+        start_date: this.form.date[0],
+        end_date: this.form.date[1],
+        page_size: this.page_size,
+        page_number: this.page_number,
+        file_name: `page-${this.page_number}.xls`,
+        token: this.token.token
+      }
+      return devServer + '/api/high/download_one_purchase_history?' + getUrl(a)
+    },
+    allPageUrl() {
+      const a = {
+        bill_no: this.form.bill_no,
+        submit_name: this.form.submit_name,
+        code: this.form.code,
+        production_line_id: this.form.production_line_id,
+        status: this.form.status,
+        start_date: this.form.date[0],
+        end_date: this.form.date[1],
+        file_name: 'page-all.xls',
+        token: this.token.token
+      }
+      return devServer + '/api/high/download_all_purchase_history?' + getUrl(a)
+    }
   },
   created() {
     this.$ajax('/api/get_production_line_list').then(
@@ -294,34 +325,6 @@ export default {
       this.history.code = this.history.code.split('|')
       this.history.count = this.history.count.split('|')
       this.dialogVisible = true
-    },
-    onePageUrl() {
-      const a = {
-        bill_no: this.form.bill_no,
-        submit_name: this.form.submit_name,
-        code: this.form.code,
-        production_line_id: this.form.production_line_id,
-        status: this.form.status,
-        start_date: this.form.date[0],
-        end_date: this.form.date[1],
-        page_size: this.page_size,
-        page_number: this.page_number,
-        file_name: `page-${this.page_number}.xls`
-      }
-      window.location.href = devServer + '/high/download_one_purchase_history?' + getUrl(a)
-    },
-    allPageUrl() {
-      const a = {
-        bill_no: this.form.bill_no,
-        submit_name: this.form.submit_name,
-        code: this.form.code,
-        production_line_id: this.form.production_line_id,
-        status: this.form.status,
-        start_date: this.form.date[0],
-        end_date: this.form.date[1],
-        file_name: 'page-all.xls'
-      }
-      window.location.href = devServer + '/high/download_all_purchase_history?' + getUrl(a)
     }
   }
 }
