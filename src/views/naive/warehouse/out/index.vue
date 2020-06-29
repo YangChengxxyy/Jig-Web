@@ -1020,6 +1020,7 @@ export default {
                 this.$refs[formName].resetFields()
                 this.get_jig_list_by_location('', '')
                 this.get_jig_entity_list(this.jig_entity.code)
+                this.show_jig_info = false
               } else {
                 this.$message.error('服务器错误!')
               }
