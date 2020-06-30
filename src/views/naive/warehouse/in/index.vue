@@ -234,6 +234,11 @@ export default {
         response => {
           this.outgoing_jig_list = response.data.data
           this.all = response.data.all
+          if (this.outgoing_jig_list.length > 0) {
+            this.$message.success('查询成功!共有' + this.all + '条记录')
+          } else {
+            this.$message.error('没有结果!')
+          }
         }
       )
     },
@@ -296,11 +301,6 @@ export default {
     search: function() {
       this.page_number = 1
       this.get_outgoing_jig_list()
-      if (this.outgoing_jig_list.length > 0) {
-        this.$message.success('查询成功!共有' + this.all + '条记录')
-      } else {
-        this.$message.error('没有结果!')
-      }
     },
     clear_form: function() {
       this.sel_form = {

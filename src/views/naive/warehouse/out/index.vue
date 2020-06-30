@@ -29,8 +29,8 @@
         <el-col :span="10" :offset="2">
           <el-button type="primary" icon="el-icon-search" @click="search()">查询</el-button>
           <el-button icon="el-icon-delete" @click="clear_form()">清空</el-button>
-          <el-button>导出本页</el-button>
-          <el-button>导出全部</el-button>
+          <!--注释 <el-button>导出本页</el-button>
+          <el-button>导出全部</el-button> -->
         </el-col>
       </el-row>
     </el-form>
