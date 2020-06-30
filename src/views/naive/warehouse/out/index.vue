@@ -263,7 +263,7 @@
           </el-row>
           <el-row :gutter="10">
             <el-col :span="20" :offset="2">
-              <el-form-item label="使用次数">
+              <el-form-item label="用途">
                 <el-input v-model="jig_entity.user_for" readonly />
               </el-form-item>
             </el-col>

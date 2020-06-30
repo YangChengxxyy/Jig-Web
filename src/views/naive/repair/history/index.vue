@@ -100,6 +100,7 @@ export default {
       }).then(
         response => {
           const { data } = response
+          console.log(data)
           this.history_list = data.data
           this.all = data.all
         }
