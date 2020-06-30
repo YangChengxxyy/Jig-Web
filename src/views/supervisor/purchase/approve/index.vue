@@ -100,14 +100,14 @@
           </el-col>
         </el-row>
       </el-form>
-      <el-divider />
+      <!--<el-divider />
       <template style="width: 80%">
         <el-steps :space="200" :active="2" process-status="wait" align-center>
           <el-step title="提交申请" />
           <el-step title="进行中" />
           <el-step title="步骤 3" />
         </el-steps>
-      </template>
+      </template> -->
       <el-divider />
       <span v-if="purchase_submit_detail != null" slot="footer" class="dialog-footer">
         <el-popconfirm
