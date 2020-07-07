@@ -64,6 +64,16 @@ naive
         path: 'in',
         component: () => import('@/views/naive/warehouse/in/index'),
         meta: { title: '归还工夹具', role: ['naive'] }
+      },
+      {
+        path: 'input',
+        component: () => import('@/views/naive/warehouse/input/input'),
+        meta: { title: '待处理采购入库单', role: ['naive'] }
+      },
+      {
+        path: 'scrap',
+        component: () => import('@/views/naive/warehouse/scrap/scrap'),
+        meta: { title: '待处理报废工夹具', role: ['naive'] }
       }
     ]
   },

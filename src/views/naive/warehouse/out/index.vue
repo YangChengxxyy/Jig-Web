@@ -1000,6 +1000,7 @@ export default {
           }
           this.$ajax.get('/api/naive/change_jig_position', {
             params: {
+              jig_id: this.jig_entity.id,
               code: this.jig_entity.code,
               seq_id: this.jig_entity.seq_id,
               old_position: position,
@@ -1049,6 +1050,7 @@ export default {
         if (valid) {
           this.$ajax.get('/api/naive/outgo_jig', {
             params: {
+              jig_id: this.jig_entity.id,
               code: this.code,
               seq_id: this.seq_id,
               submit_id: this.outgo_form.user_id,
