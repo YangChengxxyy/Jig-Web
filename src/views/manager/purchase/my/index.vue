@@ -225,7 +225,7 @@ export default {
       this.$ajax.get('/api/manager/pass_purchase_submit', {
         params: {
           id: this.purchase_submit_detail.id,
-          user_id: this.user_id
+          user_id: this.id
         }
       }).then(
         response => {
