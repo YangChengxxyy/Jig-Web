@@ -121,7 +121,6 @@ export default {
         if (valid) {
           this.loading = true
           this.$store.dispatch('user/login', this.loginForm).then(() => {
-            console.log(store)
             console.log(roleMap[store.getters.token.user.type])
             this.$router.push({ path: roleMap[store.getters.token.user.type] })
             this.loading = false

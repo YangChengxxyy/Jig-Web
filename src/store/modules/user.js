@@ -50,6 +50,7 @@ const actions = {
           reject('Verification failed, please Login again.')
         }
         commit('SET_TOKEN', data)
+        store.dispatch('websocket/initWebsocket', { role: store.getters.role, id: store.getters.id })
         resolve(data)
       }).catch(error => {
         reject(error)
