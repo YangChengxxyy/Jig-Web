@@ -37,7 +37,9 @@ export function parseTime(time, cFormat) {
   const time_str = format.replace(/{([ymdhisa])+}/g, (result, key) => {
     const value = formatObj[key]
     // Note: getDay() returns 0 on Sunday
-    if (key === 'a') { return ['日', '一', '二', '三', '四', '五', '六'][value ] }
+    if (key === 'a') {
+      return ['日', '一', '二', '三', '四', '五', '六'][value]
+    }
     return value.toString().padStart(2, '0')
   })
   return time_str
@@ -97,13 +99,59 @@ export function param2Obj(url) {
   }
   return JSON.parse(
     '{"' +
-      decodeURIComponent(search)
-        .replace(/"/g, '\\"')
-        .replace(/&/g, '","')
-        .replace(/=/g, '":"')
-        .replace(/\+/g, ' ') +
-      '"}'
+    decodeURIComponent(search)
+      .replace(/"/g, '\\"')
+      .replace(/&/g, '","')
+      .replace(/=/g, '":"')
+      .replace(/\+/g, ' ') +
+    '"}'
   )
+}
+
+/**
+ * WebSocket客户端
+ *
+ * 使用说明：
+ * 1、WebSocket客户端通过回调函数来接收服务端消息。例如：webSocket.onmessage
+ * 2、WebSocket客户端通过send方法来发送消息给服务端。例如：webSocket.send();
+ */
+export function getWebSocket(http, role, id) {
+  /**
+   * WebSocket客户端 PS：URL开头表示WebSocket协议 中间是域名端口 结尾是服务端映射地址
+   */
+  var webSocket = new WebSocket(`ws://${http}/socket/${role}/${id}`)// 建立与服务端的连接
+  /**
+   * 当服务端打开连接
+   */
+  webSocket.onopen = function(event) {
+    console.log('WebSocket打开连接')
+  }
+
+  /**
+   * 当服务端发来消息：1.广播消息 2.更新在线人数
+   */
+  webSocket.onmessage = function(event) {
+    console.log(event)
+    console.log('WebSocket收到消息：%c' + event.data, 'color:green')
+    // 获取服务端消息
+    var message = JSON.parse(event.data) || {}
+    console.log(message)//
+  }
+
+  /**
+   * 关闭连接
+   */
+  webSocket.onclose = function(event) {
+    console.log('WebSocket关闭连接')
+  }
+
+  /**
+   * 通信失败
+   */
+  webSocket.onerror = function(event) {
+    console.log('WebSocket发生异常')
+  }
+  return webSocket
 }
 export function getUrl(obj) {
   let str = ''
