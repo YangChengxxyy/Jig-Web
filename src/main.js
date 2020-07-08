@@ -15,7 +15,6 @@ import VCharts from 'v-charts'
 import '@/icons' // icon
 import '@/permission' // permission control
 import service from '@/utils/request'
-
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
@@ -37,7 +36,6 @@ Vue.use(VCharts)
 
 Vue.config.productionTip = false
 Vue.prototype.$ajax = service
-
 new Vue({
   el: '#app',
   router,

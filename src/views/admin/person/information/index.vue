@@ -212,6 +212,7 @@ export default {
         this.workcell_list = response.data
       }
     )
+    console.log(this.$route.params)
   },
   methods: {
     getData: function() {

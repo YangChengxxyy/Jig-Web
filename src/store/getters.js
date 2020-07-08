@@ -9,6 +9,7 @@ const getters = {
   workcell_id: state => state.user.token.user.workcell_id,
   role: state => state.user.token.user.type,
   addRouters: state => state.permission.addRouters,
-  routers: state => state.permission.routers
+  routers: state => state.permission.routers,
+  websocket: state => state.websocket.ws
 }
 export default getters
