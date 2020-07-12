@@ -234,11 +234,11 @@ export default {
         response => {
           this.outgoing_jig_list = response.data.data
           this.all = response.data.all
-          if (this.outgoing_jig_list.length > 0) {
+          /* if (this.outgoing_jig_list.length > 0) {
             this.$message.success('查询成功!共有' + this.all + '条记录')
           } else {
             this.$message.error('没有结果!')
-          }
+          } */
         }
       )
     },
