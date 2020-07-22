@@ -3,7 +3,13 @@
     <el-row :gutter="20">
       <el-col :span="22" :offset="1">
         <el-table :data="repair_list" border style="margin-top: 1%">
-          <el-table-column label="工夹具代码" prop="code" :filters="code_list_filter" :filter-method="filterHandler" sortable />
+          <el-table-column
+            label="工夹具代码"
+            prop="code"
+            :filters="code_list_filter"
+            :filter-method="filterHandler"
+            sortable
+          />
           <el-table-column label="工夹具序列号" prop="seq_id" />
           <el-table-column label="申请人" prop="submit_name" />
           <el-table-column label="故障原因" prop="repair_reason" />
@@ -11,8 +17,8 @@
           <el-table-column label="操作">
             <template slot-scope="scope">
               <el-button type="text" @click="showRepair(scope.row)">查看</el-button>
-              <el-button type="text" style="color: #67C23A" @click="agree(scope.row)">通过</el-button>
-              <el-button type="text" style="color: #F56C6C" @click="disagree2(scope.row)">不通过</el-button>
+              <!--              <el-button type="text" style="color: #67C23A" @click="agree(scope.row)">通过</el-button>-->
+              <!--              <el-button type="text" style="color: #F56C6C" @click="disagree2(scope.row)">不通过</el-button>-->
             </template>
           </el-table-column>
         </el-table>
@@ -81,17 +87,25 @@
         <el-row :gutter="20">
           <el-col :span="22" :offset="1">
             <el-form-item label="故障图片">
-              <el-image :src="repair.repair_photo_url.split('|')[0]" :preview-src-list="repair.repair_photo_url.split('|')" />
+              <el-image
+                :src="repair.repair_photo_url.split('|')[0]"
+                :preview-src-list="repair.repair_photo_url.split('|')"
+              />
             </el-form-item>
           </el-col>
         </el-row>
       </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="agree(repair)">同意</el-button>
+        <el-button type="danger" @click="disagree2(repair)">不同意</el-button>
+      </span>
     </el-dialog>
   </el-card>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+
 export default {
   name: 'Index',
   data() {
@@ -157,6 +171,7 @@ export default {
         response => {
           this.$message.success('处理成功！')
           this.getData()
+          this.dialogVisible = false
         }
       )
     },
@@ -179,6 +194,7 @@ export default {
               response => {
                 this.$message.success('处理成功！')
                 this.getData()
+                this.dialogVisible = false
               }
             )
           }
@@ -186,17 +202,17 @@ export default {
       )
     },
     /**
-     * 页面大小改变事件
-     * @param val
-     */
+       * 页面大小改变事件
+       * @param val
+       */
     handleSizeChange: function(val) {
       this.page_size = val
       this.getData()
     },
     /**
-     * 页码改变事件
-     * @param val
-     */
+       * 页码改变事件
+       * @param val
+       */
     handleCurrentChange: function(val) {
       this.page_number = val
       this.getData()

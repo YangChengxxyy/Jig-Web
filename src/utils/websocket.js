@@ -1,4 +1,5 @@
 import router from '@/router'
+import { Notification } from 'element-ui'
 /**
  * WebSocket客户端
  *
@@ -24,16 +25,23 @@ export function getWebSocket(http, role, id) {
   webSocket.onmessage = function(event) {
     let { data } = event
     data = JSON.parse(data)
-    const { path, param, condition } = data
+    const { path, params, content, title } = data
     const r = {
-      path: path
+      path: path,
+      query: params
     }
-    const params = {}
-    params[param] = condition
-    r.query = params
-    setTimeout(() => {
-      router.push(r)
-    }, 1000)
+    console.log(data)
+    console.log(r)
+    const notification = Notification({
+      message: content,
+      title: title,
+      duration: 0,
+      showClose: false,
+      onClick: () => {
+        router.push(r)
+        notification.close()
+      }
+    })
   }
 
   /**

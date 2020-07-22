@@ -1,5 +1,6 @@
 import defaultSettings from '@/settings'
 import store from '@/store'
+
 const { http } = defaultSettings
 import { getWebSocket } from '@/utils/websocket'
 
@@ -9,6 +10,12 @@ const state = {
 const mutations = {
   INIT_WEBSOCKET: (state, { role, id }) => {
     state.ws = getWebSocket(http, role, id)
+  },
+  CLOSE_WEBSOCKET: (state) => {
+    if (state.ws != null) {
+      state.ws.close()
+      state.ws = null
+    }
   }
 }
 const actions = {
@@ -19,6 +26,12 @@ const actions = {
         resolve()
       })
     }
+  },
+  closeWebsocket({ commit }) {
+    return new Promise((resolve, reject) => {
+      commit('CLOSE_WEBSOCKET')
+      resolve()
+    })
   }
 }
 export default {

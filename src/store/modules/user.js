@@ -66,6 +66,7 @@ const actions = {
         resetRouter()
         commit('RESET_STATE')
         store.dispatch('ResetRoutes')
+        store.dispatch('websocket/closeWebsocket')
         resolve()
       }).catch(error => {
         reject(error)
