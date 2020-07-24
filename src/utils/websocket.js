@@ -25,13 +25,14 @@ export function getWebSocket(http, role, id) {
   webSocket.onmessage = function(event) {
     let { data } = event
     data = JSON.parse(data)
+    console.log(data)
     const { path, params, content, title } = data
     const r = {
       path: path,
       query: params
     }
-    console.log(data)
     console.log(r)
+    console.log(router)
     const notification = Notification({
       message: content,
       title: title,

@@ -6,9 +6,6 @@
 
     <div class="right-menu">
       <el-dropdown class="avatar-container" trigger="click">
-        <svg-icon icon-class="notification" />
-      </el-dropdown>
-      <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <img :src="avatar_url" class="user-avatar">
           <i class="el-icon-caret-bottom" />
