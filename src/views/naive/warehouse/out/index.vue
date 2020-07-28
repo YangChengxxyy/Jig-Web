@@ -272,44 +272,7 @@
         <el-divider />
         <el-collapse style="height: 350px" value="1">
           <el-scrollbar style="height:100%">
-            <el-collapse-item title="追溯出入库历史" name="1">
-              <el-timeline v-if="jig_entity.out_and_in_history_list.length > 0">
-                <el-timeline-item
-                  v-for="(item, index) in jig_entity.out_and_in_history_list"
-                  :key="index"
-                  :icon="item.icon"
-                  :type="item.type"
-                  :timestamp="item.outgo_time"
-                >
-                  <template v-if="item.status === '0'">
-                    申请人:{{ item.submit_name }} <br>
-                    产线: {{ item.production_line_name }} <br>
-                    出库人: {{ item.rec_name }}
-                  </template>
-                  <template v-if="item.status === '1'">
-                    归还人: {{ item.submit_name }} <br>
-                    产线: {{ item.production_line_name }} <br>
-                    入库人: {{ item.rec_name }}
-                  </template>
-                  <template v-if="item.status === '2'">
-                    调换位置: {{ item.description }}<br>
-                    操作人: {{ item.rec_name }}
-                  </template>
-                  <template v-if="item.status === '3'">
-                    采购入库: <br>
-                    <template v-for="(des, des_index) in item.description.split('~')">
-                      <template v-if="des_index === 0">单据号: {{ des }} <br :key="'bill_no_'+des"></template>
-                      <template v-if="des_index === 1">
-                        工夹具代码及件数: <br :key="'code_count_des_' + des_index">
-                        <template v-for="(input_code, i) in des.split('|')">&nbsp;&nbsp;&nbsp;&nbsp;{{ input_code }} - {{ item.description.split('~')[2].split('|')[i] }} 件 <br :key="'code_count_'+input_code"></template>
-                      </template>
-                    </template>
-                    入库人: {{ item.rec_name }}
-                  </template>
-                </el-timeline-item>
-              </el-timeline>
-              <div v-else="" class="font-info">暂无该工夹具出入库历史记录</div>
-            </el-collapse-item>
+            <out-and-in-history :jig_entity="jig_entity"></out-and-in-history>
           </el-scrollbar>
         </el-collapse>
       </template>
@@ -449,47 +412,7 @@
       <el-divider />
       <el-collapse style="height: 300px" value="1">
         <el-scrollbar style="height:100%">
-          <el-collapse-item title="追溯检点历史" name="1">
-            <el-timeline
-              v-if="maintenance_jig_detail != null && maintenance_jig_detail.maintenance_history_list.length > 0"
-            >
-              <el-timeline-item
-                v-for="(item, index) in maintenance_jig_detail.maintenance_history_list"
-                :key="index"
-                :icon="item.icon"
-                :type="item.type"
-                :timestamp="item.check_time"
-              >
-                <template v-if="item.is_repair === 0">
-                  检点人:{{ item.check_name }} <br>
-                  检修问题:
-                  <template v-if="item.reason_description.length > 0">
-                    <template v-for="(reason, i1) in item.reason_description">
-                      <div :key="reason" class="font-warning">{{ i1+1 }}.{{ reason }}</div>
-                    </template>
-                  </template>
-                  <template v-else>
-                    正常<br>
-                  </template>
-                  报修情况: 无需报修
-                </template>
-                <template v-if="item.is_repair === 1">
-                  检点人:{{ item.check_name }} <br>
-                  检修问题:
-                  <template v-if="item.reason_description.length > 0">
-                    <template v-for="(reason, i2) in item.reason_description">
-                      <div :key="reason" class="font-warning">{{ i2+1 }}.{{ reason }}</div>
-                    </template>
-                  </template>
-                  <template v-else>
-                    <div class="font-success">正常<br></div>
-                  </template>
-                  报修情况: 已报修
-                </template>
-              </el-timeline-item>
-            </el-timeline>
-            <div v-else class="font-info">暂无该工夹具检点历史记录</div>
-          </el-collapse-item>
+          <maintenance-history :jig_entity="maintenance_jig_detail"></maintenance-history>
         </el-scrollbar>
       </el-collapse>
       <el-divider />
@@ -660,47 +583,8 @@ export default {
     get_maintenance_check_list: function() {
       return this.maintenance_form.maintenance_check_list
     }
-    /* g_free_bin_count_map: function() {
-        var map = new Map()
-        this.warehouse.forEach(
-          (jig_cabinet, i) => {
-            jig_cabinet.location_id_list.forEach(
-              (location, i2) => {
-                map.set(jig_cabinet.jig_cabinet_id + '-' + location.location_id, location.free_bin_count)
-              }
-            )
-          }
-        )
-        return map
-      },
-       free_bin_count_map: function() {
-        var map = new Map()
-        this.warehouse.forEach(
-          (jig_cabinet, i) => {
-            jig_cabinet.location_id_list.forEach(
-              (location, i2) => {
-                map.set(jig_cabinet.jig_cabinet_id + '-' + location.location_id, location.free_bin_count)
-              }
-            )
-          }
-        )
-        return map
-      } */
   },
   watch: {
-    /* in_jig_form: {
-        handler(newValue, oldValue) {
-          this.code_list = this.all_code_list
-          newValue.code.forEach(
-            (v, i) => {
-              this.code_list = this.code_list.filter(
-                (item) => {
-                  return item !== v
-                })
-            })
-        },
-        deep: true
-      },*/
     in_jig_form_count: {
       handler(newValue, oldValue) {
         newValue.forEach(
@@ -764,7 +648,7 @@ export default {
         }
       }
     },
-    jig_entity() { // 设置出入库历史记录 时间线显示的图标
+    /* jig_entity() { // 设置出入库历史记录 时间线显示的图标
       for (var i = 0; i < this.jig_entity.out_and_in_history_list.length; i++) {
         var list = this.jig_entity.out_and_in_history_list
         if (list[i].status === '0') { // 出库
@@ -781,8 +665,8 @@ export default {
           list[i].type = 'success'
         }
       }
-    },
-    maintenance_jig_detail() {
+    },*/
+    /* maintenance_jig_detail() {
       for (var i = 0; i < this.maintenance_jig_detail.maintenance_history_list.length; i++) {
         var m_list = this.maintenance_jig_detail.maintenance_history_list
         if (m_list[i].is_repair === 0) { // 无需报修
@@ -793,7 +677,7 @@ export default {
           m_list[i].type = 'warning'
         }
       }
-    },
+    },*/
     get_maintenance_check_list() {
       this.maintenance_reason_list = []
       for (var i = 0; i < this.maintenance_id_list.length; i++) {
