@@ -88,6 +88,7 @@
           </el-form>
         </el-col>
       </el-row>
+
     </el-dialog>
     <el-drawer ref="drawer" title="申请报废" :visible.sync="drawerVisible" direction="rtl" :size="'504px'">
       <el-row>
@@ -104,7 +105,7 @@
               </el-select>
             </el-form-item>
             <el-divider />
-            <el-form-item label="报废原因" prop="repair_reason">
+            <el-form-item label="报废原因" prop="scrap_reason">
               <el-input v-model="form.scrap_reason" type="textarea" :rows="3" />
             </el-form-item>
             <el-form-item label="故障图片" prop="fileList">
@@ -156,7 +157,7 @@ export default {
       rules: {
         code: [{ required: true, message: '请选择工夹具代码', trigger: 'change' }],
         seq_id: [{ required: true, message: '请选择工夹具序列号', trigger: 'change' }],
-        repair_reason: [{ required: true, message: '请填写报废原因', trigger: 'change' }],
+        scrap_reason: [{ required: true, message: '请填写报废原因', trigger: 'change' }],
         fileList: [{ required: true, message: '请选择故障图片', trigger: 'blur' }]
       },
       code_list_filter: []
@@ -268,9 +269,10 @@ export default {
       form.append('seq_id', seq_id)
       form.append('scrap_reason', scrap_reason)
       form.append('submit_id', this.id)
+      form.append('scrap_type', 1)
       this.$ajax({
         method: 'post',
-        url: '/api/naive/submit_scrap',
+        url: '/api/high/submit_scrap',
         data: form
       }).then(
         response => {
