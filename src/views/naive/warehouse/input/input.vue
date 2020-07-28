@@ -13,7 +13,6 @@
       <el-table-column label="状态" width="120">
         <template slot-scope="scope">
           <div v-if="scope.row.status === '0'">待入库</div>
-          <div v-else-if="scope.row.status === '1'">已入库</div>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="100%">
@@ -156,7 +155,8 @@ export default {
         params: {
           workcell_id: this.workcell_id,
           page_number: this.page_number,
-          page_size: this.page_size
+          page_size: this.page_size,
+          status: 0
         }
       }).then(
         response => {

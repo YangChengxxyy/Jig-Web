@@ -498,11 +498,48 @@
         <el-popconfirm title="确认已经检查无误了吗？" @onConfirm="maintenance_jig(0)">
           <el-button slot="reference" type="primary">检点</el-button>
         </el-popconfirm>
-        <el-popconfirm title="确认已经检查无误并且需要报修吗？" @onConfirm="maintenance_jig(1)">
-          <el-button slot="reference" type="warning">检点并报修</el-button>
-        </el-popconfirm>
+        <el-button slot="reference" type="warning" @click="show_repair_jig_drawer = true">检点并报修</el-button>
       </span>
     </el-dialog>
+    <el-drawer v-if="maintenance_jig_detail != null" ref="repair_drawer" title="申请报修" :visible.sync="show_repair_jig_drawer" direction="rtl" :size="'504px'">
+      <el-scrollbar style="height:100%">
+        <el-row>
+          <el-col :span="22" :offset="1">
+            <el-form ref="submitForm" label-position="top" label-width="100px" :rules="rules" :model="repair_form">
+              <el-form-item label="工夹具代码" prop="code">
+                <el-input :value="maintenance_jig_detail.code + '-' + maintenance_jig_detail.seq_id" readonly />
+              </el-form-item>
+              <el-form-item label="报修原因" prop="repair_reason">
+                <el-input v-model="repair_form.repair_reason" type="textarea" :rows="3" />
+              </el-form-item>
+              <el-form-item label="报修类型" prop="repair_type">
+                <el-radio v-model="repair_form.repair_type" label="1">外观磨损</el-radio>
+                <el-radio v-model="repair_form.repair_type" label="2">夹具磨损</el-radio>
+                <el-radio v-model="repair_form.repair_type" label="3">零件掉落</el-radio>
+                <el-radio v-model="repair_form.repair_type" label="4">失去精准度</el-radio>
+              </el-form-item>
+              <el-form-item label="故障图片" prop="fileList">
+                <el-upload
+                  ref="upload"
+                  :auto-upload="false"
+                  :multiple="true"
+                  list-type="picture-card"
+                  action="/naive/submit_repair"
+                  accept="image/*"
+                  :limit="3"
+                  :on-change="onChange"
+                >
+                  <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+                </el-upload>
+              </el-form-item>
+            </el-form>
+            <el-divider />
+            <el-button style="width: 48%">取 消</el-button>
+            <el-button type="primary" style="width: 48%" @click="submitRepair('submitForm','upload')">确 定</el-button>
+          </el-col>
+        </el-row>
+      </el-scrollbar>
+    </el-drawer>
   </el-card>
 </template>
 
@@ -594,7 +631,19 @@ export default {
       maintenance_reason_list: [], // 检点时的有问题的原因list
       maintenance_id_list: [], // 检点类型id数组
       isIndeterminate: true, // 是否全选
-      check_all: false // 是否全选
+      check_all: false, // 是否全选
+      show_repair_jig_drawer: false, // 是否显示检点工夹具时报修的drawer
+      repair_form: {
+        repair_reason: '',
+        repair_type: '',
+        fileList: []
+      },
+      rules: {
+        repair_reason: [{ required: true, message: '请填写报废原因', trigger: 'change' }],
+        repair_type: [{ required: true, message: '请选择报修类型', trigger: 'change' }],
+        fileList: [{ required: true, message: '请选择故障图片', trigger: 'blur' }]
+      },
+      reason_description_list: [] // 检点问题的描述list
     }
   },
   computed: {
@@ -1155,6 +1204,56 @@ export default {
         }
       )
     },
+    get_maintenance_jig_repair_reason: function() {
+      this.show_repair_jig_drawer = true
+    },
+    submitRepair(formName, upload) { // 检点并提交报修
+      this.$refs[formName].validate(
+        valid => {
+          if (valid) {
+            this.$confirm('是否提交').then(
+              _ => {
+                this.maintenance_jig(1)
+                this.submitUpload()
+                this.$refs['repair_drawer'].closeDrawer()
+                this.$refs[upload].clearFiles()
+                this.$refs[formName].resetFields()
+                this.show_repair_jig_drawer = false
+              }
+            ).catch(
+              _ => {
+                this.$refs[formName].resetFields()
+                this.$refs[upload].clearFiles()
+              }
+            )
+          }
+        }
+      )
+    },
+    submitUpload() {
+      const { uploadFiles } = this.$refs['upload']
+      const form = new FormData()
+      uploadFiles.forEach(item => {
+        form.append('file', item.raw)
+      })
+      const code = this.maintenance_jig_detail.code
+      const seq_id = this.maintenance_jig_detail.seq_id
+      const { repair_reason, repair_type } = this.form
+      form.append('code', code)
+      form.append('seq_id', seq_id)
+      form.append('repair_reason', repair_reason)
+      form.append('repair_type', repair_type)
+      form.append('submit_id', this.id)
+      this.$ajax({
+        method: 'post',
+        url: '/api/naive/submit_repair',
+        data: form
+      }).then(
+        response => {
+          this.$message.success('提交成功！')
+        }
+      )
+    },
     clear_maintenance_form: function() {
       this.maintenance_form = {
         maintenance_check_list: [],
@@ -1250,6 +1349,9 @@ export default {
     },
     handleChange(value) {
       console.log(value)
+    }, // 添加文件
+    onChange(file, fileList) {
+      this.repair_form.fileList.push(file.name)
     }
   }
 }
