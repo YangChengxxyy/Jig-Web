@@ -16,9 +16,7 @@ import '@/icons' // icon
 import '@/permission' // permission control
 import service from '@/utils/request'
 import OutAndInHistory from '@/components/JigHistory/out-in-history'
-Vue.component('out-and-in-history', OutAndInHistory)
 import MaintenanceHistory from '@/components/JigHistory/maintenance-history'
-Vue.component('maintenance-history', MaintenanceHistory)
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
@@ -40,6 +38,9 @@ Vue.use(VCharts)
 
 Vue.config.productionTip = false
 Vue.prototype.$ajax = service
+
+Vue.component('out-and-in-history', OutAndInHistory)
+Vue.component('maintenance-history', MaintenanceHistory)
 new Vue({
   el: '#app',
   router,

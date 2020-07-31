@@ -1,10 +1,26 @@
 <template>
   <div class="navbar">
-    <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
+    <hamburger
+      :is-active="sidebar.opened"
+      class="hamburger-container"
+      @toggleClick="toggleSideBar"
+    />
 
     <breadcrumb class="breadcrumb-container" />
 
     <div class="right-menu">
+      <el-dropdown class="avatar-container" trigger="click">
+        <div class="avatar-wrapper">
+          <el-badge :value="unreadMessage.length">
+            <img src="@/icons/notification.png" width="36" height="36" class="message">
+          </el-badge>
+        </div>
+        <el-dropdown-menu slot="dropdown" class="user-dropdown">
+          <el-badge is-dot class="badge">
+            <el-dropdown-item>提交了一份新的报修申请</el-dropdown-item>
+          </el-badge>
+        </el-dropdown-menu>
+      </el-dropdown>
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <img :src="avatar_url" class="user-avatar">
@@ -12,9 +28,7 @@
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
           <router-link :to="{name : token.role}">
-            <el-dropdown-item>
-              Home
-            </el-dropdown-item>
+            <el-dropdown-item>Home</el-dropdown-item>
           </router-link>
           <el-dropdown-item divided @click.native="logout">
             <span style="display:block;">Log Out</span>
@@ -35,12 +49,34 @@ export default {
     Breadcrumb,
     Hamburger
   },
+  data() {
+    return {
+      unreadMessage: [],
+      readMessage: []
+    }
+  },
   computed: {
-    ...mapGetters([
-      'sidebar',
-      'avatar_url',
-      'token'
-    ])
+    ...mapGetters(['sidebar', 'avatar_url', 'token', 'id'])
+  },
+  created: function() {
+    this.$ajax
+      .get('/api/message/get_message', {
+        params: {
+          id: this.id
+        }
+      })
+      .then((response) => {
+        const message = response.data
+        const unreadMessage = []
+        const readMessage = []
+        for (var i = 0; i < message.length; i++) {
+          if (message[i].read) {
+            readMessage.push(message[i])
+          } else {
+            unreadMessage.push(message[i])
+          }
+        }
+      })
   },
   methods: {
     toggleSideBar() {
@@ -60,18 +96,18 @@ export default {
   overflow: hidden;
   position: relative;
   background: #fff;
-  box-shadow: 0 1px 4px rgba(0,21,41,.08);
+  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
 
   .hamburger-container {
     line-height: 46px;
     height: 100%;
     float: left;
     cursor: pointer;
-    transition: background .3s;
-    -webkit-tap-highlight-color:transparent;
+    transition: background 0.3s;
+    -webkit-tap-highlight-color: transparent;
 
     &:hover {
-      background: rgba(0, 0, 0, .025)
+      background: rgba(0, 0, 0, 0.025);
     }
   }
 
@@ -98,10 +134,10 @@ export default {
 
       &.hover-effect {
         cursor: pointer;
-        transition: background .3s;
+        transition: background 0.3s;
 
         &:hover {
-          background: rgba(0, 0, 0, .025)
+          background: rgba(0, 0, 0, 0.025);
         }
       }
     }
@@ -130,5 +166,14 @@ export default {
       }
     }
   }
+}
+.message {
+  cursor: pointer;
+  width: 25px;
+  height: 25px;
+  border-radius: 10px;
+}
+.message-item {
+  display: inline-block;
 }
 </style>

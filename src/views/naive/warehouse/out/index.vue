@@ -272,7 +272,7 @@
         <el-divider />
         <el-collapse style="height: 350px" value="1">
           <el-scrollbar style="height:100%">
-            <out-and-in-history :jig_entity="jig_entity"></out-and-in-history>
+            <out-and-in-history :jig_entity="jig_entity" />
           </el-scrollbar>
         </el-collapse>
       </template>
