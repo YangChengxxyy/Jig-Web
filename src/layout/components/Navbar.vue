@@ -7,18 +7,23 @@
     />
 
     <breadcrumb class="breadcrumb-container" />
-
+    <div v-show="false">{{ change }}</div>
     <div class="right-menu">
-      <el-dropdown class="avatar-container" trigger="click">
+      <el-dropdown class="avatar-container" trigger="click" size="small" @visible-change="messageChange($event)">
         <div class="avatar-wrapper">
           <el-badge :value="unreadMessage.length">
-            <img src="@/icons/notification.png" width="36" height="36" class="message">
+            <img src="@/icons/notification.png" class="message">
           </el-badge>
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
-          <el-badge is-dot class="badge">
-            <el-dropdown-item>提交了一份新的报修申请</el-dropdown-item>
-          </el-badge>
+          <el-tooltip v-for="(value, index) in testTime" :key="index" class="item" effect="dark" content="点击查看" placement="top">
+            <el-dropdown-item :divided="index == testTime.length-1">
+              <el-badge is-dot>
+                1230936提交了一份新的报修申请{{ index }}
+              </el-badge>
+              <div class="message-time">{{ formatTime(value) }}</div>
+            </el-dropdown-item>
+          </el-tooltip>
         </el-dropdown-menu>
       </el-dropdown>
       <el-dropdown class="avatar-container" trigger="click">
@@ -43,7 +48,7 @@
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
-
+import { formatTime } from '@/utils/index'
 export default {
   components: {
     Breadcrumb,
@@ -51,8 +56,12 @@ export default {
   },
   data() {
     return {
+      change: [],
+      changeTime: 1,
       unreadMessage: [],
-      readMessage: []
+      readMessage: [],
+      isMessage: false,
+      testTime: [new Date(), new Date().setFullYear(2020, 7, 1)]
     }
   },
   computed: {
@@ -76,7 +85,15 @@ export default {
             unreadMessage.push(message[i])
           }
         }
+        this.changeTime = setInterval(() => {
+          if (this.isMessage) {
+            this.change = JSON.parse(JSON.stringify(this.change))
+          }
+        }, 1000)
       })
+  },
+  beforeDestroy() {
+    clearInterval(this.changeTime)
   },
   methods: {
     toggleSideBar() {
@@ -85,6 +102,16 @@ export default {
     async logout() {
       await this.$store.dispatch('user/logout')
       this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+    },
+    messageChange(e) {
+      this.isMessage = e
+    },
+    formatTime(date) {
+      if (date.constructor === Date) {
+        return formatTime(date.getTime())
+      } else if (date.constructor === Number) {
+        return formatTime(date)
+      }
     }
   }
 }
@@ -173,7 +200,7 @@ export default {
   height: 25px;
   border-radius: 10px;
 }
-.message-item {
-  display: inline-block;
+.message-time{
+  color:#909399;
 }
 </style>

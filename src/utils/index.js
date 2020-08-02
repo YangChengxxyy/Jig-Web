@@ -61,8 +61,8 @@ export function formatTime(time, option) {
 
   const diff = (now - d) / 1000
 
-  if (diff < 30) {
-    return '刚刚'
+  if (diff < 60) {
+    return `${Math.ceil(diff)}秒前`
   } else if (diff < 3600) {
     // less 1 hour
     return Math.ceil(diff / 60) + '分钟前'
