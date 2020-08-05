@@ -44,9 +44,8 @@ export function getWebSocket(http, role, id) {
           notification.close()
         }
       })
-    } else {
-      thisVue.$children[0].$children[0].$children[1].getMessage()
     }
+    thisVue.$children[0].$children[0].$children[1].getMessage()
   }
 
   /**
