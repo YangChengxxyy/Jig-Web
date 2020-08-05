@@ -9,19 +9,47 @@
     <breadcrumb class="breadcrumb-container" />
     <div v-show="false">{{ change }}</div>
     <div class="right-menu">
-      <el-dropdown class="avatar-container" trigger="click" size="small" @visible-change="messageChange($event)">
+      <el-dropdown
+        class="avatar-container"
+        trigger="click"
+        size="small"
+        @visible-change="messageChange($event)"
+      >
         <div class="avatar-wrapper">
           <el-badge :value="unreadMessage.length">
             <img src="@/icons/notification.png" class="message">
           </el-badge>
         </div>
+
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
-          <el-tooltip v-for="(value, index) in testTime" :key="index" class="item" effect="dark" content="点击查看" placement="top">
-            <el-dropdown-item :divided="index == testTime.length-1">
-              <el-badge is-dot>
-                1230936提交了一份新的报修申请{{ index }}
-              </el-badge>
-              <div class="message-time">{{ formatTime(value) }}</div>
+          <el-tooltip
+            v-for="(value ,name, index) in unreadMessage"
+            :key="index"
+            class="item"
+            effect="dark"
+            content="点击查看"
+            placement="top"
+          >
+            <el-dropdown-item :divided="index == unreadMessage.length - 1">
+              <el-badge
+                is-dot
+              >{{ value.content }}</el-badge>
+              <div class="message-time">{{ formatTime(value.date) }}</div>
+            </el-dropdown-item>
+          </el-tooltip>
+          <el-tooltip
+            v-for="(value ,name, index) in readMessage"
+            :key="index"
+            class="item"
+            effect="dark"
+            content="点击查看"
+            placement="top"
+          >
+            <el-dropdown-item :divided="index == readMessage.length - 1">
+              <el-badge
+                is-dot
+              >{{ value.content }}</el-badge>
+              <div class="message-time">{{ formatTime(value.date) }}</div>
             </el-dropdown-item>
           </el-tooltip>
         </el-dropdown-menu>
@@ -32,7 +60,7 @@
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
-          <router-link :to="{name : token.role}">
+          <router-link :to="{ name: token.role }">
             <el-dropdown-item>Home</el-dropdown-item>
           </router-link>
           <el-dropdown-item divided @click.native="logout">
@@ -56,12 +84,11 @@ export default {
   },
   data() {
     return {
-      change: [],
+      change: 1,
       changeTime: 1,
       unreadMessage: [],
       readMessage: [],
-      isMessage: false,
-      testTime: [new Date(), new Date().setFullYear(2020, 7, 1)]
+      isMessage: false
     }
   },
   computed: {
@@ -74,20 +101,19 @@ export default {
           id: this.id
         }
       })
-      .then((response) => {
+      .then(response => {
         const message = response.data
-        const unreadMessage = []
-        const readMessage = []
+        console.log(message)
         for (var i = 0; i < message.length; i++) {
           if (message[i].read) {
-            readMessage.push(message[i])
+            this.readMessage.push(message[i])
           } else {
-            unreadMessage.push(message[i])
+            this.unreadMessage.push(message[i])
           }
         }
         this.changeTime = setInterval(() => {
           if (this.isMessage) {
-            this.change = JSON.parse(JSON.stringify(this.change))
+            this.change++
           }
         }, 1000)
       })
@@ -200,7 +226,7 @@ export default {
   height: 25px;
   border-radius: 10px;
 }
-.message-time{
-  color:#909399;
+.message-time {
+  color: #909399;
 }
 </style>

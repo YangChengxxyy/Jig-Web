@@ -31,13 +31,12 @@ export function getWebSocket(http, role, id) {
       path: path,
       query: params
     }
-    console.log(r)
-    console.log(router)
     const notification = Notification({
       message: content,
       title: title,
       duration: 0,
       showClose: false,
+      position: 'bottom-right',
       onClick: () => {
         router.push(r)
         notification.close()
