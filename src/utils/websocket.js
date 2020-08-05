@@ -1,5 +1,6 @@
 import router from '@/router'
 import { Notification } from 'element-ui'
+import thisVue from '../main'
 /**
  * WebSocket客户端
  *
@@ -24,24 +25,28 @@ export function getWebSocket(http, role, id) {
    */
   webSocket.onmessage = function(event) {
     let { data } = event
-    data = JSON.parse(data)
-    console.log(data)
-    const { path, params, content, title } = data
-    const r = {
-      path: path,
-      query: params
-    }
-    const notification = Notification({
-      message: content,
-      title: title,
-      duration: 0,
-      showClose: false,
-      position: 'bottom-right',
-      onClick: () => {
-        router.push(r)
-        notification.close()
+    if (data.indexOf('this') === -1) {
+      data = JSON.parse(data)
+      console.log(data)
+      const { path, params, content, title } = data
+      const r = {
+        path: path,
+        query: params
       }
-    })
+      const notification = Notification({
+        message: content,
+        title: title,
+        duration: 0,
+        showClose: false,
+        position: 'bottom-right',
+        onClick: () => {
+          router.push(r)
+          notification.close()
+        }
+      })
+    } else {
+      thisVue.$children[0].$children[0].$children[1].getMessage()
+    }
   }
 
   /**

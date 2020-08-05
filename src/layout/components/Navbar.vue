@@ -95,28 +95,12 @@ export default {
     ...mapGetters(['sidebar', 'avatar_url', 'token', 'id'])
   },
   created: function() {
-    this.$ajax
-      .get('/api/message/get_message', {
-        params: {
-          id: this.id
-        }
-      })
-      .then(response => {
-        const message = response.data
-        console.log(message)
-        for (var i = 0; i < message.length; i++) {
-          if (message[i].read) {
-            this.readMessage.push(message[i])
-          } else {
-            this.unreadMessage.push(message[i])
-          }
-        }
-        this.changeTime = setInterval(() => {
-          if (this.isMessage) {
-            this.change++
-          }
-        }, 1000)
-      })
+    this.getMessage()
+    this.changeTime = setInterval(() => {
+      if (this.isMessage) {
+        this.change++
+      }
+    }, 1000)
   },
   beforeDestroy() {
     clearInterval(this.changeTime)
@@ -138,6 +122,25 @@ export default {
       } else if (date.constructor === Number) {
         return formatTime(date)
       }
+    },
+    getMessage() {
+      this.$ajax
+        .get('/api/message/get_message', {
+          params: {
+            id: this.id
+          }
+        })
+        .then(response => {
+          const message = response.data
+          console.log(message)
+          for (var i = 0; i < message.length; i++) {
+            if (message[i].read) {
+              this.readMessage.push(message[i])
+            } else {
+              this.unreadMessage.push(message[i])
+            }
+          }
+        })
     }
   }
 }

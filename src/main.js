@@ -41,7 +41,7 @@ Vue.prototype.$ajax = service
 
 Vue.component('out-and-in-history', OutAndInHistory)
 Vue.component('maintenance-history', MaintenanceHistory)
-new Vue({
+export default new Vue({
   el: '#app',
   router,
   store,
