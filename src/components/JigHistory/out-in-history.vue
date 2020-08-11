@@ -44,9 +44,9 @@
 export default {
   name: 'OutInHistory',
   props: {
-    jig_entity: {
-      code: '',
-      seq_id: ''
+    jigEntity: {
+      type: Object,
+      default: null
     }
   },
   data: function() {
@@ -55,7 +55,7 @@ export default {
     }
   },
   watch: {
-    jig_entity() {
+    jigEntity() {
       this.get_out_and_in_history()
     }
   },
@@ -66,8 +66,8 @@ export default {
     get_out_and_in_history: function() {
       this.$ajax.get('/api/naive/get_out_and_in_history_list', {
         params: {
-          code: this.jig_entity.code,
-          seq_id: this.jig_entity.seq_id
+          code: this.jigEntity.code,
+          seq_id: this.jigEntity.seq_id
         }
       }).then(
         response => {

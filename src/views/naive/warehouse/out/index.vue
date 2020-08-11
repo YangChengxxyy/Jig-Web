@@ -412,7 +412,7 @@
       <el-divider />
       <el-collapse style="height: 300px" value="1">
         <el-scrollbar style="height:100%">
-          <maintenance-history :jig_entity="maintenance_jig_detail"></maintenance-history>
+          <maintenance-history :jig_entity="maintenance_jig_detail" />
         </el-scrollbar>
       </el-collapse>
       <el-divider />
@@ -1122,7 +1122,8 @@ export default {
       })
       const code = this.maintenance_jig_detail.code
       const seq_id = this.maintenance_jig_detail.seq_id
-      const { repair_reason, repair_type } = this.form
+      const repair_reason = this.repair_form.repair_reason
+      const repair_type = this.repair_form.repair_type
       form.append('code', code)
       form.append('seq_id', seq_id)
       form.append('repair_reason', repair_reason)
@@ -1134,7 +1135,9 @@ export default {
         data: form
       }).then(
         response => {
-          this.$message.success('提交成功！')
+          if (response.data) {
+            this.$message.success('提交成功！')
+          }
         }
       )
     },
