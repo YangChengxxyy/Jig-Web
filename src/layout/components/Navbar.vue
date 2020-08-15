@@ -22,6 +22,9 @@
         </div>
 
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
+          <el-dropdown-item v-if="unreadMessage.length === 0 && readMessage.length === 0">
+            暂无消息
+          </el-dropdown-item>
           <el-tooltip
             v-for="(value ,name, index) in unreadMessage"
             :key="index"
@@ -30,7 +33,7 @@
             content="点击查看"
             placement="top"
           >
-            <el-dropdown-item :divided="index == unreadMessage.length - 1">
+            <el-dropdown-item :divided="index === unreadMessage.length - 1" @click.native="read(value)">
               <el-badge
                 is-dot
               >{{ value.content }}</el-badge>
@@ -45,10 +48,8 @@
             content="点击查看"
             placement="top"
           >
-            <el-dropdown-item :divided="index == readMessage.length - 1">
-              <el-badge
-                is-dot
-              >{{ value.content }}</el-badge>
+            <el-dropdown-item :divided="index === readMessage.length - 1" @click.native="read(value)">
+              {{ value.content }}
               <div class="message-time">{{ formatTime(value.date) }}</div>
             </el-dropdown-item>
           </el-tooltip>
@@ -77,6 +78,7 @@ import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
 import { formatTime } from '@/utils/index'
+import { Notification } from 'element-ui'
 export default {
   components: {
     Breadcrumb,
@@ -92,7 +94,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['sidebar', 'avatar_url', 'token', 'id'])
+    ...mapGetters(['sidebar', 'avatar_url', 'token', 'id', 'role', 'workcell_id'])
   },
   created: function() {
     this.getMessage()
@@ -127,7 +129,9 @@ export default {
       this.$ajax
         .get('/api/message/get_message', {
           params: {
-            id: this.id
+            id: this.id,
+            role: this.role,
+            workcell_id: this.workcell_id
           }
         })
         .then(response => {
@@ -136,11 +140,23 @@ export default {
           for (var i = 0; i < message.length; i++) {
             if (message[i].read) {
               this.readMessage.push(message[i])
+            } else if (message[i].user_id === '') {
+              this.readMessage.push(message[i])
             } else {
               this.unreadMessage.push(message[i])
             }
           }
         })
+    },
+    read(data) {
+      if (JSON.stringify(data).indexOf('this') === -1) {
+        const { path, params, content, title } = data
+        const r = {
+          path: path,
+          query: params
+        }
+        this.$router.push(r)
+      }
     }
   }
 }

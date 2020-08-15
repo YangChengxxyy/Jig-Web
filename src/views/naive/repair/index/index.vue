@@ -150,7 +150,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'id'
+      'id', 'workcell_id'
     ])
   },
   created() {
@@ -254,6 +254,7 @@ export default {
       form.append('repair_reason', repair_reason)
       form.append('repair_type', repair_type)
       form.append('submit_id', this.id)
+      form.append('workcell_id', this.workcell_id)
       this.$ajax({
         method: 'post',
         url: '/api/naive/submit_repair',
