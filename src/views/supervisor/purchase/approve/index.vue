@@ -210,7 +210,8 @@ export default {
         params: {
           id: this.purchase_submit_detail.id,
           status: '2',
-          user_id: this.id
+          user_id: this.id,
+          workcell_id: this.workcell_id
         }
       }).then(
         response => {
@@ -227,7 +228,8 @@ export default {
           id: this.purchase_submit_detail.id,
           status: '1',
           first_reason: this.purchase_submit_detail.first_reason,
-          user_id: this.id
+          user_id: this.id,
+          workcell_id: this.workcell_id
         }
       }).then(
         response => {
