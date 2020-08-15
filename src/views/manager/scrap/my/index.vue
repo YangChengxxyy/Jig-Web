@@ -171,7 +171,8 @@ export default {
       this.$ajax.get('/api/manager/pass_scrap_submit', {
         params: {
           id: this.scrap_submit_detail.id,
-          user_id: this.id
+          user_id: this.id,
+          workcell_id: this.workcell_id
         }
       }).then(
         response => {
@@ -187,7 +188,8 @@ export default {
         params: {
           id: this.scrap_submit_detail.id,
           no_pass_reason: this.scrap_submit_detail.first_reason,
-          user_id: this.id
+          user_id: this.id,
+          workcell_id: this.workcell_id
         }
       }).then(
         response => {
