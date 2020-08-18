@@ -20,7 +20,7 @@
           <el-popconfirm
             v-else-if="scope.row.status === '1'"
             title="确认已经维修完毕了吗？"
-            @onConfirm="repair_finsih(scope.row)"
+            @onConfirm="repair_finish(scope.row)"
           >
             <el-button slot="reference" type="text" class="font-warning">维修中</el-button>
           </el-popconfirm>
@@ -184,6 +184,12 @@ export default {
       })
     },
     repair_finish: function(repair_submit) {
+      var json_repair_submit = JSON.stringify(repair_submit)
+      this.$ajax.get('/api/naive/repair_finish', {
+        params: {
+          repair_submit: json_repair_submit
+        }
+      })
     },
     handleSizeChange: function(val) {
       this.page_size = val

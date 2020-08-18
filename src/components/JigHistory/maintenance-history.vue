@@ -23,7 +23,7 @@
           </template>
           报修情况: 无需报修
         </template>
-        <template v-if="item.is_repair === 1">
+        <template v-else-if="item.is_repair === 1">
           检点人:{{ item.check_name }} <br>
           检修问题:
           <template v-if="item.reason_description.length > 0">
@@ -36,6 +36,14 @@
           </template>
           报修情况: 已报修
         </template>
+        <template v-else-if="item.is_repair === 2">
+          检点人:{{ item.check_name }} <br>
+          检修问题:
+          <template>
+            {{ item.repair_type_description }}<br>
+          </template>
+          报修情况: 维修完成
+        </template>
       </el-timeline-item>
     </el-timeline>
     <div v-else class="font-info">暂无该工夹具检点历史记录</div>
@@ -46,7 +54,7 @@
 export default {
   name: 'MaintenanceHistory',
   props: {
-    jig_entity: {
+    jigEntity: {
       code: '',
       seq_id: ''
     }
@@ -57,7 +65,7 @@ export default {
     }
   },
   watch: {
-    jig_entity() {
+    jigEntity() {
       this.get_maintenance_history_list()
     }
   },
@@ -68,8 +76,8 @@ export default {
     get_maintenance_history_list: function() {
       this.$ajax.get('/api/naive/get_jig_maintenance_history_list', {
         params: {
-          code: this.jig_entity.code,
-          seq_id: this.jig_entity.seq_id
+          code: this.jigEntity.code,
+          seq_id: this.jigEntity.seq_id
         }
       }).then(
         response => {
@@ -81,7 +89,7 @@ export default {
     set_icon: function() {
       for (var i = 0; i < this.maintenance_history_list.length; i++) {
         var m_list = this.maintenance_history_list
-        if (m_list[i].is_repair === 0) { // 无需报修
+        if (m_list[i].is_repair === 0 || m_list[i].is_repair === 2) { // 无需报修 或者 维修完成
           m_list[i].icon = 'el-icon-check'
           m_list[i].type = 'success'
         } else if (m_list[i].is_repair === 1) { // 需要报修
