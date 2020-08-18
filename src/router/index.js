@@ -66,6 +66,11 @@ naive
         meta: { title: '归还工夹具', role: ['naive'] }
       },
       {
+        path: 'repair',
+        component: () => import('@/views/naive/warehouse/repair/repair'),
+        meta: { title: '待处理报修工夹具', role: ['naive'] }
+      },
+      {
         path: 'input',
         component: () => import('@/views/naive/warehouse/input/input'),
         meta: { title: '待处理采购入库单', role: ['naive'] }
