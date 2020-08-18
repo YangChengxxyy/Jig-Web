@@ -3,8 +3,15 @@
     <el-table :data="scrap_submit_list" border style="width: 94%; margin: 1% 3% 2%">
       <el-table-column label="工夹具代码" prop="code" />
       <el-table-column label="工夹具序列号" prop="seq_id" />
-      <el-table-column label="工夹具照片" prop=""></el-table-column>
-      <el-table-column label="申请人" prop="submit_name"></el-table-column>
+      <el-table-column label="工夹具照片">
+        <template slot-scope="scope">
+          <el-image
+            :src="scope.row.scrap_photo_url.split('|')[0]"
+            :preview-src-list="scope.row.scrap_photo_url.split('|')"
+          />
+        </template>
+      </el-table-column>
+      <el-table-column label="申请人" prop="submit_name" />
       <el-table-column label="报废原因" prop="scrap_reason" />
       <el-table-column label="申请时间" prop="submit_time" />
       <el-table-column label="操作" width="100%">
@@ -13,7 +20,7 @@
             title="确认进行报废吗？"
             @onConfirm="scrap_jig(scope.row)"
           >
-           <el-button slot="reference" type="text" class="font-error">报废</el-button>
+            <el-button slot="reference" type="text" class="font-error">报废</el-button>
           </el-popconfirm>
         </template>
       </el-table-column>

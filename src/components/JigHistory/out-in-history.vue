@@ -45,8 +45,8 @@ export default {
   name: 'OutInHistory',
   props: {
     jigEntity: {
-      type: Object,
-      default: null
+      code: '',
+      seq_id: ''
     }
   },
   data: function() {
