@@ -5,7 +5,6 @@
       class="hamburger-container"
       @toggleClick="toggleSideBar"
     />
-
     <breadcrumb class="breadcrumb-container" />
     <div v-show="false">{{ change }}</div>
     <div class="right-menu">
@@ -136,7 +135,7 @@ export default {
         .then(response => {
           const message = response.data
           console.log(message)
-          for (var i = 0; i < message.length; i++) {
+          for (let i = 0; i < message.length; i++) {
             if (message[i].read) {
               this.readMessage.push(message[i])
             } else if (message[i].user_id === '') {
@@ -149,12 +148,19 @@ export default {
     },
     read(data) {
       if (JSON.stringify(data).indexOf('this') === -1) {
-        const { path, params, content, title } = data
+        const { path, params } = data
         const r = {
           path: path,
           query: params
         }
         this.$router.push(r)
+        this.$ajax.get('/api/message/read_message', {
+          params: {
+            message_id: data.id
+          }
+        }).then((response) => {
+          this.getMessage()
+        })
       }
     }
   }

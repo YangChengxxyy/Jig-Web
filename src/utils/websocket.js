@@ -42,6 +42,7 @@ export function getWebSocket(http, role, id) {
         onClick: () => {
           router.push(r)
           notification.close()
+          thisVue.$children[0].$children[0].$children[1].read(data)
         }
       })
     }
