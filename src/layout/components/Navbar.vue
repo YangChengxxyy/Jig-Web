@@ -77,8 +77,7 @@
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
-import { formatTime } from '@/utils/index'
-import { Notification } from 'element-ui'
+import { formatTime } from '@/utils'
 export default {
   components: {
     Breadcrumb,
