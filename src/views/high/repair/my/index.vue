@@ -119,6 +119,7 @@ export default {
       repair: null,
       disagreeVisible: false,
       disagreeId: '',
+      informed_id: '',
       disagreeForm: {
         reason: ''
       }
@@ -165,7 +166,8 @@ export default {
         params: {
           id: row.id,
           submit_id: this.id,
-          state: true
+          state: true,
+          informed_id: row.submit_id
         }
       }).then(
         response => {
@@ -178,6 +180,7 @@ export default {
     disagree2(row) {
       this.disagreeVisible = true
       this.disagreeId = row.id
+      this.informed_id = row.submit_id
     },
     disagree() {
       this.$refs['reason'].validate(
@@ -188,7 +191,8 @@ export default {
                 id: this.disagreeId,
                 submit_id: this.id,
                 state: false,
-                reason: this.disagreeForm.reason
+                reason: this.disagreeForm.reason,
+                informed_id: this.informed_id
               }
             }).then(
               response => {

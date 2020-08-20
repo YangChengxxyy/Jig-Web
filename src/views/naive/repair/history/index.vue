@@ -88,6 +88,13 @@ export default {
         )
       }
     )
+    const id = this.$route.params['id']
+    if (id !== undefined) {
+      this.$ajax.get('/api/naive/get_a_repair_history', { params: { id: id }}).then((response) => {
+        this.history = response.data
+        this.dialogVisible = true
+      })
+    }
   },
   methods: {
     getData() {
@@ -100,7 +107,6 @@ export default {
       }).then(
         response => {
           const { data } = response
-          console.log(data)
           this.history_list = data.data
           this.all = data.all
         }
