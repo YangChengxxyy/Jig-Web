@@ -88,7 +88,7 @@ export default {
         )
       }
     )
-    const id = this.$route.params['id']
+    const id = this.$route.query['id']
     if (id !== undefined) {
       this.$ajax.get('/api/naive/get_a_repair_history', { params: { id: id }}).then((response) => {
         this.history = response.data
