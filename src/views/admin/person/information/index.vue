@@ -109,15 +109,6 @@
             </el-row>
             <el-row>
               <el-col :span="24">
-                <el-form-item label="工作部门">
-                  <el-select v-model="showPerson.workcell_id" style="width: 100%">
-                    <el-option v-for="item in workcell_list" :key="item.id" :value="item.id" :label="item.workcell" />
-                  </el-select>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :span="24">
                 <el-form-item label="邮箱">
                   <el-input v-model="showPerson.email" />
                 </el-form-item>
@@ -128,7 +119,7 @@
       </el-row>
       <span slot="footer" class="dialog-footer">
         <el-button @click="showVisible = false">取 消</el-button>
-        <el-button type="primary" @click="showVisible = false">确 定</el-button>
+        <el-button type="primary" @click="editInfor()">确 定</el-button>
       </span>
     </el-dialog>
     <el-pagination
@@ -157,7 +148,6 @@ export default {
       form: {
         id: '',
         name: '',
-        workcell_id: '',
         date: ['', '']
       },
       user_list: [],
@@ -212,7 +202,6 @@ export default {
         this.workcell_list = response.data
       }
     )
-    console.log(this.$route.params)
   },
   methods: {
     getData: function() {
@@ -258,6 +247,9 @@ export default {
       this.showVisible = true
     },
     del: function(row) {
+      this.$ajax.get('/api/admin/del_user', { params: { id: row.id }}).then(response => {
+        this.$message.info('删除成功！')
+      })
     },
     handleClose(done) {
       this.$confirm('确认关闭？')
@@ -273,6 +265,9 @@ export default {
     handleCurrentChange: function(val) {
       this.page_number = val
       this.getData()
+    },
+    editInfor() {
+
     }
   }
 }
