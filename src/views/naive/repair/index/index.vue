@@ -46,7 +46,7 @@
               <el-input v-model="repair.seq_id" readonly />
             </el-form-item>
             <el-form-item label="报修原因">
-              <el-input v-model="repair.repair_reason" readonly />
+              <el-input v-model="repair.repair_reason" type="textarea" :rows="3" readonly />
             </el-form-item>
             <el-form-item label="故障图片">
               <el-image
@@ -54,11 +54,8 @@
                 :preview-src-list="repair.repair_photo_url.split('|')"
               />
             </el-form-item>
-            <el-form-item label="申请人id">
-              <el-input v-model="repair.submit_id" readonly />
-            </el-form-item>
             <el-form-item label="申请人">
-              <el-input v-model="repair.submit_name" readonly />
+              <el-input :value="repair.submit_name + ' (' + repair.submit_id + ')'" readonly />
             </el-form-item>
             <el-form-item label="申请时间">
               <el-input v-model="repair.submit_time" readonly />
@@ -285,4 +282,5 @@ export default {
     width: 96%;
     margin: 2% 2%
   }
+
 </style>
