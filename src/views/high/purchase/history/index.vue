@@ -79,9 +79,9 @@
           <el-table-column label="申请时间" prop="submit_time" />
           <el-table-column label="状态" prop="status">
             <template slot-scope="scope">
-              <span v-if="scope.row.status === 0">待处理</span>
-              <span v-else-if="scope.row.status === 1">已同意</span>
-              <span v-else>未同意</span>
+              <span v-if="scope.row.status === '0'">待处理</span>
+              <span v-else-if="scope.row.status === '4'" class="font-success">已同意</span>
+              <span v-else class="font-error">未同意</span>
             </template>
           </el-table-column>
           <el-table-column label="操作">
@@ -127,22 +127,22 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row v-for="(item,index) in history.code" :key="index" :gutter="20">
+        <el-row v-for="(item,index) in history.code.split('|')" :key="index" :gutter="20">
           <el-col :span="11" :offset="1">
             <el-form-item label="工夹具代码">
-              <el-input v-model="history.code[index]" readonly />
+              <el-input :value="item" readonly />
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="数量">
-              <el-input v-model="history.count[index]" readonly />
+              <el-input :value="history.count.split('|')[index]" readonly />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="20">
           <el-col :span="22" :offset="1">
             <el-form-item label="申请时间">
-              <el-input v-model="history.submit_id" readonly />
+              <el-input v-model="history.submit_time" readonly />
             </el-form-item>
           </el-col>
         </el-row>
@@ -271,6 +271,14 @@ export default {
         this.production_line_list = res.data
       }
     )
+    this.getData()
+    const id = this.$route.query['id']
+    if (id !== undefined) {
+      this.$ajax.get('/api/get_a_purchase_submit', { params: { id: id }}).then((response) => {
+        this.history = response.data
+        this.dialogVisible = true
+      })
+    }
   },
   methods: {
     getData() {
@@ -322,8 +330,8 @@ export default {
     },
     showHistory(row) {
       this.history = JSON.parse(JSON.stringify(row))
-      this.history.code = this.history.code.split('|')
-      this.history.count = this.history.count.split('|')
+      // this.history.code = this.history.code.split('|')
+      // this.history.count = this.history.count.split('|')
       this.dialogVisible = true
     }
   }

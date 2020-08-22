@@ -256,6 +256,14 @@ export default {
     }
   },
   created() {
+    this.getData()
+    const id = this.$route.query['id']
+    if (id !== undefined) {
+      this.$ajax.get('/api/get_a_purchase_submit', { params: { id: id }}).then((response) => {
+        this.purchase_submit_detail = response.data
+        this.show_purchase_submit_detail_dialog = true
+      })
+    }
     this.$ajax('/api/get_production_line_list').then(
       res => {
         this.production_line_list = res.data
@@ -267,15 +275,6 @@ export default {
         this.code_list = res.data
       }
     )
-    this.getData()
-    const id = this.$route.query['id']
-    console.log('id:' + id)
-    if (id !== undefined) {
-      this.$ajax.get('/api/get_a_purchase_submit', { params: { id: id }}).then((response) => {
-        this.purchase_submit_detail = response.data
-        this.show_purchase_submit_detail_dialog = true
-      })
-    }
   },
   methods: {
     getData() {
