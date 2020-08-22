@@ -134,7 +134,8 @@ export default {
         })
         .then(response => {
           const message = response.data
-          console.log(message)
+          this.readMessage = []
+          this.unreadMessage = []
           for (let i = 0; i < message.length; i++) {
             if (message[i].read) {
               this.readMessage.push(message[i])
