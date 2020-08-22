@@ -6,17 +6,29 @@
           提交报废
         </el-button>
         <el-table :data="scrap_list" style="margin-top: 1%" border>
-          <el-table-column label="工夹具代码" prop="code" :filters="code_list_filter" :filter-method="filterHandler" sortable />
-          <el-table-column label="工夹具序列号" prop="seq_id" />
+          <el-table-column label="工夹具实体" prop="code" :filters="code_list_filter" :filter-method="filterHandler" sortable>
+            <template slot-scope="scope">
+              <span>{{ scope.row.code }}-{{ scope.row.seq_id }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="报废照片" prop="scrap_photo_url">
+            <template slot-scope="scope">
+              <el-image
+                :src="scope.row.scrap_photo_url.split('|')[0]"
+                :preview-src-list="scope.row.scrap_photo_url.split('|')"
+                style="max-height: 120px"
+              />
+            </template>
+          </el-table-column>
           <el-table-column label="报废原因" prop="scrap_reason" />
           <el-table-column label="申请时间" prop="submit_time" />
           <el-table-column label="状态" width="100%">
             <template slot-scope="scope">
-              <span v-if="scope.row.status === '0'">待初审</span>
-              <span v-else-if="scope.row.status === '1'">初审未通过</span>
-              <span v-else-if="scope.row.status === '2'">初审通过</span>
-              <span v-else-if="scope.row.status === '3'">终审未通过</span>
-              <span v-else>终审通过</span>
+              <span v-if="scope.row.status === '0'" class="font-warning">待初审</span>
+              <span v-else-if="scope.row.status === '1'" class="font-error">初审未通过</span>
+              <span v-else-if="scope.row.status === '2'" class="font-success">初审通过</span>
+              <span v-else-if="scope.row.status === '3'" class="font-error">终审未通过</span>
+              <span v-else class="font-success">终审通过</span>
             </template>
           </el-table-column>
           <el-table-column label="操作" width="100%">
@@ -52,14 +64,11 @@
       <el-row>
         <el-col :span="22" :offset="1">
           <el-form v-if="scrap != null" label-position="left" label-width="100px">
-            <el-form-item label="工夹具代码">
-              <el-input v-model="scrap.code" readonly />
-            </el-form-item>
-            <el-form-item label="工夹具序列号">
-              <el-input v-model="scrap.seq_id" readonly />
+            <el-form-item label="工夹具实体">
+              <el-input :value="scrap.code + '-' +scrap.seq_id" readonly />
             </el-form-item>
             <el-form-item label="报废原因">
-              <el-input v-model="scrap.scrap_reason" readonly />
+              <el-input v-model="scrap.scrap_reason" type="textarea" :rows="3" readonly />
             </el-form-item>
             <el-form-item label="故障图片">
               <el-image :src="scrap.scrap_photo_url.split('|')[0]" :preview-src-list="scrap.scrap_photo_url.split('|')" />
@@ -79,8 +88,8 @@
             <el-form-item v-if="scrap.final_acceptor_time!=null" label="终审时间">
               <el-input v-model="scrap.final_acceptor_time" />
             </el-form-item>
-            <el-form-item v-if="scrap.final_acceptor_time!=null" label="终审人时间">
-              <el-input v-model="scrap.final_acceptor_time" />
+            <el-form-item v-if="scrap.final_acceptor_name!=null" label="终审人">
+              <el-input v-model="scrap.final_acceptor_name" />
             </el-form-item>
             <el-form-item v-if="scrap.final_acceptor_time!=null" label="终审不通过原因" style="color: #F56C6C">
               <el-input v-model="scrap.final_acceptor_time" />
@@ -88,7 +97,6 @@
           </el-form>
         </el-col>
       </el-row>
-
     </el-dialog>
     <el-drawer ref="drawer" title="申请报废" :visible.sync="drawerVisible" direction="rtl" :size="'504px'">
       <el-row>
@@ -298,5 +306,17 @@ export default {
   .box-card {
     width: 96%;
     margin: 2% 2%
+  }
+  .input-success >>> input{
+    color: #67C23A;
+  }
+  .input-error >>> input{
+    color: #F56C6C;
+  }
+  .input-warning >>> input{
+    color: #E6A23C;
+  }
+  .input-info >>> input{
+    color: #909399;
   }
 </style>

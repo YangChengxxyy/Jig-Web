@@ -12,11 +12,11 @@
       <el-table-column prop="submit_time" label="申请时间" />
       <el-table-column label="状态" width="120">
         <template slot-scope="scope">
-          <div v-if="scope.row.status === '0'">待审批</div>
-          <div v-else-if="scope.row.status === '1'">初审不通过</div>
-          <div v-else-if="scope.row.status === '2'">初审通过</div>
-          <span v-else-if="scope.row.status === '3'">终审未通过</span>
-          <span v-else>终审通过</span>
+          <div v-if="scope.row.status === '0'" class="font-warning">待审批</div>
+          <div v-else-if="scope.row.status === '1'" class="font-error">初审不通过</div>
+          <div v-else-if="scope.row.status === '2'" class="font-warning">初审通过</div>
+          <span v-else-if="scope.row.status === '3'" class="font-error">终审未通过</span>
+          <span v-else class="font-success">终审通过</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="100%">
@@ -298,16 +298,16 @@ export default {
   .small-box-card{
     height: 500px;
   }
-  .font-success{
+  .input-success >>> input{
     color: #67C23A;
   }
-  .font-error{
+  .input-error >>> input{
     color: #F56C6C;
   }
-  .font-warning{
+  .input-warning >>> input{
     color: #E6A23C;
   }
-  .font-info{
+  .input-info >>> input{
     color: #909399;
   }
 </style>
