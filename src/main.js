@@ -41,6 +41,7 @@ Vue.prototype.$ajax = service
 
 Vue.component('out-and-in-history', OutAndInHistory)
 Vue.component('maintenance-history', MaintenanceHistory)
+import './assets/css/index.css'
 export default new Vue({
   el: '#app',
   router,

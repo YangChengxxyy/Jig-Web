@@ -15,18 +15,20 @@
               <el-tree :data="getTree(scope.row)" />
             </template>
           </el-table-column>
+          <el-table-column label="申请时间" prop="submit_time" />
           <el-table-column label="状态">
             <template slot-scope="scope">
-              <span v-if="scope.row.status === '0'">待初审</span>
-              <span v-else-if="scope.row.status === '1'">初审未通过</span>
-              <span v-else-if="scope.row.status === '2'">初审通过</span>
-              <span v-else-if="scope.row.status === '3'">终审未通过</span>
-              <span v-else>终审通过</span>
+              <span v-if="scope.row.status === '0'" class="font-warning">待初审</span>
+              <span v-else-if="scope.row.status === '1'" class="font-error">初审未通过</span>
+              <span v-else-if="scope.row.status === '2'" class="font-success">初审通过</span>
+              <span v-else-if="scope.row.status === '3'" class="font-error">终审未通过</span>
+              <span v-else class="font-success">终审通过</span>
             </template>
           </el-table-column>
           <el-table-column label="操作" width="100%">
             <template slot-scope="scope">
-              <el-button type="text" :disabled="scope.row.status !== '0'" @click="showPurchase('修改采购单',scope.row)">修改</el-button>
+              <el-button v-if="scope.row.status === '0'" type="text" :disabled="scope.row.status !== '0'" @click="showPurchase('修改采购单',scope.row)">修改</el-button>
+              <el-button v-else type="text" @click="get_purchase_submit(scope.row)">查看</el-button>
               <el-popconfirm
                 confirm-button-text="确定"
                 cancel-button-text="不用"
@@ -126,6 +128,82 @@
         </el-row>
       </el-form>
     </el-drawer>
+    <el-dialog title="采购入库申请明细" :visible.sync="show_purchase_submit_detail_dialog" width="40%">
+      <el-form v-if="purchase_submit_detail != null" ref="form" :model="purchase_submit_detail" label-width="100px" label-position="left">
+        <el-row :gutter="10">
+          <el-col :span="22" :offset="1">
+            <el-form-item label="单据号">
+              <el-input v-model.trim="purchase_submit_detail.bill_no" readonly />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="10">
+          <el-col :span="22" :offset="1">
+            <el-form-item label="采购人">
+              <el-input v-model.trim="purchase_submit_detail.submit_name" readonly />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="10">
+          <el-col :span="22" :offset="1">
+            <el-form-item label="产线">
+              <el-input v-model.trim="purchase_submit_detail.production_line_name" readonly />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row v-for="(item,index) in purchase_submit_detail.code.split('|')" :key="index" :gutter="10">
+          <el-col :span="11" :offset="1">
+            <el-form-item label="工夹具代码">
+              <el-input :value="item" readonly />
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item label="数量">
+              <el-input :value="purchase_submit_detail.count.split('|')[index]" readonly />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="10">
+          <el-col :span="22" :offset="1">
+            <el-form-item label="申请时间">
+              <el-input v-model.trim="purchase_submit_detail.submit_time" readonly />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="10">
+          <el-col :span="22" :offset="1">
+            <el-form-item label="审批状态">
+              <el-input v-if="purchase_submit_detail.status === '0'" class="input-warning" value="待初审" readonly />
+              <el-input v-else-if="purchase_submit_detail.status === '1'" class="input-error" value="初审未通过" readonly />
+              <el-input v-else-if="purchase_submit_detail.status === '2'" class="input-success" value="初审通过" readonly />
+              <el-input v-else-if="purchase_submit_detail.status === '3'" class="input-error" value="终审未通过" readonly />
+              <el-input v-else class="input-success" value="终审通过" readonly />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row v-if="purchase_submit_detail.status === '1'" :gutter="10">
+          <el-col :span="22" :offset="1">
+            <el-form-item label="不通过的原因">
+              <el-input v-model.trim="purchase_submit_detail.first_reason" type="textarea" readonly />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row v-if="purchase_submit_detail.first_acceptor_name != null" :gutter="10">
+          <el-col :span="22" :offset="1">
+            <el-form-item label="初审人">
+              <el-input v-model.trim="purchase_submit_detail.first_acceptor_name" readonly />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row v-if="purchase_submit_detail.first_time != null" :gutter="10">
+          <el-col :span="22" :offset="1">
+            <el-form-item label="初审时间">
+              <el-input v-model.trim="purchase_submit_detail.first_time" readonly />
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+    </el-dialog>
   </el-card>
 </template>
 
@@ -152,7 +230,9 @@ export default {
         code: [''],
         count: [1]
       },
-      drawerTitle: ''
+      drawerTitle: '',
+      show_purchase_submit_detail_dialog: false,
+      purchase_submit_detail: null
     }
   },
   computed: {
@@ -188,6 +268,14 @@ export default {
       }
     )
     this.getData()
+    const id = this.$route.query['id']
+    console.log('id:' + id)
+    if (id !== undefined) {
+      this.$ajax.get('/api/get_a_purchase_submit', { params: { id: id }}).then((response) => {
+        this.purchase_submit_detail = response.data
+        this.show_purchase_submit_detail_dialog = true
+      })
+    }
   },
   methods: {
     getData() {
@@ -222,6 +310,10 @@ export default {
         this.form.count = count.split('|')
       }
       this.drawerVisible = true
+    },
+    get_purchase_submit: function(purchase_submit) {
+      this.purchase_submit_detail = purchase_submit
+      this.show_purchase_submit_detail_dialog = true
     },
     /**
        * 页面大小改变事件
@@ -352,5 +444,17 @@ export default {
   .box-card {
     width: 96%;
     margin: 2% 2%
+  }
+  .input-success >>> input{
+    color: #67C23A;
+  }
+  .input-error >>> input{
+    color: #F56C6C;
+  }
+  .input-warning >>> input{
+    color: #E6A23C;
+  }
+  .input-info >>> input{
+    color: #909399;
   }
 </style>

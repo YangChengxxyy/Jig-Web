@@ -199,6 +199,7 @@ export default {
                 this.$message.success('处理成功！')
                 this.getData()
                 this.dialogVisible = false
+                this.disagreeVisible = false
               }
             )
           }
