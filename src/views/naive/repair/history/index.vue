@@ -5,6 +5,12 @@
       <el-table-column prop="id" label="工夹具序列号" />
       <el-table-column prop="repair_reason" label="故障原因" />
       <el-table-column prop="submit_time" label="申请时间" />
+      <el-table-column prop="status" label="审批状态">
+        <template slot-scope="scope">
+          <span v-if="scope.row.status === '1'" class="font-success">通过</span>
+          <span v-if="scope.row.status === '2'" class="font-error">不通过</span>
+        </template>
+      </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button type="text" @click="showHistory(scope.row)">查看明细</el-button>
@@ -33,7 +39,7 @@
               <el-input v-model="history.seq_id" readonly />
             </el-form-item>
             <el-form-item label="报修原因">
-              <el-input v-model="history.repair_reason" readonly />
+              <el-input v-model="history.repair_reason" type="textarea" :rows="3" readonly />
             </el-form-item>
             <el-form-item label="故障图片">
               <el-image
@@ -41,11 +47,12 @@
                 :preview-src-list="history.repair_photo_url.split('|')"
               />
             </el-form-item>
-            <el-form-item label="申请人id">
-              <el-input v-model="history.submit_id" readonly />
+            <el-form-item label="审批状态">
+              <el-input v-if="history.status === '1'" value="通过" class="input-success" readonly />
+              <el-input v-else-if="history.status === '2'" value="不通过" class="input-error" readonly />
             </el-form-item>
             <el-form-item label="申请人">
-              <el-input v-model="history.submit_name" readonly />
+              <el-input :value="history.submit_name + ' (' + history.submit_id + ')'" readonly />
             </el-form-item>
             <el-form-item label="申请时间">
               <el-input v-model="history.submit_time" readonly />
@@ -143,5 +150,23 @@ export default {
   .box-card {
     width: 96%;
     margin: 2% 2%
+  }
+  .font-success{
+    color: #67C23A;
+  }
+  .font-error{
+    color: #F56C6C;
+  }
+  .input-success >>> input{
+    color: #67C23A;
+  }
+  .input-error >>> input{
+    color: #F56C6C;
+  }
+  .font-warning{
+    color: #E6A23C;
+  }
+  .font-info{
+    color: #909399;
   }
 </style>

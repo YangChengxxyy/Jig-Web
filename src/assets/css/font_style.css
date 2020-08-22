@@ -1,0 +1,17 @@
+.box-card{
+  width: 96%;
+  margin: 2% 2%
+}
+.font-success{
+  color: #67C23A;
+}
+.font-error{
+  color: #F56C6C;
+}
+.font-warning{
+  color: #E6A23C;
+}
+.font-info{
+  color: #909399;
+}
+

@@ -12,10 +12,10 @@
       <el-table-column prop="submit_time" label="申请时间" />
       <el-table-column label="状态" width="120">
         <template slot-scope="scope">
-          <div v-if="scope.row.status === '0'">待审批</div>
-          <div v-else-if="scope.row.status === '1'">初审不通过</div>
-          <div v-else-if="scope.row.status === '2'">初审通过</div>
-          <span v-else-if="scope.row.status === '3'">终审未通过</span>
+          <div v-if="scope.row.status === '0'" class="font-warning">待审批</div>
+          <div v-else-if="scope.row.status === '1'" class="font-error">初审不通过</div>
+          <div v-else-if="scope.row.status === '2'" class="font-success">初审通过</div>
+          <span v-else-if="scope.row.status === '3'" class="font-error">终审未通过</span>
           <span v-else>终审通过</span>
         </template>
       </el-table-column>
@@ -70,11 +70,11 @@
         <el-row :gutter="10">
           <el-col :span="22" :offset="1">
             <el-form-item label="审批状态">
-              <el-input v-if="purchase_submit_detail.status === '0'" value="待初审" readonly />
-              <el-input v-else-if="purchase_submit_detail.status === '1'" value="初审未通过" readonly />
-              <el-input v-else-if="purchase_submit_detail.status === '2'" value="初审通过" readonly />
-              <el-input v-else-if="purchase_submit_detail.status === '3'" value="终审未通过" readonly />
-              <el-input v-else value="终审通过" readonly />
+              <el-input v-if="purchase_submit_detail.status === '0'" class="font-warning" value="待初审" readonly />
+              <el-input v-else-if="purchase_submit_detail.status === '1'" class="font-error" value="初审未通过" readonly />
+              <el-input v-else-if="purchase_submit_detail.status === '2'" class="font-success" value="初审通过" readonly />
+              <el-input v-else-if="purchase_submit_detail.status === '3'" class="font-error" value="终审未通过" readonly />
+              <el-input v-else class="font-success" value="终审通过" readonly />
             </el-form-item>
           </el-col>
         </el-row>
@@ -277,20 +277,5 @@ export default {
 </script>
 
 <style scoped>
-  .box-card{
-    width: 96%;
-    margin: 2% 2%
-  }
-  .font-success{
-    color: #67C23A;
-  }
-  .font-error{
-    color: #F56C6C;
-  }
-  .font-warning{
-    color: #E6A23C;
-  }
-  .font-info{
-    color: #909399;
-  }
+
 </style>

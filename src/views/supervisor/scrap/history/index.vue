@@ -52,17 +52,29 @@
     </el-form>
     <el-divider />
     <el-table :data="scrap_submit_list" border style="width: 94%; margin: 1% 3% 2%">
-      <el-table-column label="工夹具代码" prop="code" />
-      <el-table-column label="工夹具序列号" prop="seq_id" />
+      <el-table-column label="工夹具实体" prop="code">
+        <template slot-scope="scope">
+          <span>{{ scope.row.code }}-{{ scope.row.seq_id }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="报废照片" prop="scrap_photo_url">
+        <template slot-scope="scope">
+          <el-image
+            :src="scope.row.scrap_photo_url.split('|')[0]"
+            :preview-src-list="scope.row.scrap_photo_url.split('|')"
+            style="max-height: 120px"
+          />
+        </template>
+      </el-table-column>
       <el-table-column label="报废原因" prop="scrap_reason" />
       <el-table-column label="申请时间" prop="submit_time" />
       <el-table-column label="状态" width="100%">
         <template slot-scope="scope">
-          <span v-if="scope.row.status === '0'">待初审</span>
-          <span v-else-if="scope.row.status === '1'">初审未通过</span>
-          <span v-else-if="scope.row.status === '2'">初审通过</span>
-          <span v-else-if="scope.row.status === '3'">终审未通过</span>
-          <span v-else>终审通过</span>
+          <span v-if="scope.row.status === '0'" class="font-warning">待初审</span>
+          <span v-else-if="scope.row.status === '1'" class="font-error">初审未通过</span>
+          <span v-else-if="scope.row.status === '2'" class="font-success">初审通过</span>
+          <span v-else-if="scope.row.status === '3'" class="font-error">终审未通过</span>
+          <span v-else class="font-success">终审通过</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="100%">

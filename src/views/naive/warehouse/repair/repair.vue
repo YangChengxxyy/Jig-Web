@@ -118,6 +118,13 @@ export default {
   created() {
     this.get_pending_repair_submit_list()
     this.get_repair_man_list()
+    const id = this.$route.query['id']
+    if (id !== undefined) {
+      this.$ajax.get('/api/naive/get_a_pending_repair_submit', { params: { id: id }}).then((response) => {
+        this.repair_submit = response.data
+        this.show_repair_dialog = true
+      })
+    }
   },
   methods: {
     get_pending_repair_submit_list: function() {
