@@ -100,7 +100,7 @@
         />
       </el-col>
     </el-row>
-    <el-dialog title="报废明细" :visible.sync="show_history_dialog" width="30%">
+    <el-dialog title="报废明细" :visible.sync="show_history_dialog" width="40%">
       <el-row>
         <el-col :span="22" :offset="1">
           <el-form v-if="scrap_history != null" label-position="left" label-width="100px">
@@ -116,14 +116,21 @@
             <el-form-item label="申请时间">
               <el-input v-model="scrap_history.submit_time" readonly />
             </el-form-item>
+            <el-form-item label="审批状态">
+              <el-input v-if="scrap_history.status === '0'" value="待初审" readonly />
+              <el-input v-else-if="scrap_history.status === '1'" value="初审未通过" readonly />
+              <el-input v-else-if="scrap_history.status === '2'" value="初审通过" readonly />
+              <el-input v-else-if="scrap_history.status === '3'" value="终审未通过" readonly />
+              <el-input v-else value="终审通过" readonly />
+            </el-form-item>
             <el-form-item v-if="scrap_history.first_acceptor_time!=null" label="初审时间">
               <el-input v-model="scrap_history.first_acceptor_time" />
             </el-form-item>
             <el-form-item v-if="scrap_history.first_acceptor_name!=null" label="初审人">
               <el-input v-model="scrap_history.first_acceptor_name" />
             </el-form-item>
-            <el-form-item v-if="scrap_history.first_reason!=null" label="初审不通过原因" style="color: #F56C6C">
-              <el-input v-model="scrap_history.first_reason" />
+            <el-form-item v-if="scrap_history.first_reason!=null" label="初审不通过原因">
+              <el-input v-model="scrap_history.first_reason" type="textarea" :rows="3" />
             </el-form-item>
             <el-form-item v-if="scrap_history.final_acceptor_time!=null" label="终审时间">
               <el-input v-model="scrap_history.final_acceptor_time" />
@@ -131,8 +138,8 @@
             <el-form-item v-if="scrap_history.final_acceptor_name!=null" label="终审人">
               <el-input v-model="scrap_history.final_acceptor_name" />
             </el-form-item>
-            <el-form-item v-if="scrap_history.final_acceptor_time!=null" label="终审不通过原因" style="color: #F56C6C">
-              <el-input v-model="scrap_history.final_acceptor_time" />
+            <el-form-item v-if="scrap_history.final_acceptor_time!=null" label="终审不通过原因">
+              <el-input v-model="scrap_history.final_acceptor_time" type="textarea" :rows="3" />
             </el-form-item>
           </el-form>
         </el-col>
@@ -205,6 +212,13 @@ export default {
   },
   created() {
     this.getData()
+    const id = this.$route.query['id']
+    if (id !== undefined) {
+      this.$ajax.get('/api/get_a_scrap_submit_history', { params: { id: id }}).then((response) => {
+        this.scrap_history = response.data
+        this.show_history_dialog = true
+      })
+    }
   },
   methods: {
     getData() {
@@ -270,5 +284,17 @@ export default {
   .box-card {
     width: 96%;
     margin: 2% 2%
+  }
+  .input-success >>> input{
+    color: #67C23A;
+  }
+  .input-error >>> input{
+    color: #F56C6C;
+  }
+  .input-warning >>> input{
+    color: #E6A23C;
+  }
+  .input-info >>> input{
+    color: #909399;
   }
 </style>

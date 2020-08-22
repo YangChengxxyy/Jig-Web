@@ -274,7 +274,7 @@ export default {
     this.getData()
     const id = this.$route.query['id']
     if (id !== undefined) {
-      this.$ajax.get('/api/get_a_purchase_submit', { params: { id: id }}).then((response) => {
+      this.$ajax.get('/api/get_a_purchase_submit_history', { params: { id: id }}).then((response) => {
         this.history = response.data
         this.dialogVisible = true
       })

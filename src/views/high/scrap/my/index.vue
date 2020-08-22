@@ -60,7 +60,7 @@
         />
       </el-col>
     </el-row>
-    <el-dialog title="报废明细" :visible.sync="dialogVisible" width="30%">
+    <el-dialog title="报废明细" :visible.sync="dialogVisible" width="40%">
       <el-row>
         <el-col :span="22" :offset="1">
           <el-form v-if="scrap != null" label-position="left" label-width="100px">
@@ -75,6 +75,13 @@
             </el-form-item>
             <el-form-item label="申请时间">
               <el-input v-model="scrap.submit_time" readonly />
+            </el-form-item>
+            <el-form-item label="审批状态">
+              <el-input v-if="scrap.status === '0'" value="待初审" readonly />
+              <el-input v-else-if="scrap.status === '1'" value="初审未通过" readonly />
+              <el-input v-else-if="scrap.status === '2'" value="初审通过" readonly />
+              <el-input v-else-if="scrap.status === '3'" value="终审未通过" readonly />
+              <el-input v-else value="终审通过" readonly />
             </el-form-item>
             <el-form-item v-if="scrap.first_acceptor_time!=null" label="初审时间">
               <el-input v-model="scrap.first_acceptor_time" />
@@ -188,6 +195,13 @@ export default {
         )
       }
     )
+    const id = this.$route.query['id']
+    if (id !== undefined) {
+      this.$ajax.get('/api/get_a_scrap_submit', { params: { id: id }}).then((response) => {
+        this.scrap = response.data
+        this.dialogVisible = true
+      })
+    }
   },
   methods: {
     getData() {
