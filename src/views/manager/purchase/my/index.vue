@@ -190,6 +190,13 @@ export default {
   },
   created() {
     this.get_purchase_submit_list()
+    const id = this.$route.query['id']
+    if (id !== undefined) {
+      this.$ajax.get('/api/get_a_purchase_submit', { params: { id: id }}).then((response) => {
+        this.purchase_submit_detail = response.data
+        this.show_purchase_submit_detail_dialog = true
+      })
+    }
   },
   methods: {
     get_purchase_submit_list: function() {
