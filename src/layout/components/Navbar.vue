@@ -24,6 +24,9 @@
           <el-dropdown-item v-if="unreadMessage.length === 0 && readMessage.length === 0">
             暂无消息
           </el-dropdown-item>
+          <el-dropdown-item v-if="unreadMessage.length !== 0" disabled style="text-align: center">
+            未读消息
+          </el-dropdown-item>
           <el-tooltip
             v-for="(value ,name, index) in unreadMessage"
             :key="index"
@@ -32,13 +35,16 @@
             content="点击查看"
             placement="top"
           >
-            <el-dropdown-item :divided="index === unreadMessage.length - 1" @click.native="read(value)">
+            <el-dropdown-item @click.native="read(value)">
               <el-badge
                 is-dot
               >{{ value.content }}</el-badge>
               <div class="message-time">{{ formatTime(value.date) }}</div>
             </el-dropdown-item>
           </el-tooltip>
+          <el-dropdown-item v-if="readMessage.length !== 0" disabled style="text-align: center">
+            已读消息
+          </el-dropdown-item>
           <el-tooltip
             v-for="(value ,name, index) in readMessage"
             :key="index"
@@ -47,7 +53,7 @@
             content="点击查看"
             placement="top"
           >
-            <el-dropdown-item :divided="index === readMessage.length - 1" @click.native="read(value)">
+            <el-dropdown-item divided @click.native="read(value)">
               {{ value.content }}
               <div class="message-time">{{ formatTime(value.date) }}</div>
             </el-dropdown-item>
