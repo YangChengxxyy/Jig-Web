@@ -1,17 +1,20 @@
 <template>
   <el-card class="box-card">
     <el-table :data="scrap_submit_list" border style="width: 94%; margin: 1% 3% 2%">
-      <el-table-column label="工夹具代码" prop="code" />
-      <el-table-column label="工夹具序列号" prop="seq_id" />
+      <el-table-column label="工夹具实体" prop="code">
+        <template slot-scope="scope">
+          <span>{{ scope.row.code }}-{{ scope.row.seq_id }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="报废原因" prop="scrap_reason" />
       <el-table-column label="申请时间" prop="submit_time" />
       <el-table-column label="状态" width="100%">
         <template slot-scope="scope">
-          <span v-if="scope.row.status === '0'">待初审</span>
-          <span v-else-if="scope.row.status === '1'">初审未通过</span>
-          <span v-else-if="scope.row.status === '2'">初审通过</span>
-          <span v-else-if="scope.row.status === '3'">终审未通过</span>
-          <span v-else>终审通过</span>
+          <span v-if="scope.row.status === '0'" class="font-warning">待初审</span>
+          <span v-else-if="scope.row.status === '1'" class="font-error">初审未通过</span>
+          <span v-else-if="scope.row.status === '2'" class="font-warning">初审通过</span>
+          <span v-else-if="scope.row.status === '3'" class="font-error">终审未通过</span>
+          <span v-else class="font-success">终审通过</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="100%">
@@ -51,11 +54,13 @@
               <el-input v-model="scrap_submit_detail.submit_time" readonly />
             </el-form-item>
             <el-form-item label="审批状态">
-              <el-input v-if="scrap_submit_detail.status === '0'" value="待初审" readonly />
-              <el-input v-else-if="scrap_submit_detail.status === '1'" value="初审未通过" readonly />
-              <el-input v-else-if="scrap_submit_detail.status === '2'" value="初审通过" readonly />
-              <el-input v-else-if="scrap_submit_detail.status === '3'" value="终审未通过" readonly />
-              <el-input v-else value="终审通过" readonly />
+              <template slot-scope="scope">
+                <span v-if="scope.row.status === '0'" class="font-warning">待初审</span>
+                <span v-else-if="scope.row.status === '1'" class="font-error">初审未通过</span>
+                <span v-else-if="scope.row.status === '2'" class="font-success">初审通过</span>
+                <span v-else-if="scope.row.status === '3'" class="font-error">终审未通过</span>
+                <span v-else class="font-success">终审通过</span>
+              </template>
             </el-form-item>
             <el-form-item v-if="scrap_submit_detail.status === '1'" label="不通过的原因">
               <el-input v-model.trim="scrap_submit_detail.first_reason" class="font-error" readonly />
