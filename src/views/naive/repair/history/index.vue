@@ -1,8 +1,11 @@
 <template>
   <el-card class="box-card">
     <el-table :data="history_list" border style="width: 96%; margin: 2% 2% 2%">
-      <el-table-column prop="code" label="工夹具代码" :filters="code_list_filter" :filter-method="filterHandler" sortable />
-      <el-table-column prop="id" label="工夹具序列号" />
+      <el-table-column prop="code" label="工夹具代码" :filters="code_list_filter" :filter-method="filterHandler" sortable>
+        <template slot-scope="scope">
+          <span>{{ scope.row.code }}-{{ scope.row.seq_id }}</span>
+        </template>
+      </el-table-column>
       <el-table-column prop="repair_reason" label="故障原因" />
       <el-table-column prop="submit_time" label="申请时间" />
       <el-table-column prop="status" label="审批状态">
@@ -28,15 +31,12 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     />
-    <el-dialog title="报修明细" :visible.sync="dialogVisible">
+    <el-dialog title="报修明细" :visible.sync="dialogVisible" width="40%">
       <el-row>
         <el-col :span="22" :offset="1">
           <el-form v-if="history != null" label-position="left" label-width="100px">
-            <el-form-item label="工夹具代码">
-              <el-input v-model="history.code" readonly />
-            </el-form-item>
-            <el-form-item label="工夹具序列号">
-              <el-input v-model="history.seq_id" readonly />
+            <el-form-item label="工夹具实体">
+              <el-input :value="history.code + '-' + history.seq_id" readonly />
             </el-form-item>
             <el-form-item label="报修原因">
               <el-input v-model="history.repair_reason" type="textarea" :rows="3" readonly />
