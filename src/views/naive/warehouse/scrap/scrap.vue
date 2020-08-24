@@ -1,19 +1,23 @@
 <template>
   <el-card class="box-card">
     <el-table :data="scrap_submit_list" border style="width: 94%; margin: 1% 3% 2%">
-      <el-table-column label="工夹具代码" prop="code" />
-      <el-table-column label="工夹具序列号" prop="seq_id" />
+      <el-table-column label="工夹具实体" prop="code">
+        <template slot-scope="scope">
+          <span>{{ scope.row.code }}-{{ scope.row.seq_id }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="工夹具照片">
         <template slot-scope="scope">
           <el-image
             :src="scope.row.scrap_photo_url.split('|')[0]"
             :preview-src-list="scope.row.scrap_photo_url.split('|')"
+            style="max-height: 120px"
           />
         </template>
       </el-table-column>
       <el-table-column label="申请人" prop="submit_name" />
       <el-table-column label="报废原因" prop="scrap_reason" />
-      <el-table-column label="申请时间" prop="submit_time" />
+      <el-table-column label="申请通过时间" prop="final_time" />
       <el-table-column label="操作" width="100%">
         <template slot-scope="scope">
           <el-popconfirm

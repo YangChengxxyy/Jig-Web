@@ -9,7 +9,7 @@
           <el-tree :data="getTree(scope.row)" />
         </template>
       </el-table-column>
-      <el-table-column prop="submit_time" label="申请时间" />
+      <el-table-column prop="final_time" label="申请通过时间" />
       <el-table-column label="状态" width="120">
         <template slot-scope="scope">
           <div v-if="scope.row.status === '0'">待入库</div>

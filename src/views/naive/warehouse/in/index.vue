@@ -45,12 +45,14 @@
     </el-form>
     <el-divider />
     <el-table border style="width: 100%" :data="outgoing_jig_list">
-      <el-table-column prop="code" label="工夹具代码" width="180" />
-      <el-table-column prop="seq_id" label="序列号" width="120" />
-      <el-table-column prop="name" label="名字" width="200" />
-      <el-table-column prop="outgo_time" label="出库时间" width="200" />
-      <el-table-column prop="user_name" label="出库人" width="180" />
-      <el-table-column prop="production_line_name" label="产线" width="120" />
+      <el-table-column label="工夹具实体" prop="code">
+        <template slot-scope="scope">
+          <span>{{ scope.row.code }}-{{ scope.row.seq_id }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="outgo_time" label="出库时间"/>
+      <el-table-column prop="user_name" label="出库人"/>
+      <el-table-column prop="production_line_name" label="产线"/>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button type="primary" @click="get_outgoing_jig_info(scope.row)">入库</el-button>
