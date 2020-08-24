@@ -31,7 +31,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-dialog title="报修明细" :visible.sync="show_repair_dialog" width="30%">
+    <el-dialog title="报修明细" :visible.sync="show_repair_dialog" width="40%">
       <el-row>
         <el-col :span="22" :offset="1">
           <el-form v-if="repair_submit != null" ref="repair_form" label-position="left" label-width="100px" :model="repair_form" :rules="repair_rules">
@@ -201,6 +201,7 @@ export default {
           repair_submit: json_repair_submit
         }
       })
+      this.get_pending_repair_submit_list()
     },
     handleSizeChange: function(val) {
       this.page_size = val
