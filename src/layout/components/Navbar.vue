@@ -19,7 +19,7 @@
             <img src="@/icons/notification.png" class="message">
           </el-badge>
         </div>
-        <el-dropdown-menu slot="dropdown" class="user-dropdown" style="height:400px">
+        <el-dropdown-menu slot="dropdown" class="user-dropdown" :style="(unreadMessage.length===0&&readMessage.length===0)?{}:{height:'300px'}">
           <el-scrollbar style="height: 100%">
             <el-dropdown-item v-if="unreadMessage.length === 0 && readMessage.length === 0">
               暂无消息
@@ -175,11 +175,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
-  .el-scrollbar__wrap
-  {
-    overflow-x: hidden;
-  }
+<style lang="scss" scoped>
 .navbar {
   height: 50px;
   overflow: hidden;
