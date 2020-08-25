@@ -8,7 +8,7 @@
       </el-table-column>
       <el-table-column prop="repair_reason" label="故障原因" />
       <el-table-column prop="submit_time" label="申请时间" />
-      <el-table-column prop="status" label="审批状态">
+      <el-table-column prop="status" l abel="审批状态">
         <template slot-scope="scope">
           <span v-if="scope.row.status === '1'" class="font-success">通过</span>
           <span v-if="scope.row.status === '2'" class="font-error">不通过</span>
@@ -84,6 +84,23 @@ export default {
       'id'
     ])
   },
+  watch: {
+    '$route.query.id': {
+      handler() {
+        const id = this.$route.query['id']
+        if (id !== undefined) {
+          this.$ajax.get('/api/naive/get_a_repair_history', { params: { id: id }}).then((response) => {
+            if (response.data !== '') {
+              this.history = response.data
+              this.dialogVisible = true
+            } else {
+              this.$message.info('未查询到此条记录')
+            }
+          })
+        }
+      }
+    }
+  },
   created() {
     this.getData()
     this.$ajax.get('/api/get_code_list').then(
@@ -98,8 +115,12 @@ export default {
     const id = this.$route.query['id']
     if (id !== undefined) {
       this.$ajax.get('/api/naive/get_a_repair_history', { params: { id: id }}).then((response) => {
-        this.history = response.data
-        this.dialogVisible = true
+        if (response.data !== '') {
+          this.history = response.data
+          this.dialogVisible = true
+        } else {
+          this.$message.info('未查询到此条记录')
+        }
       })
     }
   },
