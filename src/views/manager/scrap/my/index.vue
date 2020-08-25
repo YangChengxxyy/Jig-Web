@@ -139,6 +139,17 @@ export default {
     ])
   },
   watch: {
+    '$route.query.id': {
+      handler() {
+        const id = this.$route.query['id']
+        if (id !== undefined) {
+          this.$ajax.get('/api/get_a_scrap_submit', { params: { id: id }}).then((response) => {
+            this.scrap_submit_detail = response.data
+            this.show_scrap_submit_datail_dialog = true
+          })
+        }
+      }
+    }
   },
   created() {
     this.get_scrap_submit_list()

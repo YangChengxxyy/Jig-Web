@@ -210,6 +210,19 @@ export default {
       return url + '?' + getUrl(a)
     }
   },
+  watch: {
+    '$route.query.id': {
+      handler() {
+        const id = this.$route.query['id']
+        if (id !== undefined) {
+          this.$ajax.get('/api/get_a_scrap_submit_history', { params: { id: id }}).then((response) => {
+            this.scrap_history = response.data
+            this.show_history_dialog = true
+          })
+        }
+      }
+    }
+  },
   created() {
     this.getData()
     const id = this.$route.query['id']
