@@ -15,13 +15,6 @@
       </el-row>
       <el-row :gutter="20">
         <el-col :span="11" :offset="1">
-          <el-form-item label="工作部门">
-            <el-select v-model="form.workcell_id" style="width: 100%">
-              <el-option v-for="item in workcell_list" :key="item.id" :value="item.id" :label="item.workcell" />
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="11">
           <el-form-item label="入职时间">
             <el-date-picker
               v-model="form.date"
@@ -35,9 +28,7 @@
             />
           </el-form-item>
         </el-col>
-      </el-row>
-      <el-row :gutter="20">
-        <el-col :span="11" :offset="12">
+        <el-col :span="11">
           <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
           <el-button icon="el-icon-delete" @click="clearForm()">清空</el-button>
           <el-link :href="onePage" target="_blank" :disabled="user_list.length === 0"><el-button :disabled="user_list.length === 0">导出本页</el-button></el-link>
@@ -160,8 +151,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'id',
-      'token'
+      'id', 'token', 'workcell_id'
     ]),
     onePage() {
       const url = devServer + '/api/admin/download_one_user_info'
@@ -169,7 +159,7 @@ export default {
         submit_id: this.id,
         id: this.form.id,
         name: this.form.name,
-        workcell_id: this.form.workcell_id,
+        workcell_id: this.workcell_id,
         page_size: this.page_size,
         page_number: this.page_number,
         start_date: this.form.date[0],
@@ -185,7 +175,7 @@ export default {
         submit_id: this.id,
         id: this.form.id,
         name: this.form.name,
-        workcell_id: this.form.workcell_id,
+        workcell_id: this.workcell_id,
         page_size: this.page_size,
         page_number: this.page_number,
         start_date: this.form.date[0],
@@ -210,7 +200,7 @@ export default {
           submit_id: this.id,
           id: this.form.id,
           name: this.form.name,
-          workcell_id: this.form.workcell_id,
+          workcell_id: this.workcell_id,
           page_size: this.page_size,
           page_number: this.page_number,
           start_date: this.form.date[0],

@@ -122,7 +122,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'id'
+      'id', 'workcell_id'
     ])
   },
   created() {
@@ -166,7 +166,8 @@ export default {
           id: row.id,
           submit_id: this.id,
           state: true,
-          informed_id: row.submit_id
+          informed_id: row.submit_id,
+          workcell_id: this.workcell_id
         }
       }).then(
         response => {
@@ -190,7 +191,8 @@ export default {
                 submit_id: this.id,
                 state: false,
                 reason: this.disagreeForm.reason,
-                informed_id: this.informed_id
+                informed_id: this.informed_id,
+                workcell_id: this.workcell_id
               }
             }).then(
               response => {

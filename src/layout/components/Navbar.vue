@@ -19,9 +19,13 @@
             <img src="@/icons/notification.png" class="message">
           </el-badge>
         </div>
-        <el-dropdown-menu slot="dropdown" class="user-dropdown" :style="(unreadMessage.length===0&&readMessage.length===0)?{}:{height:'300px'}">
+        <el-dropdown-menu
+          slot="dropdown"
+          class="user-dropdown"
+          :style="(unreadMessage.length===0&&readMessage.length===0)?{}:{height:'300px'}"
+        >
           <el-scrollbar style="height: 100%">
-            <el-dropdown-item v-if="unreadMessage.length === 0 && readMessage.length === 0">
+            <el-dropdown-item v-if="unreadMessage.length === 0 && readMessage.length === 0" disabled>
               暂无消息
             </el-dropdown-item>
             <el-dropdown-item v-if="unreadMessage.length !== 0" disabled style="text-align: center">
@@ -38,7 +42,8 @@
               <el-dropdown-item @click.native="read(value)">
                 <el-badge
                   is-dot
-                >{{ value.content }}</el-badge>
+                >{{ value.content }}
+                </el-badge>
                 <div class="message-time">{{ formatTime(value.date) }}</div>
               </el-dropdown-item>
             </el-tooltip>
@@ -84,6 +89,7 @@ import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
 import { formatTime } from '@/utils'
+
 export default {
   components: {
     Breadcrumb,
@@ -252,12 +258,14 @@ export default {
     }
   }
 }
+
 .message {
   cursor: pointer;
   width: 25px;
   height: 25px;
   border-radius: 10px;
 }
+
 .message-time {
   color: #909399;
 }
