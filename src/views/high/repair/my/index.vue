@@ -4,12 +4,16 @@
       <el-col :span="22" :offset="1">
         <el-table :data="repair_list" border style="margin-top: 1%">
           <el-table-column
-            label="工夹具代码"
+            label="工夹具实体"
             prop="code"
             :filters="code_list_filter"
             :filter-method="filterHandler"
             sortable
-          />
+          >
+            <template slot-scope="scope">
+              <div>{{ scope.row.code }}-{{ scope.row.seq_id }}</div>
+            </template>
+          </el-table-column>
           <el-table-column label="工夹具序列号" prop="seq_id" />
           <el-table-column label="申请人" prop="submit_name" />
           <el-table-column label="故障原因" prop="repair_reason" />
@@ -51,15 +55,8 @@
       <el-form v-if="repair != null" label-position="left" label-width="100px">
         <el-row :gutter="20">
           <el-col :span="22" :offset="1">
-            <el-form-item label="工夹具代码">
-              <el-input v-model="repair.code" readonly />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row :gutter="20">
-          <el-col :span="22" :offset="1">
-            <el-form-item label="工夹具序列号">
-              <el-input v-model="repair.seq_id" readonly />
+            <el-form-item label="工夹具实体">
+              <el-input :value="repair.code + '-' + repair.seq_id" readonly />
             </el-form-item>
           </el-col>
         </el-row>

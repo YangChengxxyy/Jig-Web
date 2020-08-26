@@ -89,11 +89,8 @@
       <el-row>
         <el-col :span="22" :offset="1">
           <el-form v-if="scrap_submit_detail != null" label-position="left" label-width="100px">
-            <el-form-item label="工夹具代码">
-              <el-input v-model="scrap_submit_detail.code" readonly />
-            </el-form-item>
-            <el-form-item label="工夹具序列号">
-              <el-input v-model="scrap_submit_detail.seq_id" readonly />
+            <el-form-item label="工夹具实体">
+              <el-input :value="scrap_submit_detail.code + '-' + scrap_submit_detail.seq_id" readonly />
             </el-form-item>
             <el-form-item label="报废原因">
               <el-input v-model.trim="scrap_submit_detail.scrap_reason" readonly />

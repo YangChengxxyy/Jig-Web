@@ -61,8 +61,11 @@
       <el-col :span="22" :offset="1">
         <el-divider />
         <el-table :data="history_list" border>
-          <el-table-column label="工夹具代码" prop="code" />
-          <el-table-column label="工夹具序列号" prop="seq_id" />
+          <el-table-column label="工夹具实体" prop="code">
+            <template slot-scope="scope">
+              <div>{{ scope.row.code }}-{{ scope.row.seq_id }}</div>
+            </template>
+          </el-table-column>
           <el-table-column label="申请人" prop="submit_name" />
           <el-table-column label="故障原因" prop="repair_reason" />
           <el-table-column label="申请时间" prop="submit_time" />
