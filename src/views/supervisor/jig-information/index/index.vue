@@ -34,8 +34,6 @@
         <el-col :span="11">
           <el-button type="primary" icon="el-icon-search" @click="get_jig_definition_list">查询</el-button>
           <el-button icon="el-icon-delete" @click="clear_form()">清空</el-button>
-          <el-button>导出本页</el-button>
-          <el-button>导出全部</el-button>
         </el-col>
       </el-row>
     </el-form>

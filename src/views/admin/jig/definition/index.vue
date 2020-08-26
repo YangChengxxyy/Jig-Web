@@ -35,10 +35,10 @@
           <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
           <el-button icon="el-icon-delete" @click="clearForm()">清空</el-button>
           <el-link :href="onePage" target="_blank" :disabled="jig_entity_list.length === 0">
-            <el-button>导出本页</el-button>
+            <el-button :disabled="jig_entity_list.length === 0">导出本页</el-button>
           </el-link>
           <el-link :href="allPage" :disabled="jig_entity_list.length === 0 ">
-            <el-button>导出全部</el-button>
+            <el-button :disabled="jig_entity_list.length === 0">导出全部</el-button>
           </el-link>
         </el-col>
       </el-row>
