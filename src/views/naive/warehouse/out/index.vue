@@ -315,7 +315,7 @@
           <el-row :gutter="10">
             <el-col :span="20" :offset="2">
               <el-form-item label="选择工夹具">
-                <el-select v-model="seq_id" placeholder="选择工夹具">
+                <el-select v-model="seq_id" placeholder="选择工夹具" style="width: 100%">
                   <el-option
                     v-for="item in jig_entity_list"
                     :key="item.seq_id"
@@ -337,7 +337,7 @@
           <el-row :gutter="10">
             <el-col :span="20" :offset="2">
               <el-form-item label="选择产线" prop="production_line_id">
-                <el-select v-model="outgo_form.production_line_id" placeholder="选择产线">
+                <el-select v-model="outgo_form.production_line_id" placeholder="选择产线" style="width: 100%">
                   <el-option
                     v-for="item in production_line_list"
                     :key="item.id"
