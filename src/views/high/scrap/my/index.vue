@@ -183,6 +183,19 @@ export default {
       'id'
     ])
   },
+  watch:{
+    '$route.query.id': {
+      handler() {
+        const id = this.$route.query['id']
+        if (id !== undefined) {
+          this.$ajax.get('/api/get_a_scrap_submit', { params: { id: id }}).then((response) => {
+            this.scrap = response.data
+            this.dialogVisible = true
+          })
+        }
+      }
+    }
+  },
   created() {
     this.getData()
     this.$ajax.get('/api/get_code_list').then(
