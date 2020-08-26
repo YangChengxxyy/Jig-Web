@@ -26,7 +26,7 @@
             <el-input v-model="sel_form.user_for" />
           </el-form-item>
         </el-col>
-        <el-col :span="10" :offset="2">
+        <el-col :span="11" >
           <el-button type="primary" icon="el-icon-search" @click="search()">查询</el-button>
           <el-button icon="el-icon-delete" @click="clear_form()">清空</el-button>
           <!--注释 <el-button>导出本页</el-button>

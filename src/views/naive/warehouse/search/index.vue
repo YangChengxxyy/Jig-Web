@@ -15,23 +15,18 @@
       </el-row>
       <el-row :gutter="20">
         <el-col :span="11" :offset="1">
-          <el-form-item label="工作部门">
-            <el-input v-model="form.workcell" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="11">
           <el-form-item label="类别">
             <el-input v-model="form.family" />
           </el-form-item>
         </el-col>
-      </el-row>
-      <el-row :gutter="20">
-        <el-col :span="11" :offset="1">
+        <el-col :span="11">
           <el-form-item label="用途">
             <el-input v-model="form.user_for" />
           </el-form-item>
         </el-col>
-        <el-col :span="11">
+      </el-row>
+      <el-row :gutter="20">
+        <el-col :span="11" :offset="12">
           <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
           <el-button icon="el-icon-delete" @click="clearForm()">清空</el-button>
           <el-link :href="onePage" :disabled="jig_entity_list.length === 0"><el-button>导出本页</el-button></el-link>
