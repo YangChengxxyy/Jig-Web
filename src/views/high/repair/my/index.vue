@@ -17,8 +17,6 @@
           <el-table-column label="操作">
             <template slot-scope="scope">
               <el-button type="text" @click="showRepair(scope.row)">查看</el-button>
-              <!--              <el-button type="text" style="color: #67C23A" @click="agree(scope.row)">通过</el-button>-->
-              <!--              <el-button type="text" style="color: #F56C6C" @click="disagree2(scope.row)">不通过</el-button>-->
             </template>
           </el-table-column>
         </el-table>
@@ -180,7 +178,6 @@ export default {
     disagree2(row) {
       this.disagreeVisible = true
       this.disagreeId = row.id
-      this.informed_id = row.submit_id
     },
     disagree() {
       this.$refs['reason'].validate(
@@ -228,6 +225,7 @@ export default {
     showRepair(row) {
       this.repair = JSON.parse(JSON.stringify(row))// 防止指针错误
       this.dialogVisible = true
+      this.informed_id = row.submit_id
     }
   }
 }

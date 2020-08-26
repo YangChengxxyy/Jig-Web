@@ -1,14 +1,14 @@
 <template>
   <el-card class="box-card">
     <el-table :data="history_list" border style="width: 96%; margin: 2% 2% 2%">
-      <el-table-column prop="code" label="工夹具代码" :filters="code_list_filter" :filter-method="filterHandler" sortable>
+      <el-table-column prop="code" label="工夹具实体" :filters="code_list_filter" :filter-method="filterHandler" sortable>
         <template slot-scope="scope">
           <span>{{ scope.row.code }}-{{ scope.row.seq_id }}</span>
         </template>
       </el-table-column>
       <el-table-column prop="repair_reason" label="故障原因" />
       <el-table-column prop="submit_time" label="申请时间" />
-      <el-table-column prop="status" l abel="审批状态">
+      <el-table-column prop="status" label="审批状态">
         <template slot-scope="scope">
           <span v-if="scope.row.status === '1'" class="font-success">通过</span>
           <span v-if="scope.row.status === '2'" class="font-error">不通过</span>

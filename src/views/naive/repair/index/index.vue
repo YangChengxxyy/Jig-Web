@@ -268,7 +268,14 @@ export default {
       )
     },
     del: function(row) {
-      // TODO:向后台请求删除，后台需要修改
+      this.$ajax.get('/api/naive/del_repair_submit', {
+        params: {
+          id: row.id
+        }
+      }).then((response) => {
+        this.page_number = 1
+        this.getData()
+      })
     },
     filterHandler(value, row, column) {
       return row.code === value
