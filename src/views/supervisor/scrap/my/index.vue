@@ -1,7 +1,7 @@
 <template>
   <el-card class="box-card">
     <el-table :data="scrap_submit_list" border style="width: 94%; margin: 1% 3% 2%">
-      <el-table-column label="工夹具实体" prop="code" >
+      <el-table-column label="工夹具实体" prop="code">
         <template slot-scope="scope">
           <span>{{ scope.row.code }}-{{ scope.row.seq_id }}</span>
         </template>

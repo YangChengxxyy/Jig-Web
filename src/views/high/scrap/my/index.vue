@@ -183,7 +183,7 @@ export default {
       'id'
     ])
   },
-  watch:{
+  watch: {
     '$route.query.id': {
       handler() {
         const id = this.$route.query['id']

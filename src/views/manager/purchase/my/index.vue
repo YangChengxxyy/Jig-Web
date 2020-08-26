@@ -229,7 +229,7 @@ export default {
               showClose: true
             })
           } else {
-            this.$message.warning('暂无需要审批的申请')
+            this.$message.info('暂无需要审批的申请')
           }
         }
       )

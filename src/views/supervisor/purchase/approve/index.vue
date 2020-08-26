@@ -188,7 +188,7 @@ export default {
       }).then(
         response => {
           if (response.data.all_count <= 0) {
-            this.$message.error('没有结果!')
+            this.$message.info('没有结果!')
           } else {
             this.$message({
               message: '查询成功,共有' + response.data.all_count + '条记录!',

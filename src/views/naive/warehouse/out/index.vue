@@ -26,7 +26,7 @@
             <el-input v-model="sel_form.user_for" />
           </el-form-item>
         </el-col>
-        <el-col :span="11" >
+        <el-col :span="11">
           <el-button type="primary" icon="el-icon-search" @click="search()">查询</el-button>
           <el-button icon="el-icon-delete" @click="clear_form()">清空</el-button>
           <!--注释 <el-button>导出本页</el-button>
@@ -215,7 +215,7 @@
           <el-row :gutter="10">
             <el-col :span="20" :offset="2">
               <el-form-item label="选择工夹具">
-                <el-select v-model="seq_id" placeholder="选择工夹具">
+                <el-select v-model="seq_id" placeholder="选择工夹具" style="width: 100%">
                   <el-option
                     v-for="item in jig_entity_list"
                     :key="item.seq_id"
@@ -272,7 +272,7 @@
         <el-divider />
         <el-collapse style="height: 350px" value="1">
           <el-scrollbar style="height:100%">
-            <out-and-in-history :jigEntity="jig_entity" />
+            <out-and-in-history :jig-entity="jig_entity" />
           </el-scrollbar>
         </el-collapse>
       </template>
@@ -412,7 +412,7 @@
       <el-divider />
       <el-collapse style="height: 300px" value="1">
         <el-scrollbar style="height:100%">
-          <maintenance-history :jigEntity="maintenance_jig_detail" />
+          <maintenance-history :jig-entity="maintenance_jig_detail" />
         </el-scrollbar>
       </el-collapse>
       <el-divider />
@@ -875,7 +875,7 @@ export default {
           this.jig_list = response.data.data
           this.all = response.data.all
           if (response.data.all <= 0) {
-            this.$message.error('没有结果！')
+            this.$message.info('没有结果！')
           }
         }
       )

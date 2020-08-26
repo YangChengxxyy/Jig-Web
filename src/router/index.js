@@ -264,19 +264,6 @@ manager
       }
     ]
   },
-  {
-    path: '/jig',
-    component: Layout,
-    redirect: '/jig/index',
-    meta: { role: ['manager'] },
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/manager/jig/information/index'),
-        meta: { title: '工夹具信息', icon: 'jig', role: ['manager'] }
-      }
-    ]
-  },
   /*
   admin
   */
